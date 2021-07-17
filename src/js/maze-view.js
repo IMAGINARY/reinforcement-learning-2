@@ -5,13 +5,15 @@ const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
 const TILE_SIZE = 120;
 
 class MazeView {
-  constructor(maze, config) {
+  constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
     this.maze = maze;
     this.config = config;
+    this.textures = textures;
     this.events = new EventEmitter();
 
     this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
+    this.robotSprites = [];
 
     let pointerActive = false;
     $(window).on('mouseup', () => { pointerActive = false; });
@@ -37,23 +39,36 @@ class MazeView {
       floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
       this.floorTiles[this.maze.map.offset(i, j)] = floorTile;
 
-      this.renderTile(i, j);
+      this.renderCell(i, j);
     });
 
     this.displayObject.addChild(...this.floorTiles);
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
+
+    this.robotSprites = this.maze.robots.map((robot) => {
+      const robotSprite = new PIXI.Sprite();
+      robotSprite.x = robot.x * TILE_SIZE;
+      robotSprite.y = robot.y * TILE_SIZE;
+      robotSprite.width = TILE_SIZE;
+      robotSprite.height = TILE_SIZE;
+      robotSprite.roundPixels = true;
+      robotSprite.texture = this.textures[`robot-${robot.id}`];
+      return robotSprite;
+    });
+
+    this.displayObject.addChild(...this.robotSprites);
   }
 
   getFloorTile(i, j) {
     return this.floorTiles[this.maze.map.offset(i, j)];
   }
 
-  renderTile(i, j) {
-    this.renderFloorTile(i, j);
+  renderCell(i, j) {
+    this.renderFloor(i, j);
   }
 
-  renderFloorTile(i, j) {
+  renderFloor(i, j) {
     const tileType = this.config.tileTypes[this.maze.map.get(i, j)] || null;
     this.getFloorTile(i, j)
       .clear()
@@ -64,7 +79,7 @@ class MazeView {
   }
 
   handleCityUpdate(updates) {
-    updates.forEach(([i, j]) => { this.renderTile(i, j); });
+    updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
 }
 

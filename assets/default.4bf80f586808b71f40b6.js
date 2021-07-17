@@ -5585,13 +5585,15 @@ const PencilCursor = __webpack_require__(/*! ../../static/fa/pencil-alt-solid.sv
 const TILE_SIZE = 120;
 
 class MazeView {
-  constructor(maze, config) {
+  constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
     this.maze = maze;
     this.config = config;
+    this.textures = textures;
     this.events = new EventEmitter();
 
     this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
+    this.robotSprites = [];
 
     let pointerActive = false;
     $(window).on('mouseup', () => { pointerActive = false; });
@@ -5617,23 +5619,36 @@ class MazeView {
       floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
       this.floorTiles[this.maze.map.offset(i, j)] = floorTile;
 
-      this.renderTile(i, j);
+      this.renderCell(i, j);
     });
 
     this.displayObject.addChild(...this.floorTiles);
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
+
+    this.robotSprites = this.maze.robots.map((robot) => {
+      const robotSprite = new PIXI.Sprite();
+      robotSprite.x = robot.x * TILE_SIZE;
+      robotSprite.y = robot.y * TILE_SIZE;
+      robotSprite.width = TILE_SIZE;
+      robotSprite.height = TILE_SIZE;
+      robotSprite.roundPixels = true;
+      robotSprite.texture = this.textures[`robot-${robot.id}`];
+      return robotSprite;
+    });
+
+    this.displayObject.addChild(...this.robotSprites);
   }
 
   getFloorTile(i, j) {
     return this.floorTiles[this.maze.map.offset(i, j)];
   }
 
-  renderTile(i, j) {
-    this.renderFloorTile(i, j);
+  renderCell(i, j) {
+    this.renderFloor(i, j);
   }
 
-  renderFloorTile(i, j) {
+  renderFloor(i, j) {
     const tileType = this.config.tileTypes[this.maze.map.get(i, j)] || null;
     this.getFloorTile(i, j)
       .clear()
@@ -5644,7 +5659,7 @@ class MazeView {
   }
 
   handleCityUpdate(updates) {
-    updates.forEach(([i, j]) => { this.renderTile(i, j); });
+    updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
 }
 
@@ -5665,6 +5680,7 @@ const Array2D = __webpack_require__(/*! ./aux/array-2d.js */ "./src/js/aux/array
 class Maze {
   constructor(width, height, cells = null) {
     this.map = new Grid(width, height, cells);
+    this.robots = [];
   }
 
   toJSON() {
@@ -5683,12 +5699,15 @@ class Maze {
   copy(maze) {
     this.map.copy(maze.map);
   }
-}
 
-Maze.Tiles = {
-  WALL: 1,
-  FLOOR: 2,
-};
+  addRobot(robot) {
+    this.robots.push(robot);
+    robot.maze = this;
+    // Put the robot in the lower left corner
+    robot.x = 0;
+    robot.y = this.map.height - 1;
+  }
+}
 
 module.exports = Maze;
 
@@ -5763,6 +5782,27 @@ class Modal {
 }
 
 module.exports = Modal;
+
+
+/***/ }),
+
+/***/ "./src/js/robot.js":
+/*!*************************!*\
+  !*** ./src/js/robot.js ***!
+  \*************************/
+/***/ ((module) => {
+
+class Robot {
+  constructor(id, props) {
+    this.id = id;
+    this.name = props.name || id;
+    this.maze = null;
+    this.x = 0;
+    this.y = 0;
+  }
+}
+
+module.exports = Robot;
 
 
 /***/ }),
@@ -5860,11 +5900,11 @@ var __webpack_exports__ = {};
 
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
+const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
-
 
 fetch('./config.yml', { cache: 'no-store' })
   .then(response => response.text())
@@ -5875,16 +5915,30 @@ fetch('./config.yml', { cache: 'no-store' })
   })
   .then((config) => {
     const maze = Maze.fromJSON(maze1);
+    Object.entries(config.robots).forEach(([id, props]) => {
+      const robot = new Robot(id, props);
+      maze.addRobot(robot);
+    });
     const app = new PIXI.Application({
       width: 3840,
       height: 1920,
       backgroundColor: 0xf2f2f2,
     });
-    app.loader.load(() => {
+    const textures = {};
+    Object.entries(config.robots).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `robot-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    app.loader.load((loader, resources) => {
+      Object.keys(textures).forEach((id) => {
+        textures[id] = resources[id].texture;
+      });
       $('[data-component="app-container"]').append(app.view);
-
-      // const mazeView = new MazeView(maze, config);
-      const mazeView = new MazeEditor($('body'), maze, config);
+      // const mazeView = new MazeView(maze, config, textures);
+      const mazeView = new MazeEditor($('body'), maze, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 1920;
       mazeView.displayObject.height = 1920;
@@ -5897,4 +5951,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.7a10247d933826caa6ca.js.map
+//# sourceMappingURL=default.4bf80f586808b71f40b6.js.map

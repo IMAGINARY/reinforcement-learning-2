@@ -12,3 +12,7 @@ tileTypes:
     name: Wall
     color: '#666666'
     walkable: false
+robots:
+  blue:
+    name: 'Blue Robot'
+    texture: 'static/fa/robot-solid-blue.svg'

@@ -4,6 +4,7 @@ const Array2D = require('./aux/array-2d.js');
 class Maze {
   constructor(width, height, cells = null) {
     this.map = new Grid(width, height, cells);
+    this.robots = [];
   }
 
   toJSON() {
@@ -22,11 +23,14 @@ class Maze {
   copy(maze) {
     this.map.copy(maze.map);
   }
-}
 
-Maze.Tiles = {
-  WALL: 1,
-  FLOOR: 2,
-};
+  addRobot(robot) {
+    this.robots.push(robot);
+    robot.maze = this;
+    // Put the robot in the lower left corner
+    robot.x = 0;
+    robot.y = this.map.height - 1;
+  }
+}
 
 module.exports = Maze;

@@ -6,6 +6,7 @@ const Maze = require('./maze.js');
 const Robot = require('./robot.js');
 const MazeView = require('./maze-view.js');
 const MazeEditor = require('./editor/maze-editor.js');
+const KeyboardController = require('./keyboard-controller.js');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 
@@ -18,10 +19,12 @@ fetch('./config.yml', { cache: 'no-store' })
   })
   .then((config) => {
     const maze = Maze.fromJSON(maze1);
+    maze.config = config;
     Object.entries(config.robots).forEach(([id, props]) => {
       const robot = new Robot(id, props);
       maze.addRobot(robot);
     });
+    const keyboardController = new KeyboardController(maze.robots[0]);
     const app = new PIXI.Application({
       width: 3840,
       height: 1920,

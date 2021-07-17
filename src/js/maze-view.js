@@ -54,6 +54,12 @@ class MazeView {
       robotSprite.height = TILE_SIZE;
       robotSprite.roundPixels = true;
       robotSprite.texture = this.textures[`robot-${robot.id}`];
+
+      robot.events.on('move', (x1, y1, x2, y2) => {
+        robotSprite.x = x2 * TILE_SIZE;
+        robotSprite.y = y2 * TILE_SIZE;
+      });
+
       return robotSprite;
     });
 

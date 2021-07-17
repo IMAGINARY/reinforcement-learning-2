@@ -171,6 +171,10 @@ class Grid {
       .filter(([x, y]) => this.isValidCoords(x, y))
       .map(([x, y]) => [x, y, this.get(x, y)]);
   }
+
+  stepDistance(x1, y1, x2, y2) {
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+  }
 }
 
 module.exports = Grid;

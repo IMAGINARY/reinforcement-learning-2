@@ -5565,9 +5565,44 @@ class Grid {
       .filter(([x, y]) => this.isValidCoords(x, y))
       .map(([x, y]) => [x, y, this.get(x, y)]);
   }
+
+  stepDistance(x1, y1, x2, y2) {
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+  }
 }
 
 module.exports = Grid;
+
+
+/***/ }),
+
+/***/ "./src/js/keyboard-controller.js":
+/*!***************************************!*\
+  !*** ./src/js/keyboard-controller.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+class KeyboardController {
+  constructor(robot) {
+    this.robot = robot;
+
+    this.keyMap = {
+      ArrowLeft: () => { this.robot.west(); },
+      ArrowRight: () => { this.robot.east(); },
+      ArrowUp: () => { this.robot.north(); },
+      ArrowDown: () => { this.robot.south(); },
+    };
+
+    window.addEventListener('keydown', (ev) => {
+      if (this.keyMap[ev.code]) {
+        this.keyMap[ev.code]();
+        ev.preventDefault();
+      }
+    });
+  }
+}
+
+module.exports = KeyboardController;
 
 
 /***/ }),
@@ -5634,6 +5669,12 @@ class MazeView {
       robotSprite.height = TILE_SIZE;
       robotSprite.roundPixels = true;
       robotSprite.texture = this.textures[`robot-${robot.id}`];
+
+      robot.events.on('move', (x1, y1, x2, y2) => {
+        robotSprite.x = x2 * TILE_SIZE;
+        robotSprite.y = y2 * TILE_SIZE;
+      });
+
       return robotSprite;
     });
 
@@ -5678,8 +5719,9 @@ const Grid = __webpack_require__(/*! ./grid.js */ "./src/js/grid.js");
 const Array2D = __webpack_require__(/*! ./aux/array-2d.js */ "./src/js/aux/array-2d.js");
 
 class Maze {
-  constructor(width, height, cells = null) {
+  constructor(width, height, cells = null, config) {
     this.map = new Grid(width, height, cells);
+    this.config = config;
     this.robots = [];
   }
 
@@ -5706,6 +5748,12 @@ class Maze {
     // Put the robot in the lower left corner
     robot.x = 0;
     robot.y = this.map.height - 1;
+  }
+
+  isWalkable(x, y) {
+    return this.config.tileTypes
+      && this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].walkable;
   }
 }
 
@@ -5790,7 +5838,9 @@ module.exports = Modal;
 /*!*************************!*\
   !*** ./src/js/robot.js ***!
   \*************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 
 class Robot {
   constructor(id, props) {
@@ -5799,7 +5849,32 @@ class Robot {
     this.maze = null;
     this.x = 0;
     this.y = 0;
+
+    this.events = new EventEmitter();
   }
+
+  canMoveTo(x, y) {
+    return this.maze
+      && this.maze.map.isValidCoords(x, y)
+      && this.maze.isWalkable(x, y)
+      && this.maze.map.stepDistance(this.x, this.y, x, y) === 1;
+  }
+
+  moveTo(x, y) {
+    if (this.canMoveTo(x, y)) {
+      this.events.emit('move', this.x, this.y, x, y);
+      this.x = x;
+      this.y = y;
+    }
+  }
+
+  north() { this.moveTo(this.x, this.y - 1); }
+
+  south() { this.moveTo(this.x, this.y + 1); }
+
+  east() { this.moveTo(this.x + 1, this.y); }
+
+  west() { this.moveTo(this.x - 1, this.y); }
 }
 
 module.exports = Robot;
@@ -5903,6 +5978,7 @@ const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
+const KeyboardController = __webpack_require__(/*! ./keyboard-controller.js */ "./src/js/keyboard-controller.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 
@@ -5915,10 +5991,12 @@ fetch('./config.yml', { cache: 'no-store' })
   })
   .then((config) => {
     const maze = Maze.fromJSON(maze1);
+    maze.config = config;
     Object.entries(config.robots).forEach(([id, props]) => {
       const robot = new Robot(id, props);
       maze.addRobot(robot);
     });
+    const keyboardController = new KeyboardController(maze.robots[0]);
     const app = new PIXI.Application({
       width: 3840,
       height: 1920,
@@ -5951,4 +6029,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.4bf80f586808b71f40b6.js.map
+//# sourceMappingURL=default.68bc3f92ab5d8b499054.js.map

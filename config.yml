@@ -3,11 +3,12 @@ tileTypes:
     name: Empty
     color: '#4a4a4a'
     walkable: false
+    editorIcon: 'static/fa/times-solid.svg'
   1:
     name: Floor
     color: '#ffffff'
     walkable: true
   2:
     name: Wall
-    color: '#333333'
+    color: '#666666'
     walkable: false

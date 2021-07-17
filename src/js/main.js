@@ -4,6 +4,7 @@
 const yaml = require('js-yaml');
 const Maze = require('./maze.js');
 const MazeView = require('./maze-view.js');
+const MazeEditor = require('./editor/maze-editor.js');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 
@@ -25,7 +26,8 @@ fetch('./config.yml', { cache: 'no-store' })
     app.loader.load(() => {
       $('[data-component="app-container"]').append(app.view);
 
-      const mazeView = new MazeView(maze, config);
+      // const mazeView = new MazeView(maze, config);
+      const mazeView = new MazeEditor($('body'), maze, config);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 1920;
       mazeView.displayObject.height = 1920;

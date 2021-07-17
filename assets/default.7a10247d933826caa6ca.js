@@ -4841,6 +4841,551 @@ module.exports = Array2D;
 
 /***/ }),
 
+/***/ "./src/js/editor/maze-browser.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/maze-browser.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Maze = __webpack_require__(/*! ../maze.js */ "./src/js/maze.js");
+
+class MazeBrowser {
+  constructor($element, config, mazeStore, saveMode = false) {
+    this.$element = $element;
+    this.config = config;
+    this.$selectedButton = null;
+    this.selectedData = null;
+
+    this.$element.addClass('maze-browser');
+
+    const setSelection = (button) => {
+      if (this.$selectedButton) {
+        this.$selectedButton.removeClass('selected');
+      }
+      this.$selectedButton = $(button);
+      this.$selectedButton.addClass('selected');
+    };
+
+    const buttons = Object.entries(
+      saveMode ? mazeStore.getAllUserObjects() : mazeStore.getAllObjects()
+    ).map(([id, mazeJSON]) => $('<div></div>')
+      .addClass(['col-6', 'col-md-2', 'mb-3'])
+      .append(
+        $('<button></button>')
+          .addClass('maze-browser-item')
+          .append(this.createPreviewImage(mazeJSON))
+          .on('click', (ev) => {
+            setSelection(ev.currentTarget);
+            this.selectedData = id;
+          })
+      ));
+
+    if (saveMode) {
+      buttons.unshift($('<div></div>')
+        .addClass(['col-6', 'col-md-2', 'mb-3'])
+        .append($('<button></button>')
+          .addClass('maze-browser-item-new')
+          .on('click', (ev) => {
+            setSelection(ev.currentTarget);
+            this.selectedData = 'new';
+          })));
+    }
+
+    this.$element.append($('<div class="row"></div>').append(buttons));
+  }
+
+  createPreviewImage(mazeJSON) {
+    const maze = Maze.fromJSON(mazeJSON);
+    const $canvas = $('<canvas class="maze-browser-item-preview"></canvas>')
+      .attr({
+        width: maze.map.width,
+        height: maze.map.height,
+      });
+    const ctx = $canvas[0].getContext('2d');
+    maze.map.allCells().forEach(([i, j, value]) => {
+      ctx.fillStyle = (this.config.tileTypes && this.config.tileTypes[value].color) || '#000000';
+      ctx.fillRect(i, j, 1, 1);
+    });
+
+    return $canvas;
+  }
+}
+
+module.exports = MazeBrowser;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/maze-editor-palette.js":
+/*!**********************************************!*\
+  !*** ./src/js/editor/maze-editor-palette.js ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class MazeEditorPalette {
+  constructor($element, config) {
+    this.$element = $element;
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass('maze-editor-palette');
+
+    this.buttons = Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: typeCfg.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tile',
+        `editor-palette-button-tile-${id}`,
+      ])
+      .css({
+        backgroundColor: typeCfg.color,
+        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+      })
+      .on('click', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.tileId = Number(id);
+        this.events.emit('change', Number(id));
+      }));
+
+    this.buttons.push($('<div class="separator"></div>'));
+
+    const actionButtons = MazeEditorPalette.Actions.map(action => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: action.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-action',
+        `editor-palette-button-action-${action.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${action.icon})`,
+      })
+      .on('click', () => {
+        this.events.emit('action', action.id);
+      }));
+
+    this.buttons.push(...actionButtons);
+
+    this.$element.append(this.buttons);
+    if (this.buttons.length) {
+      this.buttons[0].click();
+    }
+  }
+}
+
+MazeEditorPalette.Actions = [
+  {
+    id: 'load',
+    title: 'Load maze',
+    icon: 'static/fa/folder-open-solid.svg',
+  },
+  {
+    id: 'save',
+    title: 'Save maze',
+    icon: 'static/fa/save-solid.svg',
+  },
+  {
+    id: 'import',
+    title: 'Import maze',
+    icon: 'static/fa/file-import-solid.svg',
+  },
+  {
+    id: 'export',
+    title: 'Export maze',
+    icon: 'static/fa/file-export-solid.svg',
+  },
+];
+
+module.exports = MazeEditorPalette;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/maze-editor.js":
+/*!**************************************!*\
+  !*** ./src/js/editor/maze-editor.js ***!
+  \**************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Maze = __webpack_require__(/*! ../maze.js */ "./src/js/maze.js");
+const MazeView = __webpack_require__(/*! ../maze-view.js */ "./src/js/maze-view.js");
+const MazeEditorPalette = __webpack_require__(/*! ./maze-editor-palette.js */ "./src/js/editor/maze-editor-palette.js");
+const ModalLoad = __webpack_require__(/*! ./modal-load.js */ "./src/js/editor/modal-load.js");
+const ModalSave = __webpack_require__(/*! ./modal-save.js */ "./src/js/editor/modal-save.js");
+const ModalExport = __webpack_require__(/*! ./modal-export.js */ "./src/js/editor/modal-export.js");
+const ModalImport = __webpack_require__(/*! ./modal-import.js */ "./src/js/editor/modal-import.js");
+const ObjectStore = __webpack_require__(/*! ./object-store.js */ "./src/js/editor/object-store.js");
+
+class MazeEditor {
+  constructor($element, maze, config, textures) {
+    this.$element = $element;
+    this.maze = maze;
+    this.config = config;
+
+    this.mazeView = new MazeView(maze, config, textures);
+    this.displayObject = this.mazeView.displayObject;
+
+    this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
+
+    this.tileType = this.palette.tileId;
+    this.palette.events.on('change', (tileType) => {
+      this.tileType = tileType;
+    });
+
+    this.palette.events.on('action', (id) => {
+      if (this.actionHandlers[id]) {
+        this.actionHandlers[id]();
+      }
+    });
+
+    let lastEdit = null;
+    this.mazeView.events.on('action', ([x, y], props) => {
+      if (this.tileType !== null) {
+        if (lastEdit && props.shiftKey) {
+          const [lastX, lastY] = lastEdit;
+          for (let i = Math.min(lastX, x); i <= Math.max(lastX, x); i += 1) {
+            for (let j = Math.min(lastY, y); j <= Math.max(lastY, y); j += 1) {
+              this.maze.map.set(i, j, this.tileType);
+            }
+          }
+        } else {
+          this.maze.map.set(x, y, this.tileType);
+        }
+        lastEdit = [x, y];
+      }
+    });
+
+    this.objectStore = new ObjectStore();
+    this.actionHandlers = {
+      load: () => {
+        const modal = new ModalLoad(this.config, this.objectStore);
+        modal.show().then((id) => {
+          const jsonMaze = id && this.objectStore.get(id);
+          if (jsonMaze) {
+            this.maze.copy(Maze.fromJSON(jsonMaze));
+          }
+        });
+      },
+      save: () => {
+        const modal = new ModalSave(this.config, this.objectStore);
+        modal.show().then((id) => {
+          if (id) {
+            this.objectStore.set(id === 'new' ? null : id, this.maze.toJSON());
+          }
+        });
+      },
+      import: () => {
+        const modal = new ModalImport();
+        modal.show().then((importedData) => {
+          if (importedData) {
+            this.maze.copy(Maze.fromJSON(importedData));
+          }
+        });
+      },
+      export: () => {
+        const modal = new ModalExport(JSON.stringify(this.maze));
+        modal.show();
+      },
+    };
+  }
+}
+
+module.exports = MazeEditor;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-export.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/modal-export.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+
+class ModalExport extends Modal {
+  constructor(exportData) {
+    super({
+      title: 'Export maze',
+    });
+
+    this.$dataContainer = $('<textarea class="form-control"></textarea>')
+      .attr({
+        rows: 10,
+      })
+      .text(exportData)
+      .appendTo(this.$body);
+
+    this.$copyButton = $('<button></button>')
+      .addClass(['btn', 'btn-outline-dark', 'btn-copy', 'mt-2'])
+      .text('Copy to clipboard')
+      .on('click', () => {
+        this.$dataContainer[0].select();
+        document.execCommand('copy');
+        this.hide();
+      })
+      .appendTo(this.$footer);
+  }
+}
+
+module.exports = ModalExport;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-import.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/modal-import.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+
+class ModalImport extends Modal {
+  constructor() {
+    super({
+      title: 'Import maze',
+    });
+
+    this.$dataContainer = $('<textarea class="form-control"></textarea>')
+      .attr({
+        rows: 10,
+        placeholder: 'Paste the JSON object here.',
+      })
+      .appendTo(this.$body);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$errorText = $('<p class="text-danger"></p>')
+      .appendTo(this.$footer)
+      .hide();
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$copyButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Import')
+      .on('click', () => {
+        try {
+          const imported = JSON.parse(this.$dataContainer.val());
+          this.hide(imported);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalImport;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-load.js":
+/*!*************************************!*\
+  !*** ./src/js/editor/modal-load.js ***!
+  \*************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+const CityBrowser = __webpack_require__(/*! ./maze-browser.js */ "./src/js/editor/maze-browser.js");
+
+class ModalLoad extends Modal {
+  constructor(config, mazeStore) {
+    super({
+      title: 'Load maze',
+      size: 'lg',
+    });
+
+    this.$browserContainer = $('<div></div>')
+      .appendTo(this.$body);
+    this.browser = new CityBrowser(this.$browserContainer, config, mazeStore);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$cancelButton = $('<button></button>')
+      .addClass(['btn', 'btn-secondary'])
+      .text('Cancel')
+      .on('click', () => {
+        this.hide(null);
+      })
+      .appendTo(this.$footer);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$loadButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Load')
+      .on('click', () => {
+        try {
+          this.hide(this.browser.selectedData);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalLoad;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-save.js":
+/*!*************************************!*\
+  !*** ./src/js/editor/modal-save.js ***!
+  \*************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+const MazeBrowser = __webpack_require__(/*! ./maze-browser.js */ "./src/js/editor/maze-browser.js");
+
+class ModalSave extends Modal {
+  constructor(config, mazeStore) {
+    super({
+      title: 'Save maze',
+      size: 'lg',
+    });
+
+    this.$browserContainer = $('<div></div>')
+      .appendTo(this.$body);
+    this.browser = new MazeBrowser(this.$browserContainer, config, mazeStore, true);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$cancelButton = $('<button></button>')
+      .addClass(['btn', 'btn-secondary'])
+      .text('Cancel')
+      .on('click', () => {
+        this.hide(null);
+      })
+      .appendTo(this.$footer);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$saveButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Save')
+      .on('click', () => {
+        try {
+          this.hide(this.browser.selectedData);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalSave;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/object-store.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/object-store.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+class ObjectStore {
+  constructor(fixedObjectsPath = null) {
+    this.fixedObjects = [];
+    this.userObjects = [];
+
+    this.loadUserObjects();
+    if (fixedObjectsPath) {
+      this.loadFixedObjects(fixedObjectsPath);
+    }
+  }
+
+  async loadFixedObjects(path) {
+    fetch(path, { cache: 'no-store' })
+      .then(response => response.json())
+      .then((data) => {
+        this.fixedObjects = data.mazes;
+      });
+  }
+
+  loadUserObjects() {
+    const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
+    if (userObjects) {
+      this.userObjects = userObjects;
+    }
+  }
+
+  saveLocal() {
+    localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+  }
+
+  getAllObjects() {
+    return Object.assign(
+      {},
+      this.getAllUserObjects(),
+      this.getAllFixedObjects(),
+    );
+  }
+
+  getAllFixedObjects() {
+    return Object.fromEntries(this.fixedObjects.map((obj, i) => [
+      `F${i}`,
+      obj,
+    ]));
+  }
+
+  getAllUserObjects() {
+    return Object.fromEntries(this.userObjects.map((obj, i) => [
+      `L${i}`,
+      obj,
+    ]).reverse());
+  }
+
+  get(id) {
+    if (id[0] === 'F') {
+      return this.fixedObjects[id.substr(1)];
+    }
+    return this.userObjects[id.substr(1)];
+  }
+
+  set(id, obj) {
+    if (id === null || this.userObjects[id.substr(1)] === undefined) {
+      this.userObjects.push(obj);
+    } else {
+      this.userObjects[id.substr(1)] = obj;
+    }
+    this.saveLocal();
+  }
+}
+
+module.exports = ObjectStore;
+
+
+/***/ }),
+
 /***/ "./src/js/grid.js":
 /*!************************!*\
   !*** ./src/js/grid.js ***!
@@ -5150,6 +5695,78 @@ module.exports = Maze;
 
 /***/ }),
 
+/***/ "./src/js/modal.js":
+/*!*************************!*\
+  !*** ./src/js/modal.js ***!
+  \*************************/
+/***/ ((module) => {
+
+class Modal {
+  /**
+   * @param {object} options
+   *  Modal dialog options
+   * @param {string} options.title
+   *  Dialog title.
+   * @param {string} options.size
+   *  Modal size (lg or sm).
+   * @param {boolean} options.showCloseButton
+   *  Shows a close button in the dialog if true.
+   * @param {boolean} options.showFooter
+   *  Adds a footer area to the dialog if true.
+   */
+  constructor(options) {
+    this.returnValue = null;
+
+    this.$element = $('<div class="modal fade"></div>');
+    this.$dialog = $('<div class="modal-dialog"></div>').appendTo(this.$element);
+    this.$content = $('<div class="modal-content"></div>').appendTo(this.$dialog);
+    this.$header = $('<div class="modal-header"></div>').appendTo(this.$content);
+    this.$body = $('<div class="modal-body"></div>').appendTo(this.$content);
+    this.$footer = $('<div class="modal-footer"></div>').appendTo(this.$content);
+
+    this.$closeButton = $('<button type="button" class="close" data-dismiss="modal">')
+      .append($('<span>&times;</span>'))
+      .appendTo(this.$header);
+
+    if (options.title) {
+      $('<h5 class="modal-title"></h5>')
+        .html(options.title)
+        .prependTo(this.$header);
+    }
+    if (options.size) {
+      this.$dialog.addClass(`modal-${options.size}`);
+    }
+
+    if (options.showCloseButton === false) {
+      this.$closeButton.remove();
+    }
+    if (options.showFooter === false) {
+      this.$footer.remove();
+    }
+  }
+
+  async show() {
+    return new Promise((resolve) => {
+      $('body').append(this.$element);
+      this.$element.modal();
+      this.$element.on('hidden.bs.modal', () => {
+        this.$element.remove();
+        resolve(this.returnValue);
+      });
+    });
+  }
+
+  hide(returnValue) {
+    this.returnValue = returnValue;
+    this.$element.modal('hide');
+  }
+}
+
+module.exports = Modal;
+
+
+/***/ }),
+
 /***/ "./static/fa/pencil-alt-solid.svg":
 /*!****************************************!*\
   !*** ./static/fa/pencil-alt-solid.svg ***!
@@ -5244,6 +5861,7 @@ var __webpack_exports__ = {};
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 
@@ -5265,7 +5883,8 @@ fetch('./config.yml', { cache: 'no-store' })
     app.loader.load(() => {
       $('[data-component="app-container"]').append(app.view);
 
-      const mazeView = new MazeView(maze, config);
+      // const mazeView = new MazeView(maze, config);
+      const mazeView = new MazeEditor($('body'), maze, config);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 1920;
       mazeView.displayObject.height = 1920;
@@ -5278,4 +5897,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.59a36a3ead0657fa2684.js.map
+//# sourceMappingURL=default.7a10247d933826caa6ca.js.map

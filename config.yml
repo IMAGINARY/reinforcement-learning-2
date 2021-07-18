@@ -1,18 +1,42 @@
 tileTypes:
-  0:
-    name: Empty
-    color: '#4a4a4a'
-    walkable: false
-    editorIcon: 'static/fa/times-solid.svg'
   1:
     name: Floor
     color: '#ffffff'
     walkable: true
+    reward: -1
   2:
     name: Wall
     color: '#666666'
     walkable: false
+  3:
+    name: Exit
+    color: '#ff9999'
+    walkable: true
+    exit: true
+    reward: 50
+    editorIcon: 'static/fa/door-open-solid.svg'
 robots:
   blue:
     name: 'Blue Robot'
     texture: 'static/fa/robot-solid-blue.svg'
+items:
+  lemon:
+    name: Lemon
+    editorIcon: 'static/fa/lemon-solid.svg'
+    texture: 'static/fa/lemon-solid.svg'
+    reward: 2
+  carrot:
+    name: Carrot
+    editorIcon: 'static/fa/carrot-solid.svg'
+    texture: 'static/fa/carrot-solid.svg'
+    reward: 5
+  candyCane:
+    name: Candy Cane
+    editorIcon: 'static/fa/candy-cane-solid.svg'
+    texture: 'static/fa/candy-cane-solid.svg'
+    reward: 10
+  iceCream:
+    name: Ice Cream
+    editorIcon: 'static/fa/ice-cream-solid.svg'
+    texture: 'static/fa/ice-cream-solid.svg'
+    reward: 20

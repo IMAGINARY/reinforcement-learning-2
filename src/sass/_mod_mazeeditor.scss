@@ -2,8 +2,14 @@
   position: absolute;
   top: 5px;
   left: 5px;
-  padding: 4px;
-  background-color: white;
+
+  .maze-editor-palette-bar {
+    display: inline-block;
+    vertical-align: top;
+    padding: 4px;
+    margin-right: 5px;
+    background-color: white;
+  }
 
   .editor-palette-button {
     display: block;

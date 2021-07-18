@@ -18,9 +18,32 @@ class MazeEditor {
 
     this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
 
-    this.tileType = this.palette.tileId;
-    this.palette.events.on('change', (tileType) => {
-      this.tileType = tileType;
+    const tools = {
+      start: (x, y) => {
+        if (this.maze.robots.length > 0) {
+          this.maze.robots[0].setPosition(x, y);
+        }
+      },
+      erase: (x, y) => {
+        this.maze.removeItem(x, y);
+      },
+      tile: (tileType, x, y) => {
+        this.maze.map.set(x, y, tileType);
+      },
+      item: (itemType, x, y) => {
+        if (this.maze.isWalkable(x, y)) {
+          this.maze.placeItem(itemType, x, y);
+        }
+      },
+    };
+
+    this.toolHandler = null;
+    this.palette.events.on('change', (tool, type = null) => {
+      if (type !== null) {
+        this.toolHandler = tools[tool].bind(this, type);
+      } else {
+        this.toolHandler = tools[tool].bind(this);
+      }
     });
 
     this.palette.events.on('action', (id) => {
@@ -31,16 +54,16 @@ class MazeEditor {
 
     let lastEdit = null;
     this.mazeView.events.on('action', ([x, y], props) => {
-      if (this.tileType !== null) {
+      if (this.toolHandler !== null) {
         if (lastEdit && props.shiftKey) {
           const [lastX, lastY] = lastEdit;
           for (let i = Math.min(lastX, x); i <= Math.max(lastX, x); i += 1) {
             for (let j = Math.min(lastY, y); j <= Math.max(lastY, y); j += 1) {
-              this.maze.map.set(i, j, this.tileType);
+              this.toolHandler(i, j);
             }
           }
         } else {
-          this.maze.map.set(x, y, this.tileType);
+          this.toolHandler(x, y);
         }
         lastEdit = [x, y];
       }
@@ -76,6 +99,9 @@ class MazeEditor {
       export: () => {
         const modal = new ModalExport(JSON.stringify(this.maze));
         modal.show();
+      },
+      reset: () => {
+        this.maze.reset();
       },
     };
   }

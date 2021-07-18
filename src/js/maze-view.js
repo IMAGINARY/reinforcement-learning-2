@@ -7,6 +7,13 @@ const TILE_SIZE = 120;
 class MazeView {
   constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
+    this.tileLayer = new PIXI.Container();
+    this.itemLayer = new PIXI.Container();
+    this.robotLayer = new PIXI.Container();
+    this.displayObject.addChild(this.tileLayer);
+    this.displayObject.addChild(this.itemLayer);
+    this.displayObject.addChild(this.robotLayer);
+
     this.maze = maze;
     this.config = config;
     this.textures = textures;
@@ -42,7 +49,7 @@ class MazeView {
       this.renderCell(i, j);
     });
 
-    this.displayObject.addChild(...this.floorTiles);
+    this.tileLayer.addChild(...this.floorTiles);
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
@@ -60,10 +67,75 @@ class MazeView {
         robotSprite.y = y2 * TILE_SIZE;
       });
 
+      robot.events.on('scoreChanged', (amount, score) => {
+        console.log(`Robot scored ${amount}. Total: ${score}`);
+      });
+
+      robot.events.on('exited', () => {
+        robot.canMove = false;
+        setTimeout(() => {
+          this.maze.reset();
+          robot.canMove = true;
+        }, 1000);
+      });
+
       return robotSprite;
     });
 
-    this.displayObject.addChild(...this.robotSprites);
+    this.itemSprites = {};
+    this.maze.items.forEach((item) => { this.createItemSprite(item); });
+    this.maze.events.on('itemPlaced', (item) => {
+      this.createItemSprite(item);
+    });
+
+    this.maze.events.on('itemRemoved', (item) => {
+      this.removeItemSprite(item);
+    });
+
+    this.maze.events.on('itemPicked', (item) => {
+      this.handleItemPicked(item);
+    });
+
+    this.maze.events.on('itemReset', (item) => {
+      this.handleItemReset(item);
+    });
+
+    this.robotLayer.addChild(...this.robotSprites);
+  }
+
+  createItemSprite(item) {
+    const sprite = new PIXI.Sprite();
+    sprite.x = item.x * TILE_SIZE + TILE_SIZE * 0.25;
+    sprite.y = item.y * TILE_SIZE + TILE_SIZE * 0.25;
+    sprite.width = TILE_SIZE * 0.5;
+    sprite.height = TILE_SIZE * 0.5;
+    sprite.roundPixels = true;
+    sprite.texture = this.textures[`item-${item.type}`];
+
+    this.itemSprites[item.id] = sprite;
+
+    this.itemLayer.addChild(sprite);
+  }
+
+  removeItemSprite(item) {
+    if (this.itemSprites[item.id]) {
+      const sprite = this.itemSprites[item.id];
+      this.itemLayer.removeChild(sprite);
+      sprite.destroy();
+      delete this.itemSprites[item.id];
+    }
+  }
+
+  handleItemPicked(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = false;
+    }
+  }
+
+  handleItemReset(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = true;
+    }
   }
 
   getFloorTile(i, j) {

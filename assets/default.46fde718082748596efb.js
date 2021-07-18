@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,2,1,1,1,1,1,1],[1,2,1,1,1,2,2,1],[1,2,1,1,1,2,2,1],[1,1,1,2,1,1,1,1],[1,1,1,1,2,1,1,1],[1,2,2,1,1,1,1,1],[1,2,2,1,1,2,2,2],[1,1,1,1,1,1,1,1]]}}');
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,2,1,1,1,1,1,1],[1,2,1,1,1,2,2,1],[1,2,1,1,1,2,2,1],[1,1,1,2,1,1,1,1],[1,1,1,1,2,1,1,1],[1,2,2,1,1,1,1,1],[1,2,2,1,1,2,2,2],[1,1,1,1,1,1,1,1]]},"items":[{"type":"exit","x":7,"y":0},{"type":"iceCream","x":0,"y":0},{"type":"lemon","x":6,"y":3},{"type":"lemon","x":6,"y":7},{"type":"candyCane","x":3,"y":1},{"type":"carrot","x":7,"y":5}]}');
 
 /***/ }),
 
@@ -4933,8 +4933,21 @@ class MazeEditorPalette {
     this.events = new EventEmitter();
 
     this.$element.addClass('maze-editor-palette');
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
 
-    this.buttons = Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+    this.$bar1.append(this.buildActionButtons());
+
+    this.$bar2.append(this.buildTileButtons(config));
+    this.$bar2.append($('<div class="separator"></div>'));
+    this.$bar2.append(this.buildToolButtons(config));
+    this.$bar2.append(this.buildItemButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
       .attr({
         type: 'button',
         title: typeCfg.name,
@@ -4955,12 +4968,60 @@ class MazeEditorPalette {
         this.activeButton = $(ev.target);
         this.activeButton.addClass('active');
         this.tileId = Number(id);
-        this.events.emit('change', Number(id));
+        this.events.emit('change', 'tile', Number(id));
       }));
+  }
 
-    this.buttons.push($('<div class="separator"></div>'));
+  buildToolButtons() {
+    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: tool.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tool',
+        `editor-palette-button-tool-${tool.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${tool.icon})`,
+      })
+      .on('click', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', tool.id);
+      }));
+  }
 
-    const actionButtons = MazeEditorPalette.Actions.map(action => $('<button></button>')
+  buildItemButtons(config) {
+    return Object.entries(config.items).map(([id, props]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: props.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-item',
+        `editor-palette-button-item-${id}`,
+      ])
+      .css({
+        backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
+      })
+      .on('click', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', 'item', id);
+      }));
+  }
+
+  buildActionButtons() {
+    return MazeEditorPalette.Actions.map(action => $('<button></button>')
       .attr({
         type: 'button',
         title: action.title,
@@ -4976,17 +5037,28 @@ class MazeEditorPalette {
       .on('click', () => {
         this.events.emit('action', action.id);
       }));
-
-    this.buttons.push(...actionButtons);
-
-    this.$element.append(this.buttons);
-    if (this.buttons.length) {
-      this.buttons[0].click();
-    }
   }
 }
 
+MazeEditorPalette.Tools = [
+  {
+    id: 'start',
+    title: 'Set the starting point',
+    icon: 'static/fa/robot-solid-blue.svg',
+  },
+  {
+    id: 'erase',
+    title: 'Remove items',
+    icon: 'static/fa/times-solid.svg',
+  },
+];
+
 MazeEditorPalette.Actions = [
+  {
+    id: 'reset',
+    title: 'Reset',
+    icon: 'static/fa/sync-solid.svg',
+  },
   {
     id: 'load',
     title: 'Load maze',
@@ -5040,9 +5112,32 @@ class MazeEditor {
 
     this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
 
-    this.tileType = this.palette.tileId;
-    this.palette.events.on('change', (tileType) => {
-      this.tileType = tileType;
+    const tools = {
+      start: (x, y) => {
+        if (this.maze.robots.length > 0) {
+          this.maze.robots[0].setPosition(x, y);
+        }
+      },
+      erase: (x, y) => {
+        this.maze.removeItem(x, y);
+      },
+      tile: (tileType, x, y) => {
+        this.maze.map.set(x, y, tileType);
+      },
+      item: (itemType, x, y) => {
+        if (this.maze.isWalkable(x, y)) {
+          this.maze.placeItem(itemType, x, y);
+        }
+      },
+    };
+
+    this.toolHandler = null;
+    this.palette.events.on('change', (tool, type = null) => {
+      if (type !== null) {
+        this.toolHandler = tools[tool].bind(this, type);
+      } else {
+        this.toolHandler = tools[tool].bind(this);
+      }
     });
 
     this.palette.events.on('action', (id) => {
@@ -5053,16 +5148,16 @@ class MazeEditor {
 
     let lastEdit = null;
     this.mazeView.events.on('action', ([x, y], props) => {
-      if (this.tileType !== null) {
+      if (this.toolHandler !== null) {
         if (lastEdit && props.shiftKey) {
           const [lastX, lastY] = lastEdit;
           for (let i = Math.min(lastX, x); i <= Math.max(lastX, x); i += 1) {
             for (let j = Math.min(lastY, y); j <= Math.max(lastY, y); j += 1) {
-              this.maze.map.set(i, j, this.tileType);
+              this.toolHandler(i, j);
             }
           }
         } else {
-          this.maze.map.set(x, y, this.tileType);
+          this.toolHandler(x, y);
         }
         lastEdit = [x, y];
       }
@@ -5098,6 +5193,9 @@ class MazeEditor {
       export: () => {
         const modal = new ModalExport(JSON.stringify(this.maze));
         modal.show();
+      },
+      reset: () => {
+        this.maze.reset();
       },
     };
   }
@@ -5622,6 +5720,13 @@ const TILE_SIZE = 120;
 class MazeView {
   constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
+    this.tileLayer = new PIXI.Container();
+    this.itemLayer = new PIXI.Container();
+    this.robotLayer = new PIXI.Container();
+    this.displayObject.addChild(this.tileLayer);
+    this.displayObject.addChild(this.itemLayer);
+    this.displayObject.addChild(this.robotLayer);
+
     this.maze = maze;
     this.config = config;
     this.textures = textures;
@@ -5657,7 +5762,7 @@ class MazeView {
       this.renderCell(i, j);
     });
 
-    this.displayObject.addChild(...this.floorTiles);
+    this.tileLayer.addChild(...this.floorTiles);
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
@@ -5675,10 +5780,75 @@ class MazeView {
         robotSprite.y = y2 * TILE_SIZE;
       });
 
+      robot.events.on('scoreChanged', (amount, score) => {
+        console.log(`Robot scored ${amount}. Total: ${score}`);
+      });
+
+      robot.events.on('exited', () => {
+        robot.canMove = false;
+        setTimeout(() => {
+          this.maze.reset();
+          robot.canMove = true;
+        }, 1000);
+      });
+
       return robotSprite;
     });
 
-    this.displayObject.addChild(...this.robotSprites);
+    this.itemSprites = {};
+    this.maze.items.forEach((item) => { this.createItemSprite(item); });
+    this.maze.events.on('itemPlaced', (item) => {
+      this.createItemSprite(item);
+    });
+
+    this.maze.events.on('itemRemoved', (item) => {
+      this.removeItemSprite(item);
+    });
+
+    this.maze.events.on('itemPicked', (item) => {
+      this.handleItemPicked(item);
+    });
+
+    this.maze.events.on('itemReset', (item) => {
+      this.handleItemReset(item);
+    });
+
+    this.robotLayer.addChild(...this.robotSprites);
+  }
+
+  createItemSprite(item) {
+    const sprite = new PIXI.Sprite();
+    sprite.x = item.x * TILE_SIZE + TILE_SIZE * 0.25;
+    sprite.y = item.y * TILE_SIZE + TILE_SIZE * 0.25;
+    sprite.width = TILE_SIZE * 0.5;
+    sprite.height = TILE_SIZE * 0.5;
+    sprite.roundPixels = true;
+    sprite.texture = this.textures[`item-${item.type}`];
+
+    this.itemSprites[item.id] = sprite;
+
+    this.itemLayer.addChild(sprite);
+  }
+
+  removeItemSprite(item) {
+    if (this.itemSprites[item.id]) {
+      const sprite = this.itemSprites[item.id];
+      this.itemLayer.removeChild(sprite);
+      sprite.destroy();
+      delete this.itemSprites[item.id];
+    }
+  }
+
+  handleItemPicked(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = false;
+    }
+  }
+
+  handleItemReset(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = true;
+    }
   }
 
   getFloorTile(i, j) {
@@ -5715,6 +5885,7 @@ module.exports = MazeView;
   \************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 const Grid = __webpack_require__(/*! ./grid.js */ "./src/js/grid.js");
 const Array2D = __webpack_require__(/*! ./aux/array-2d.js */ "./src/js/aux/array-2d.js");
 
@@ -5723,37 +5894,126 @@ class Maze {
     this.map = new Grid(width, height, cells);
     this.config = config;
     this.robots = [];
+    this.items = [];
+    this.lastItemId = 0;
+    this.startPosition = [0, height - 1];
+
+    this.events = new EventEmitter();
   }
 
   toJSON() {
     const { map } = this;
     return {
       map: map.toJSON(),
+      items: this.items.map(({ type, x, y }) => ({ type, x, y })),
     };
   }
 
   static fromJSON(jsonObject) {
-    const { map } = jsonObject;
+    const { map, items } = jsonObject;
     const { width, height } = map;
-    return new Maze(width, height, Array2D.clone(map.cells));
+    const maze = new Maze(width, height, Array2D.clone(map.cells));
+    (items || []).forEach(({ type, x, y }) => {
+      maze.placeItem(type, x, y);
+    });
+    return maze;
   }
 
   copy(maze) {
     this.map.copy(maze.map);
+    this.clearItems();
+    (maze.items || []).forEach(({ type, x, y }) => {
+      this.placeItem(type, x, y);
+    });
+    this.lastItemId = maze.lastItemId;
   }
 
   addRobot(robot) {
     this.robots.push(robot);
     robot.maze = this;
     // Put the robot in the lower left corner
-    robot.x = 0;
-    robot.y = this.map.height - 1;
+    const [startX, startY] = this.startPosition;
+    robot.x = startX;
+    robot.y = startY;
+  }
+
+  placeItem(type, x, y) {
+    this.removeItem(x, y);
+    this.lastItemId += 1;
+    const newItem = {
+      id: this.lastItemId,
+      type,
+      x,
+      y,
+      picked: false,
+    };
+    this.items.push(newItem);
+    this.events.emit('itemPlaced', newItem);
+  }
+
+  getItem(x, y) {
+    const found = this.items.find(item => item.x === x && item.y === y);
+    return found;
+  }
+
+  removeItem(x, y) {
+    const item = this.getItem(x, y);
+    if (item) {
+      this.events.emit('itemRemoved', item);
+      this.items = this.items.filter(any => any.id !== item.id);
+    }
+  }
+
+  pickItem(x, y) {
+    const item = this.getItem(x, y);
+    if (item && !item.picked) {
+      this.events.emit('itemPicked', item);
+      item.picked = true;
+      return item;
+    }
+    return null;
+  }
+
+  clearItems() {
+    this.items.forEach((item) => {
+      this.events.emit('itemRemoved', item);
+    });
+    this.items = [];
   }
 
   isWalkable(x, y) {
     return this.config.tileTypes
       && this.config.tileTypes[this.map.get(x, y)]
       && this.config.tileTypes[this.map.get(x, y)].walkable;
+  }
+
+  isExit(x, y) {
+    return this.config.tileTypes
+      && this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].exit;
+  }
+
+  reset() {
+    this.robots.forEach((robot) => {
+      robot.setPosition(...this.startPosition);
+      robot.resetScore();
+    });
+
+    this.items.forEach((item) => {
+      item.picked = false;
+      this.events.emit('itemReset', item);
+    });
+  }
+
+  getItemReward(item) {
+    return (this.config.items[item.type] && this.config.items[item.type].reward) || 0;
+  }
+
+  getPositionReward(x, y) {
+    return (
+      this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].reward
+    ) || 0;
   }
 }
 
@@ -5849,12 +6109,21 @@ class Robot {
     this.maze = null;
     this.x = 0;
     this.y = 0;
+    this.score = 0;
+    this.canMove = true;
 
     this.events = new EventEmitter();
   }
 
+  setPosition(x, y) {
+    this.onMoved(this.x, this.y, x, y);
+    this.x = x;
+    this.y = y;
+  }
+
   canMoveTo(x, y) {
-    return this.maze
+    return this.canMove
+      && this.maze
       && this.maze.map.isValidCoords(x, y)
       && this.maze.isWalkable(x, y)
       && this.maze.map.stepDistance(this.x, this.y, x, y) === 1;
@@ -5862,10 +6131,26 @@ class Robot {
 
   moveTo(x, y) {
     if (this.canMoveTo(x, y)) {
-      this.events.emit('move', this.x, this.y, x, y);
+      this.onMoved(this.x, this.y, x, y);
       this.x = x;
       this.y = y;
     }
+  }
+
+  onMoved(oldX, oldY, x, y) {
+    this.events.emit('move', this.x, this.y, x, y);
+    this.addScore(this.maze.getPositionReward(x, y));
+    const item = this.maze.pickItem(x, y);
+    if (item) {
+      this.addScore(this.maze.getItemReward(item));
+    }
+    if (this.maze.isExit(x, y)) {
+      this.onExit(x, y);
+    }
+  }
+
+  onExit(x, y) {
+    this.events.emit('exited', x, y);
   }
 
   north() { this.moveTo(this.x, this.y - 1); }
@@ -5875,6 +6160,15 @@ class Robot {
   east() { this.moveTo(this.x + 1, this.y); }
 
   west() { this.moveTo(this.x - 1, this.y); }
+
+  resetScore() {
+    this.score = 0;
+  }
+
+  addScore(amount) {
+    this.score += amount;
+    this.events.emit('scoreChanged', amount, this.score);
+  }
 }
 
 module.exports = Robot;
@@ -5998,7 +6292,7 @@ fetch('./config.yml', { cache: 'no-store' })
     });
     const keyboardController = new KeyboardController(maze.robots[0]);
     const app = new PIXI.Application({
-      width: 3840,
+      width: 1920,
       height: 1920,
       backgroundColor: 0xf2f2f2,
     });
@@ -6006,6 +6300,13 @@ fetch('./config.yml', { cache: 'no-store' })
     Object.entries(config.robots).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `robot-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    Object.entries(config.items).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `item-${id}`;
         textures[textureId] = null;
         app.loader.add(textureId, props.texture);
       }
@@ -6029,4 +6330,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.68bc3f92ab5d8b499054.js.map
+//# sourceMappingURL=default.46fde718082748596efb.js.map

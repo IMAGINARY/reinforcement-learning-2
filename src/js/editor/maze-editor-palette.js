@@ -9,8 +9,21 @@ class MazeEditorPalette {
     this.events = new EventEmitter();
 
     this.$element.addClass('maze-editor-palette');
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
 
-    this.buttons = Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+    this.$bar1.append(this.buildActionButtons());
+
+    this.$bar2.append(this.buildTileButtons(config));
+    this.$bar2.append($('<div class="separator"></div>'));
+    this.$bar2.append(this.buildToolButtons(config));
+    this.$bar2.append(this.buildItemButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
       .attr({
         type: 'button',
         title: typeCfg.name,
@@ -31,12 +44,60 @@ class MazeEditorPalette {
         this.activeButton = $(ev.target);
         this.activeButton.addClass('active');
         this.tileId = Number(id);
-        this.events.emit('change', Number(id));
+        this.events.emit('change', 'tile', Number(id));
       }));
+  }
 
-    this.buttons.push($('<div class="separator"></div>'));
+  buildToolButtons() {
+    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: tool.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tool',
+        `editor-palette-button-tool-${tool.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${tool.icon})`,
+      })
+      .on('click', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', tool.id);
+      }));
+  }
 
-    const actionButtons = MazeEditorPalette.Actions.map(action => $('<button></button>')
+  buildItemButtons(config) {
+    return Object.entries(config.items).map(([id, props]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: props.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-item',
+        `editor-palette-button-item-${id}`,
+      ])
+      .css({
+        backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
+      })
+      .on('click', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', 'item', id);
+      }));
+  }
+
+  buildActionButtons() {
+    return MazeEditorPalette.Actions.map(action => $('<button></button>')
       .attr({
         type: 'button',
         title: action.title,
@@ -52,17 +113,28 @@ class MazeEditorPalette {
       .on('click', () => {
         this.events.emit('action', action.id);
       }));
-
-    this.buttons.push(...actionButtons);
-
-    this.$element.append(this.buttons);
-    if (this.buttons.length) {
-      this.buttons[0].click();
-    }
   }
 }
 
+MazeEditorPalette.Tools = [
+  {
+    id: 'start',
+    title: 'Set the starting point',
+    icon: 'static/fa/robot-solid-blue.svg',
+  },
+  {
+    id: 'erase',
+    title: 'Remove items',
+    icon: 'static/fa/times-solid.svg',
+  },
+];
+
 MazeEditorPalette.Actions = [
+  {
+    id: 'reset',
+    title: 'Reset',
+    icon: 'static/fa/sync-solid.svg',
+  },
   {
     id: 'load',
     title: 'Load maze',

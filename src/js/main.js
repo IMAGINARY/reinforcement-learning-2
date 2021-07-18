@@ -26,7 +26,7 @@ fetch('./config.yml', { cache: 'no-store' })
     });
     const keyboardController = new KeyboardController(maze.robots[0]);
     const app = new PIXI.Application({
-      width: 3840,
+      width: 1920,
       height: 1920,
       backgroundColor: 0xf2f2f2,
     });
@@ -34,6 +34,13 @@ fetch('./config.yml', { cache: 'no-store' })
     Object.entries(config.robots).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `robot-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    Object.entries(config.items).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `item-${id}`;
         textures[textureId] = null;
         app.loader.add(textureId, props.texture);
       }

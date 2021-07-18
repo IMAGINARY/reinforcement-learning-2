@@ -30,9 +30,13 @@ h2 {
 .maze-editor-palette {
   position: absolute;
   top: 5px;
-  left: 5px;
-  padding: 4px;
-  background-color: white; }
+  left: 5px; }
+  .maze-editor-palette .maze-editor-palette-bar {
+    display: inline-block;
+    vertical-align: top;
+    padding: 4px;
+    margin-right: 5px;
+    background-color: white; }
   .maze-editor-palette .editor-palette-button {
     display: block;
     width: 40px;
@@ -104,4 +108,4 @@ button.maze-browser-item-new {
     border: 3px solid #000; }
 
 
-/*# sourceMappingURL=default.7e925702c985192da957.css.map*/
+/*# sourceMappingURL=default.ea7fdac098da65691a3c.css.map*/

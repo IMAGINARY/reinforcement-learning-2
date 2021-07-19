@@ -14,7 +14,7 @@ class Robot {
   }
 
   setPosition(x, y) {
-    this.onMoved(this.x, this.y, x, y);
+    this.onMoved(null, this.x, this.y, x, y);
     this.x = x;
     this.y = y;
   }
@@ -27,21 +27,30 @@ class Robot {
       && this.maze.map.stepDistance(this.x, this.y, x, y) === 1;
   }
 
-  moveTo(x, y) {
+  canMoveFromTo(x1, y1, x2, y2) {
+    return this.maze.map.isValidCoords(x2, y2)
+      && this.maze.isWalkable(x2, y2)
+      && this.maze.map.stepDistance(x1, y1, x2, y2) === 1;
+  }
+
+  moveTo(direction, x, y) {
     if (this.canMoveTo(x, y)) {
-      this.onMoved(this.x, this.y, x, y);
+      this.onMoved(direction, this.x, this.y, x, y);
       this.x = x;
       this.y = y;
     }
   }
 
-  onMoved(oldX, oldY, x, y) {
-    this.events.emit('move', this.x, this.y, x, y);
-    this.addScore(this.maze.getPositionReward(x, y));
+  onMoved(direction, oldX, oldY, x, y) {
+    let reward = 0;
+    reward += this.maze.getPositionReward(x, y);
     const item = this.maze.pickItem(x, y);
     if (item) {
-      this.addScore(this.maze.getItemReward(item));
+      reward += this.maze.getItemReward(item);
     }
+    this.events.emit('move', direction, this.x, this.y, x, y, reward);
+    this.addScore(reward);
+
     if (this.maze.isExit(x, y)) {
       this.onExit(x, y);
     }
@@ -59,9 +68,18 @@ class Robot {
       );
   }
 
+  availableDirectionsAt(x, y) {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveFromTo(
+        x,
+        y,
+        x + Robot.Directions[dir][0],
+        y + Robot.Directions[dir][1]));
+  }
+
   go(direction) {
     const [deltaX, deltaY] = Robot.Directions[direction];
-    this.moveTo(this.x + deltaX, this.y + deltaY);
+    this.moveTo(direction, this.x + deltaX, this.y + deltaY);
   }
 
   resetScore() {

@@ -7,6 +7,7 @@ const Robot = require('./robot.js');
 const MazeView = require('./maze-view.js');
 const QLearningAI = require('./qlearning-ai.js');
 const AITrainingView = require('./ai-training-view.js');
+const MazeViewAIOverlay = require('./maze-view-ai-overlay.js');
 const MazeEditor = require('./editor/maze-editor.js');
 const KeyboardController = require('./keyboard-controller.js');
 require('../sass/default.scss');
@@ -26,7 +27,9 @@ fetch('./config.yml', { cache: 'no-store' })
       const robot = new Robot(id, props);
       maze.addRobot(robot);
     });
+    const ai = new QLearningAI(maze.robots[0]);
     const keyboardController = new KeyboardController(maze.robots[0]);
+
     const app = new PIXI.Application({
       width: 1920,
       height: 1920,
@@ -60,7 +63,14 @@ fetch('./config.yml', { cache: 'no-store' })
       mazeView.displayObject.x = 0;
       mazeView.displayObject.y = 0;
 
-      const ai = new QLearningAI(maze.robots[0]);
+      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+      mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyD') {
+          aiOverlay.toggle();
+        }
+      });
+
       const trainingView = new AITrainingView(ai);
       $('.sidebar').append(trainingView.$element);
       app.ticker.add(time => trainingView.animate(time));

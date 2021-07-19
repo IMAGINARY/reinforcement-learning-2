@@ -20,6 +20,11 @@ tileTypes:
     color: '#ff3333'
     walkable: true
     reward: -5
+  5:
+    name: Gold
+    color: '#fff250'
+    walkable: true
+    reward: 5
 robots:
   blue:
     name: 'Blue Robot'

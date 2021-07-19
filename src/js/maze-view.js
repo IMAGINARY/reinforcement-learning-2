@@ -2,8 +2,6 @@
 const EventEmitter = require('events');
 const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
 
-const TILE_SIZE = 120;
-
 class MazeView {
   constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
@@ -27,8 +25,8 @@ class MazeView {
 
     this.maze.map.allCells().forEach(([i, j]) => {
       const floorTile = new PIXI.Graphics();
-      floorTile.x = i * TILE_SIZE;
-      floorTile.y = j * TILE_SIZE;
+      floorTile.x = i * MazeView.TILE_SIZE;
+      floorTile.y = j * MazeView.TILE_SIZE;
       floorTile.interactive = true;
       floorTile.on('mousedown', (ev) => {
         pointerActive = true;
@@ -55,20 +53,16 @@ class MazeView {
 
     this.robotSprites = this.maze.robots.map((robot) => {
       const robotSprite = new PIXI.Sprite();
-      robotSprite.x = robot.x * TILE_SIZE;
-      robotSprite.y = robot.y * TILE_SIZE;
-      robotSprite.width = TILE_SIZE;
-      robotSprite.height = TILE_SIZE;
+      robotSprite.x = robot.x * MazeView.TILE_SIZE;
+      robotSprite.y = robot.y * MazeView.TILE_SIZE;
+      robotSprite.width = MazeView.TILE_SIZE;
+      robotSprite.height = MazeView.TILE_SIZE;
       robotSprite.roundPixels = true;
       robotSprite.texture = this.textures[`robot-${robot.id}`];
 
-      robot.events.on('move', (x1, y1, x2, y2) => {
-        robotSprite.x = x2 * TILE_SIZE;
-        robotSprite.y = y2 * TILE_SIZE;
-      });
-
-      robot.events.on('scoreChanged', (amount, score) => {
-        console.log(`Robot scored ${amount}. Total: ${score}`);
+      robot.events.on('move', (direction, x1, y1, x2, y2) => {
+        robotSprite.x = x2 * MazeView.TILE_SIZE;
+        robotSprite.y = y2 * MazeView.TILE_SIZE;
       });
 
       robot.events.on('exited', () => {
@@ -105,10 +99,10 @@ class MazeView {
 
   createItemSprite(item) {
     const sprite = new PIXI.Sprite();
-    sprite.x = item.x * TILE_SIZE + TILE_SIZE * 0.25;
-    sprite.y = item.y * TILE_SIZE + TILE_SIZE * 0.25;
-    sprite.width = TILE_SIZE * 0.5;
-    sprite.height = TILE_SIZE * 0.5;
+    sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.width = MazeView.TILE_SIZE * 0.5;
+    sprite.height = MazeView.TILE_SIZE * 0.5;
     sprite.roundPixels = true;
     sprite.texture = this.textures[`item-${item.type}`];
 
@@ -152,13 +146,19 @@ class MazeView {
       .clear()
       .lineStyle(2, 0x0, 0.3)
       .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
-      .drawRect(0, 0, TILE_SIZE, TILE_SIZE)
+      .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
       .endFill();
   }
 
   handleCityUpdate(updates) {
     updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
+
+  addOverlay(displayObject) {
+    this.displayObject.addChild(displayObject);
+  }
 }
+
+MazeView.TILE_SIZE = 120;
 
 module.exports = MazeView;

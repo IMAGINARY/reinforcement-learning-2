@@ -8,6 +8,27 @@ class AITrainingView {
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
 
+    this.$explorationRateSlider = this.buildSlider(
+      'Exploration rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.exploreRate,
+      (value) => { this.ai.exploreRate = value;}
+    ).appendTo(this.$element);
+
+    this.$learningRateSlider = this.buildSlider(
+      'Learning rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.learningRate,
+      (value) => { this.ai.learningRate = value;}
+    ).appendTo(this.$element);
+
+    this.$discountFactorSlider = this.buildSlider(
+      'Discount factor',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.discountFactor,
+      (value) => { this.ai.discountFactor = value;}
+    ).appendTo(this.$element);
+
     this.buttons = {};
     this.buildUIButtons();
 
@@ -41,10 +62,36 @@ class AITrainingView {
     });
   }
 
+  buildSlider(title, options, initialValue, changeCallback) {
+    const $element = $('<div class="slider"></div>');
+
+    const $text = $('<div class="slider-text"></div>')
+      .appendTo($element);
+    const $input = $('<div class="slider-input"></div>')
+      .appendTo($element);
+    const $exploreValue = $('<span></span>')
+      .text(initialValue);
+    $('<label></label>')
+      .html(`${title}: `)
+      .append($exploreValue)
+      .appendTo($text);
+    const $exploreSlider = $('<input type="range"></input>')
+      .attr(options)
+      .on('change', () => {
+        changeCallback(Number($exploreSlider.val()));
+        $exploreValue.text(Number($exploreSlider.val()));
+      })
+      .val(initialValue)
+      .appendTo($input);
+
+    return $element;
+  }
+
   handleButton(id) {
     if (id === 'run') { this.handleRun(); }
     if (id === 'step') { this.handleStep(); }
     if (id === 'train-1') { this.handleTrain1(); }
+    if (id === 'clear') { this.handleClear(); }
   }
 
   handleRun() {
@@ -63,6 +110,10 @@ class AITrainingView {
 
   handleTrain1() {
 
+  }
+
+  handleClear() {
+    this.ai.clear();
   }
 
   animate(time) {
@@ -87,9 +138,13 @@ AITrainingView.Buttons = [
     icon: 'static/fa/step-forward-solid.svg',
     title: 'Step',
   },
+  // {
+  //   id: 'train-1',
+  //   title: 'Train 1 step',
+  // },
   {
-    id: 'train-1',
-    title: 'Train 1 step',
+    id: 'clear',
+    title: 'Clear',
   },
 ];
 

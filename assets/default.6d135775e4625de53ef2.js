@@ -4732,6 +4732,27 @@ class AITrainingView {
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
 
+    this.$explorationRateSlider = this.buildSlider(
+      'Exploration rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.exploreRate,
+      (value) => { this.ai.exploreRate = value;}
+    ).appendTo(this.$element);
+
+    this.$learningRateSlider = this.buildSlider(
+      'Learning rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.learningRate,
+      (value) => { this.ai.learningRate = value;}
+    ).appendTo(this.$element);
+
+    this.$discountFactorSlider = this.buildSlider(
+      'Discount factor',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.discountFactor,
+      (value) => { this.ai.discountFactor = value;}
+    ).appendTo(this.$element);
+
     this.buttons = {};
     this.buildUIButtons();
 
@@ -4765,10 +4786,36 @@ class AITrainingView {
     });
   }
 
+  buildSlider(title, options, initialValue, changeCallback) {
+    const $element = $('<div class="slider"></div>');
+
+    const $text = $('<div class="slider-text"></div>')
+      .appendTo($element);
+    const $input = $('<div class="slider-input"></div>')
+      .appendTo($element);
+    const $exploreValue = $('<span></span>')
+      .text(initialValue);
+    $('<label></label>')
+      .html(`${title}: `)
+      .append($exploreValue)
+      .appendTo($text);
+    const $exploreSlider = $('<input type="range"></input>')
+      .attr(options)
+      .on('change', () => {
+        changeCallback(Number($exploreSlider.val()));
+        $exploreValue.text(Number($exploreSlider.val()));
+      })
+      .val(initialValue)
+      .appendTo($input);
+
+    return $element;
+  }
+
   handleButton(id) {
     if (id === 'run') { this.handleRun(); }
     if (id === 'step') { this.handleStep(); }
     if (id === 'train-1') { this.handleTrain1(); }
+    if (id === 'clear') { this.handleClear(); }
   }
 
   handleRun() {
@@ -4787,6 +4834,10 @@ class AITrainingView {
 
   handleTrain1() {
 
+  }
+
+  handleClear() {
+    this.ai.clear();
   }
 
   animate(time) {
@@ -4811,9 +4862,13 @@ AITrainingView.Buttons = [
     icon: 'static/fa/step-forward-solid.svg',
     title: 'Step',
   },
+  // {
+  //   id: 'train-1',
+  //   title: 'Train 1 step',
+  // },
   {
-    id: 'train-1',
-    title: 'Train 1 step',
+    id: 'clear',
+    title: 'Clear',
   },
 ];
 
@@ -5811,6 +5866,117 @@ module.exports = KeyboardController;
 
 /***/ }),
 
+/***/ "./src/js/maze-view-ai-overlay.js":
+/*!****************************************!*\
+  !*** ./src/js/maze-view-ai-overlay.js ***!
+  \****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* globals PIXI */
+const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
+
+class MazeViewAIOverlay {
+  constructor(mazeView, ai) {
+    this.view = mazeView;
+    this.ai = ai;
+    this.visible = false;
+    this.displayObject = new PIXI.Container();
+    this.displayObject.visible = this.visible;
+
+    this.fontSize = 18;
+    this.padding = 2;
+
+    this.texts = [];
+    this.createTexts();
+    this.update();
+
+    this.ai.events.on('update', (x, y, direction) => {
+      this.update();
+    });
+  }
+
+  toggle() {
+    if (this.visible) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+
+  show() {
+    this.visible = true;
+    this.displayObject.visible = true;
+  }
+
+  hide() {
+    this.visible = false;
+    this.displayObject.visible = false;
+  }
+
+  createTexts() {
+    const { height, width } = this.view.maze.map;
+    const options = { fontFamily: 'Arial', fontSize: this.fontSize };
+
+    const createText = (align) => {
+      const text = new PIXI.Text('', Object.assign({}, options, { align }));
+      this.displayObject.addChild(text);
+      return text;
+    };
+
+    for (let j = 0; j < height; j += 1) {
+      this.texts[j] = new Array(width);
+      for (let i = 0; i < width; i += 1) {
+        this.texts[j][i] = {
+          n: createText('center'),
+          s: createText('center'),
+          e: createText('right'),
+          w: createText('left'),
+        };
+      }
+    }
+  }
+
+  positionText(text, x, y, direction) {
+    switch (direction) {
+      case 'n':
+        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+        text.y = MazeView.TILE_SIZE * y + this.padding;
+        break;
+      case 's':
+        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+        text.y = MazeView.TILE_SIZE * (y + 1) - (this.fontSize + this.padding);
+        break;
+      case 'e':
+        text.x = MazeView.TILE_SIZE * (x + 1) - (text.width + this.padding);
+        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        break;
+      case 'w':
+        text.x = MazeView.TILE_SIZE * x + this.padding;
+        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        break;
+      default:
+        break;
+    }
+  }
+
+  update() {
+    for (let j = 0; j < this.texts.length; j += 1) {
+      for (let i = 0; i < this.texts[j].length; i += 1) {
+        Object.keys(this.texts[j][i]).forEach((direction) => {
+          const textObject = this.texts[j][i][direction];
+          textObject.text = this.ai.q[j][i][direction].toFixed(3);
+          this.positionText(textObject, i, j, direction);
+        });
+      }
+    }
+  }
+}
+
+module.exports = MazeViewAIOverlay;
+
+
+/***/ }),
+
 /***/ "./src/js/maze-view.js":
 /*!*****************************!*\
   !*** ./src/js/maze-view.js ***!
@@ -5820,8 +5986,6 @@ module.exports = KeyboardController;
 /* globals PIXI */
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 const PencilCursor = __webpack_require__(/*! ../../static/fa/pencil-alt-solid.svg */ "./static/fa/pencil-alt-solid.svg");
-
-const TILE_SIZE = 120;
 
 class MazeView {
   constructor(maze, config, textures = { }) {
@@ -5846,8 +6010,8 @@ class MazeView {
 
     this.maze.map.allCells().forEach(([i, j]) => {
       const floorTile = new PIXI.Graphics();
-      floorTile.x = i * TILE_SIZE;
-      floorTile.y = j * TILE_SIZE;
+      floorTile.x = i * MazeView.TILE_SIZE;
+      floorTile.y = j * MazeView.TILE_SIZE;
       floorTile.interactive = true;
       floorTile.on('mousedown', (ev) => {
         pointerActive = true;
@@ -5874,20 +6038,16 @@ class MazeView {
 
     this.robotSprites = this.maze.robots.map((robot) => {
       const robotSprite = new PIXI.Sprite();
-      robotSprite.x = robot.x * TILE_SIZE;
-      robotSprite.y = robot.y * TILE_SIZE;
-      robotSprite.width = TILE_SIZE;
-      robotSprite.height = TILE_SIZE;
+      robotSprite.x = robot.x * MazeView.TILE_SIZE;
+      robotSprite.y = robot.y * MazeView.TILE_SIZE;
+      robotSprite.width = MazeView.TILE_SIZE;
+      robotSprite.height = MazeView.TILE_SIZE;
       robotSprite.roundPixels = true;
       robotSprite.texture = this.textures[`robot-${robot.id}`];
 
-      robot.events.on('move', (x1, y1, x2, y2) => {
-        robotSprite.x = x2 * TILE_SIZE;
-        robotSprite.y = y2 * TILE_SIZE;
-      });
-
-      robot.events.on('scoreChanged', (amount, score) => {
-        console.log(`Robot scored ${amount}. Total: ${score}`);
+      robot.events.on('move', (direction, x1, y1, x2, y2) => {
+        robotSprite.x = x2 * MazeView.TILE_SIZE;
+        robotSprite.y = y2 * MazeView.TILE_SIZE;
       });
 
       robot.events.on('exited', () => {
@@ -5924,10 +6084,10 @@ class MazeView {
 
   createItemSprite(item) {
     const sprite = new PIXI.Sprite();
-    sprite.x = item.x * TILE_SIZE + TILE_SIZE * 0.25;
-    sprite.y = item.y * TILE_SIZE + TILE_SIZE * 0.25;
-    sprite.width = TILE_SIZE * 0.5;
-    sprite.height = TILE_SIZE * 0.5;
+    sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.width = MazeView.TILE_SIZE * 0.5;
+    sprite.height = MazeView.TILE_SIZE * 0.5;
     sprite.roundPixels = true;
     sprite.texture = this.textures[`item-${item.type}`];
 
@@ -5971,14 +6131,20 @@ class MazeView {
       .clear()
       .lineStyle(2, 0x0, 0.3)
       .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
-      .drawRect(0, 0, TILE_SIZE, TILE_SIZE)
+      .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
       .endFill();
   }
 
   handleCityUpdate(updates) {
     updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
+
+  addOverlay(displayObject) {
+    this.displayObject.addChild(displayObject);
+  }
 }
+
+MazeView.TILE_SIZE = 120;
 
 module.exports = MazeView;
 
@@ -6204,19 +6370,97 @@ module.exports = Modal;
 /*!********************************!*\
   !*** ./src/js/qlearning-ai.js ***!
   \********************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 
 class QLearningAI {
   constructor(robot) {
     this.robot = robot;
+    this.q = this.initQ();
+    this.learningRate = 1;
+    this.discountFactor = 1;
+    this.exploreRate = 0.1;
+    this.learning = true;
+    this.events = new EventEmitter();
+
+    this.robot.events.on('move', (direction, x1, y1, x2, y2, reward) => {
+      if (this.learning && direction !== null) {
+        this.update(direction, x1, y1, x2, y2, reward);
+      }
+    });
+  }
+
+  initQ() {
+    const { height, width } = this.robot.maze.map;
+    const table = new Array(height);
+
+    for (let j = 0; j < height; j += 1) {
+      table[j] = new Array(width);
+      for (let i = 0; i < width; i += 1) {
+        table[j][i] = Object.fromEntries(
+          Object.keys(Robot.Directions).map(direction => [direction, 0])
+        );
+      }
+    }
+
+    return table;
+  }
+
+  clear() {
+    this.q = this.initQ();
+    this.events.emit('update');
+  }
+
+  greedyPolicy() {
+    const { x, y } = this.robot;
+    const directions = this.robot.availableDirections();
+    const dirValuePairs = Object.entries(this.q[y][x])
+      .filter(([direction]) => directions.includes(direction));
+    if (dirValuePairs.length > 0) {
+      return dirValuePairs.sort(([, valA], [, valB]) => valA - valB)
+        .pop()[0];
+    }
+    return null;
+  }
+
+  randomPolicy() {
+    const directions = this.robot.availableDirections();
+    if (directions.length) {
+      return directions[Math.floor(Math.random() * directions.length)];
+    }
+    return null;
+  }
+
+  epsilonGreedyPolicy() {
+    if (Math.random() >= this.exploreRate) {
+      return this.greedyPolicy();
+    }
+    return this.randomPolicy();
   }
 
   step() {
-    const directions = this.robot.availableDirections();
-    if (directions.length) {
-      const direction = directions[Math.floor(Math.random() * directions.length)];
+    const direction = this.epsilonGreedyPolicy();
+    if (direction) {
       this.robot.go(direction);
     }
+  }
+
+  maxQ(x, y) {
+    const directions = this.robot.availableDirectionsAt(x, y);
+    return directions.length > 0
+      ? Math.max(...Object.entries(this.q[y][x])
+        .filter(([direction]) => directions.includes(direction))
+        .map(([, value]) => value))
+      : 0;
+  }
+
+  update(direction, x1, y1, x2, y2, reward) {
+    this.q[y1][x1][direction] += this.learningRate
+      * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);
+
+    this.events.emit('update');
   }
 }
 
@@ -6247,7 +6491,7 @@ class Robot {
   }
 
   setPosition(x, y) {
-    this.onMoved(this.x, this.y, x, y);
+    this.onMoved(null, this.x, this.y, x, y);
     this.x = x;
     this.y = y;
   }
@@ -6260,21 +6504,30 @@ class Robot {
       && this.maze.map.stepDistance(this.x, this.y, x, y) === 1;
   }
 
-  moveTo(x, y) {
+  canMoveFromTo(x1, y1, x2, y2) {
+    return this.maze.map.isValidCoords(x2, y2)
+      && this.maze.isWalkable(x2, y2)
+      && this.maze.map.stepDistance(x1, y1, x2, y2) === 1;
+  }
+
+  moveTo(direction, x, y) {
     if (this.canMoveTo(x, y)) {
-      this.onMoved(this.x, this.y, x, y);
+      this.onMoved(direction, this.x, this.y, x, y);
       this.x = x;
       this.y = y;
     }
   }
 
-  onMoved(oldX, oldY, x, y) {
-    this.events.emit('move', this.x, this.y, x, y);
-    this.addScore(this.maze.getPositionReward(x, y));
+  onMoved(direction, oldX, oldY, x, y) {
+    let reward = 0;
+    reward += this.maze.getPositionReward(x, y);
     const item = this.maze.pickItem(x, y);
     if (item) {
-      this.addScore(this.maze.getItemReward(item));
+      reward += this.maze.getItemReward(item);
     }
+    this.events.emit('move', direction, this.x, this.y, x, y, reward);
+    this.addScore(reward);
+
     if (this.maze.isExit(x, y)) {
       this.onExit(x, y);
     }
@@ -6292,9 +6545,18 @@ class Robot {
       );
   }
 
+  availableDirectionsAt(x, y) {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveFromTo(
+        x,
+        y,
+        x + Robot.Directions[dir][0],
+        y + Robot.Directions[dir][1]));
+  }
+
   go(direction) {
     const [deltaX, deltaY] = Robot.Directions[direction];
-    this.moveTo(this.x + deltaX, this.y + deltaY);
+    this.moveTo(direction, this.x + deltaX, this.y + deltaY);
   }
 
   resetScore() {
@@ -6416,6 +6678,7 @@ const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
 const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
 const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
+const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay.js */ "./src/js/maze-view-ai-overlay.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 const KeyboardController = __webpack_require__(/*! ./keyboard-controller.js */ "./src/js/keyboard-controller.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
@@ -6435,7 +6698,9 @@ fetch('./config.yml', { cache: 'no-store' })
       const robot = new Robot(id, props);
       maze.addRobot(robot);
     });
+    const ai = new QLearningAI(maze.robots[0]);
     const keyboardController = new KeyboardController(maze.robots[0]);
+
     const app = new PIXI.Application({
       width: 1920,
       height: 1920,
@@ -6469,7 +6734,14 @@ fetch('./config.yml', { cache: 'no-store' })
       mazeView.displayObject.x = 0;
       mazeView.displayObject.y = 0;
 
-      const ai = new QLearningAI(maze.robots[0]);
+      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+      mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyD') {
+          aiOverlay.toggle();
+        }
+      });
+
       const trainingView = new AITrainingView(ai);
       $('.sidebar').append(trainingView.$element);
       app.ticker.add(time => trainingView.animate(time));
@@ -6480,4 +6752,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.a21520abcecd66747d31.js.map
+//# sourceMappingURL=default.6d135775e4625de53ef2.js.map

@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,2,1,1,1,1,1,1],[1,2,1,1,1,2,2,1],[1,2,1,1,1,2,2,1],[1,1,1,2,1,1,1,1],[1,1,1,1,2,1,1,1],[1,2,2,1,1,1,1,1],[1,2,2,1,1,2,2,2],[1,1,1,1,1,1,1,1]]},"items":[{"type":"exit","x":7,"y":0},{"type":"iceCream","x":0,"y":0},{"type":"lemon","x":6,"y":3},{"type":"lemon","x":6,"y":7},{"type":"candyCane","x":3,"y":1},{"type":"carrot","x":7,"y":5}]}');
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,2,1,1,1,1,1,3],[1,2,1,1,1,2,2,1],[1,2,1,1,1,2,2,1],[1,1,1,2,1,1,1,1],[1,1,1,1,2,1,1,1],[1,2,2,1,1,1,1,1],[1,2,2,1,1,2,2,2],[1,1,1,1,1,1,1,1]]},"items":[{"type":"iceCream","x":0,"y":0},{"type":"lemon","x":6,"y":3},{"type":"lemon","x":6,"y":7},{"type":"candyCane","x":3,"y":1},{"type":"carrot","x":7,"y":5}]}');
 
 /***/ }),
 
@@ -4716,6 +4716,112 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/js/ai-training-view.js":
+/*!************************************!*\
+  !*** ./src/js/ai-training-view.js ***!
+  \************************************/
+/***/ ((module) => {
+
+class AITrainingView {
+  constructor(ai) {
+    this.ai = ai;
+    this.running = false;
+    this.timer = 0;
+    this.speed = 10;
+
+    this.$element = $('<div></div>')
+      .addClass('ai-training-view');
+
+    this.buttons = {};
+    this.buildUIButtons();
+
+    this.$element.append(Object.values(this.buttons));
+  }
+
+  buildUIButtons() {
+    AITrainingView.Buttons.forEach((props) => {
+      const button = $('<button></button>')
+        .attr({
+          type: 'button',
+          title: props.title,
+        })
+        .addClass([
+          'btn',
+          'ai-training-view-button',
+          `ai-training-view-button-${props.id}`,
+        ])
+        .html(props.icon ? '&nbsp;' : props.title || '')
+        .on('click', () => {
+          this.handleButton(props.id);
+        });
+
+      if (props.icon) {
+        button.css({
+          backgroundImage: `url(${props.icon})`,
+        });
+      }
+
+      this.buttons[props.id] = button;
+    });
+  }
+
+  handleButton(id) {
+    if (id === 'run') { this.handleRun(); }
+    if (id === 'step') { this.handleStep(); }
+    if (id === 'train-1') { this.handleTrain1(); }
+  }
+
+  handleRun() {
+    if (this.running) {
+      this.buttons.run.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
+      this.running = false;
+    } else {
+      this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+      this.running = true;
+    }
+  }
+
+  handleStep() {
+    this.ai.step();
+  }
+
+  handleTrain1() {
+
+  }
+
+  animate(time) {
+    if (this.running) {
+      this.timer += time;
+      if (this.timer > this.speed) {
+        this.ai.step();
+        this.timer %= this.speed;
+      }
+    }
+  }
+}
+
+AITrainingView.Buttons = [
+  {
+    id: 'run',
+    icon: 'static/fa/play-solid.svg',
+    title: 'Run',
+  },
+  {
+    id: 'step',
+    icon: 'static/fa/step-forward-solid.svg',
+    title: 'Step',
+  },
+  {
+    id: 'train-1',
+    title: 'Train 1 step',
+  },
+];
+
+module.exports = AITrainingView;
+
+
+/***/ }),
+
 /***/ "./src/js/aux/array-2d.js":
 /*!********************************!*\
   !*** ./src/js/aux/array-2d.js ***!
@@ -5685,10 +5791,10 @@ class KeyboardController {
     this.robot = robot;
 
     this.keyMap = {
-      ArrowLeft: () => { this.robot.west(); },
-      ArrowRight: () => { this.robot.east(); },
-      ArrowUp: () => { this.robot.north(); },
-      ArrowDown: () => { this.robot.south(); },
+      ArrowLeft: () => { this.robot.go('w'); },
+      ArrowRight: () => { this.robot.go('e'); },
+      ArrowUp: () => { this.robot.go('n'); },
+      ArrowDown: () => { this.robot.go('s'); },
     };
 
     window.addEventListener('keydown', (ev) => {
@@ -6094,6 +6200,31 @@ module.exports = Modal;
 
 /***/ }),
 
+/***/ "./src/js/qlearning-ai.js":
+/*!********************************!*\
+  !*** ./src/js/qlearning-ai.js ***!
+  \********************************/
+/***/ ((module) => {
+
+class QLearningAI {
+  constructor(robot) {
+    this.robot = robot;
+  }
+
+  step() {
+    const directions = this.robot.availableDirections();
+    if (directions.length) {
+      const direction = directions[Math.floor(Math.random() * directions.length)];
+      this.robot.go(direction);
+    }
+  }
+}
+
+module.exports = QLearningAI;
+
+
+/***/ }),
+
 /***/ "./src/js/robot.js":
 /*!*************************!*\
   !*** ./src/js/robot.js ***!
@@ -6153,13 +6284,18 @@ class Robot {
     this.events.emit('exited', x, y);
   }
 
-  north() { this.moveTo(this.x, this.y - 1); }
+  availableDirections() {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveTo(
+        this.x + Robot.Directions[dir][0],
+        this.y + Robot.Directions[dir][1])
+      );
+  }
 
-  south() { this.moveTo(this.x, this.y + 1); }
-
-  east() { this.moveTo(this.x + 1, this.y); }
-
-  west() { this.moveTo(this.x - 1, this.y); }
+  go(direction) {
+    const [deltaX, deltaY] = Robot.Directions[direction];
+    this.moveTo(this.x + deltaX, this.y + deltaY);
+  }
 
   resetScore() {
     this.score = 0;
@@ -6170,6 +6306,13 @@ class Robot {
     this.events.emit('scoreChanged', amount, this.score);
   }
 }
+
+Robot.Directions = {
+  n: [0, -1],
+  s: [0, 1],
+  e: [1, 0],
+  w: [-1, 0],
+};
 
 module.exports = Robot;
 
@@ -6271,6 +6414,8 @@ const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 const KeyboardController = __webpack_require__(/*! ./keyboard-controller.js */ "./src/js/keyboard-controller.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
@@ -6323,6 +6468,11 @@ fetch('./config.yml', { cache: 'no-store' })
       mazeView.displayObject.height = 1920;
       mazeView.displayObject.x = 0;
       mazeView.displayObject.y = 0;
+
+      const ai = new QLearningAI(maze.robots[0]);
+      const trainingView = new AITrainingView(ai);
+      $('.sidebar').append(trainingView.$element);
+      app.ticker.add(time => trainingView.animate(time));
     });
   });
 
@@ -6330,4 +6480,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.46fde718082748596efb.js.map
+//# sourceMappingURL=default.a21520abcecd66747d31.js.map

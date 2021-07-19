@@ -5,6 +5,8 @@ const yaml = require('js-yaml');
 const Maze = require('./maze.js');
 const Robot = require('./robot.js');
 const MazeView = require('./maze-view.js');
+const QLearningAI = require('./qlearning-ai.js');
+const AITrainingView = require('./ai-training-view.js');
 const MazeEditor = require('./editor/maze-editor.js');
 const KeyboardController = require('./keyboard-controller.js');
 require('../sass/default.scss');
@@ -57,5 +59,10 @@ fetch('./config.yml', { cache: 'no-store' })
       mazeView.displayObject.height = 1920;
       mazeView.displayObject.x = 0;
       mazeView.displayObject.y = 0;
+
+      const ai = new QLearningAI(maze.robots[0]);
+      const trainingView = new AITrainingView(ai);
+      $('.sidebar').append(trainingView.$element);
+      app.ticker.add(time => trainingView.animate(time));
     });
   });

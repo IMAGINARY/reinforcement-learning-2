@@ -3,10 +3,10 @@ class KeyboardController {
     this.robot = robot;
 
     this.keyMap = {
-      ArrowLeft: () => { this.robot.west(); },
-      ArrowRight: () => { this.robot.east(); },
-      ArrowUp: () => { this.robot.north(); },
-      ArrowDown: () => { this.robot.south(); },
+      ArrowLeft: () => { this.robot.go('w'); },
+      ArrowRight: () => { this.robot.go('e'); },
+      ArrowUp: () => { this.robot.go('n'); },
+      ArrowDown: () => { this.robot.go('s'); },
     };
 
     window.addEventListener('keydown', (ev) => {

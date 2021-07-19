@@ -107,5 +107,14 @@ button.maze-browser-item-new {
   button.maze-browser-item-new.selected {
     border: 3px solid #000; }
 
+.ai-training-view-button {
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 1.5em;
+  background-color: white;
+  padding: 0.5em;
+  min-width: 3em;
+  margin-right: 0.5em; }
 
-/*# sourceMappingURL=default.ea7fdac098da65691a3c.css.map*/
+
+/*# sourceMappingURL=default.0173059b94ab9629ad63.css.map*/

@@ -51,13 +51,18 @@ class Robot {
     this.events.emit('exited', x, y);
   }
 
-  north() { this.moveTo(this.x, this.y - 1); }
+  availableDirections() {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveTo(
+        this.x + Robot.Directions[dir][0],
+        this.y + Robot.Directions[dir][1])
+      );
+  }
 
-  south() { this.moveTo(this.x, this.y + 1); }
-
-  east() { this.moveTo(this.x + 1, this.y); }
-
-  west() { this.moveTo(this.x - 1, this.y); }
+  go(direction) {
+    const [deltaX, deltaY] = Robot.Directions[direction];
+    this.moveTo(this.x + deltaX, this.y + deltaY);
+  }
 
   resetScore() {
     this.score = 0;
@@ -68,5 +73,12 @@ class Robot {
     this.events.emit('scoreChanged', amount, this.score);
   }
 }
+
+Robot.Directions = {
+  n: [0, -1],
+  s: [0, 1],
+  e: [1, 0],
+  w: [-1, 0],
+};
 
 module.exports = Robot;

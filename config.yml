@@ -10,11 +10,16 @@ tileTypes:
     walkable: false
   3:
     name: Exit
-    color: '#ff9999'
+    color: '#99ff99'
     walkable: true
     exit: true
     reward: 50
     editorIcon: 'static/fa/door-open-solid.svg'
+  4:
+    name: Lava
+    color: '#ff3333'
+    walkable: true
+    reward: -5
 robots:
   blue:
     name: 'Blue Robot'

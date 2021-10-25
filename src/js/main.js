@@ -4,12 +4,11 @@
 const yaml = require('js-yaml');
 const Maze = require('./maze.js');
 const Robot = require('./robot.js');
-const MazeView = require('./maze-view.js');
 const QLearningAI = require('./qlearning-ai.js');
 const AITrainingView = require('./ai-training-view.js');
 const MazeViewAIOverlay = require('./maze-view-ai-overlay.js');
 const MazeEditor = require('./editor/maze-editor.js');
-const KeyboardController = require('./keyboard-controller.js');
+const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 
@@ -21,15 +20,6 @@ fetch('./config.yml', { cache: 'no-store' })
     console.error(err);
   })
   .then((config) => {
-    const maze = Maze.fromJSON(maze1);
-    maze.config = config;
-    Object.entries(config.robots).forEach(([id, props]) => {
-      const robot = new Robot(id, props);
-      maze.addRobot(robot);
-    });
-    const ai = new QLearningAI(maze.robots[0]);
-    const keyboardController = new KeyboardController(maze.robots[0]);
-
     const app = new PIXI.Application({
       width: 1920,
       height: 1920,
@@ -54,6 +44,16 @@ fetch('./config.yml', { cache: 'no-store' })
       Object.keys(textures).forEach((id) => {
         textures[id] = resources[id].texture;
       });
+
+      const maze = Maze.fromJSON(maze1);
+      maze.config = config;
+      Object.entries(config.robots).forEach(([id, props]) => {
+        const robot = new Robot(id, props);
+        maze.addRobot(robot);
+      });
+      const ai = new QLearningAI(maze.robots[0]);
+      setupKeyControls(maze.robots[0]);
+
       $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
       const mazeView = new MazeEditor($('body'), maze, config, textures);
@@ -70,6 +70,7 @@ fetch('./config.yml', { cache: 'no-store' })
           aiOverlay.toggle();
         }
       });
+      app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai);
       $('.sidebar').append(trainingView.$element);

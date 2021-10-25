@@ -5841,27 +5841,23 @@ module.exports = Grid;
   \***************************************/
 /***/ ((module) => {
 
-class KeyboardController {
-  constructor(robot) {
-    this.robot = robot;
+function setupKeyControls(robot) {
+  const keyMap = {
+    ArrowLeft: () => { robot.go('w'); },
+    ArrowRight: () => { robot.go('e'); },
+    ArrowUp: () => { robot.go('n'); },
+    ArrowDown: () => { robot.go('s'); },
+  };
 
-    this.keyMap = {
-      ArrowLeft: () => { this.robot.go('w'); },
-      ArrowRight: () => { this.robot.go('e'); },
-      ArrowUp: () => { this.robot.go('n'); },
-      ArrowDown: () => { this.robot.go('s'); },
-    };
-
-    window.addEventListener('keydown', (ev) => {
-      if (this.keyMap[ev.code]) {
-        this.keyMap[ev.code]();
-        ev.preventDefault();
-      }
-    });
-  }
+  window.addEventListener('keydown', (ev) => {
+    if (keyMap[ev.code]) {
+      keyMap[ev.code]();
+      ev.preventDefault();
+    }
+  });
 }
 
-module.exports = KeyboardController;
+module.exports = setupKeyControls;
 
 
 /***/ }),
@@ -5986,6 +5982,7 @@ module.exports = MazeViewAIOverlay;
 /* globals PIXI */
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 const PencilCursor = __webpack_require__(/*! ../../static/fa/pencil-alt-solid.svg */ "./static/fa/pencil-alt-solid.svg");
+const RobotView = __webpack_require__(/*! ./robot-view */ "./src/js/robot-view.js");
 
 class MazeView {
   constructor(maze, config, textures = { }) {
@@ -6003,7 +6000,7 @@ class MazeView {
     this.events = new EventEmitter();
 
     this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
-    this.robotSprites = [];
+    this.robotViews = [];
 
     let pointerActive = false;
     $(window).on('mouseup', () => { pointerActive = false; });
@@ -6036,18 +6033,15 @@ class MazeView {
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
-    this.robotSprites = this.maze.robots.map((robot) => {
-      const robotSprite = new PIXI.Sprite();
-      robotSprite.x = robot.x * MazeView.TILE_SIZE;
-      robotSprite.y = robot.y * MazeView.TILE_SIZE;
-      robotSprite.width = MazeView.TILE_SIZE;
-      robotSprite.height = MazeView.TILE_SIZE;
-      robotSprite.roundPixels = true;
-      robotSprite.texture = this.textures[`robot-${robot.id}`];
+    this.robotViews = this.maze.robots.map((robot) => {
+      const robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures[`robot-${robot.id}`]);
 
       robot.events.on('move', (direction, x1, y1, x2, y2) => {
-        robotSprite.x = x2 * MazeView.TILE_SIZE;
-        robotSprite.y = y2 * MazeView.TILE_SIZE;
+        if (direction) {
+          robotView.moveTo(x2, y2);
+        } else {
+          robotView.setPosition(x2, y2);
+        }
       });
 
       robot.events.on('exited', () => {
@@ -6058,7 +6052,7 @@ class MazeView {
         }, 1000);
       });
 
-      return robotSprite;
+      return robotView;
     });
 
     this.itemSprites = {};
@@ -6079,7 +6073,7 @@ class MazeView {
       this.handleItemReset(item);
     });
 
-    this.robotLayer.addChild(...this.robotSprites);
+    this.robotLayer.addChild(...this.robotViews.map(view => view.sprite));
   }
 
   createItemSprite(item) {
@@ -6141,6 +6135,10 @@ class MazeView {
 
   addOverlay(displayObject) {
     this.displayObject.addChild(displayObject);
+  }
+
+  animate(time) {
+    this.robotViews.forEach(view => view.animate(time));
   }
 }
 
@@ -6469,6 +6467,67 @@ module.exports = QLearningAI;
 
 /***/ }),
 
+/***/ "./src/js/robot-view.js":
+/*!******************************!*\
+  !*** ./src/js/robot-view.js ***!
+  \******************************/
+/***/ ((module) => {
+
+/* globals PIXI */
+
+class RobotView {
+  constructor(robot, tileSize, texture) {
+    this.robot = robot;
+    this.tileSize = tileSize;
+
+    this.waypoints = [];
+    this.speed = 15;
+
+    this.sprite = RobotView.createSprite(tileSize, texture);
+    this.setPosition(this.robot.x, this.robot.y);
+  }
+
+  static createSprite(tileSize, texture) {
+    const sprite = new PIXI.Sprite();
+    sprite.width = tileSize;
+    sprite.height = tileSize;
+    sprite.roundPixels = true;
+    sprite.texture = texture;
+
+    return sprite;
+  }
+
+  setPosition(x, y) {
+    this.sprite.x = x * this.tileSize;
+    this.sprite.y = y * this.tileSize;
+  }
+
+  moveTo(x, y) {
+    this.waypoints.push([x, y]);
+  }
+
+  animate(time) {
+    if (this.waypoints.length > 0) {
+      const destX = this.waypoints[0][0] * this.tileSize;
+      const destY = this.waypoints[0][1] * this.tileSize;
+      const deltaX = destX - this.sprite.x;
+      const deltaY = destY - this.sprite.y;
+
+      this.sprite.x += Math.min(Math.abs(deltaX), time * this.speed) * Math.sign(deltaX);
+      this.sprite.y += Math.min(Math.abs(deltaY), time * this.speed) * Math.sign(deltaY);
+
+      if (this.sprite.x === destX && this.sprite.y === destY) {
+        this.waypoints = this.waypoints.slice(1);
+      }
+    }
+  }
+}
+
+module.exports = RobotView;
+
+
+/***/ }),
+
 /***/ "./src/js/robot.js":
 /*!*************************!*\
   !*** ./src/js/robot.js ***!
@@ -6675,12 +6734,11 @@ var __webpack_exports__ = {};
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
-const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
 const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
 const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
 const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay.js */ "./src/js/maze-view-ai-overlay.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
-const KeyboardController = __webpack_require__(/*! ./keyboard-controller.js */ "./src/js/keyboard-controller.js");
+const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 
@@ -6692,15 +6750,6 @@ fetch('./config.yml', { cache: 'no-store' })
     console.error(err);
   })
   .then((config) => {
-    const maze = Maze.fromJSON(maze1);
-    maze.config = config;
-    Object.entries(config.robots).forEach(([id, props]) => {
-      const robot = new Robot(id, props);
-      maze.addRobot(robot);
-    });
-    const ai = new QLearningAI(maze.robots[0]);
-    const keyboardController = new KeyboardController(maze.robots[0]);
-
     const app = new PIXI.Application({
       width: 1920,
       height: 1920,
@@ -6725,6 +6774,16 @@ fetch('./config.yml', { cache: 'no-store' })
       Object.keys(textures).forEach((id) => {
         textures[id] = resources[id].texture;
       });
+
+      const maze = Maze.fromJSON(maze1);
+      maze.config = config;
+      Object.entries(config.robots).forEach(([id, props]) => {
+        const robot = new Robot(id, props);
+        maze.addRobot(robot);
+      });
+      const ai = new QLearningAI(maze.robots[0]);
+      setupKeyControls(maze.robots[0]);
+
       $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
       const mazeView = new MazeEditor($('body'), maze, config, textures);
@@ -6741,6 +6800,7 @@ fetch('./config.yml', { cache: 'no-store' })
           aiOverlay.toggle();
         }
       });
+      app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai);
       $('.sidebar').append(trainingView.$element);
@@ -6752,4 +6812,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.6d135775e4625de53ef2.js.map
+//# sourceMappingURL=default.764681cddd105ca907ef.js.map

@@ -1,6 +1,7 @@
 /* globals PIXI */
 const EventEmitter = require('events');
 const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
+const RobotView = require('./robot-view');
 
 class MazeView {
   constructor(maze, config, textures = { }) {
@@ -18,7 +19,7 @@ class MazeView {
     this.events = new EventEmitter();
 
     this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
-    this.robotSprites = [];
+    this.robotViews = [];
 
     let pointerActive = false;
     $(window).on('mouseup', () => { pointerActive = false; });
@@ -51,18 +52,15 @@ class MazeView {
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
-    this.robotSprites = this.maze.robots.map((robot) => {
-      const robotSprite = new PIXI.Sprite();
-      robotSprite.x = robot.x * MazeView.TILE_SIZE;
-      robotSprite.y = robot.y * MazeView.TILE_SIZE;
-      robotSprite.width = MazeView.TILE_SIZE;
-      robotSprite.height = MazeView.TILE_SIZE;
-      robotSprite.roundPixels = true;
-      robotSprite.texture = this.textures[`robot-${robot.id}`];
+    this.robotViews = this.maze.robots.map((robot) => {
+      const robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures[`robot-${robot.id}`]);
 
       robot.events.on('move', (direction, x1, y1, x2, y2) => {
-        robotSprite.x = x2 * MazeView.TILE_SIZE;
-        robotSprite.y = y2 * MazeView.TILE_SIZE;
+        if (direction) {
+          robotView.moveTo(x2, y2);
+        } else {
+          robotView.setPosition(x2, y2);
+        }
       });
 
       robot.events.on('exited', () => {
@@ -73,7 +71,7 @@ class MazeView {
         }, 1000);
       });
 
-      return robotSprite;
+      return robotView;
     });
 
     this.itemSprites = {};
@@ -94,7 +92,7 @@ class MazeView {
       this.handleItemReset(item);
     });
 
-    this.robotLayer.addChild(...this.robotSprites);
+    this.robotLayer.addChild(...this.robotViews.map(view => view.sprite));
   }
 
   createItemSprite(item) {
@@ -156,6 +154,10 @@ class MazeView {
 
   addOverlay(displayObject) {
     this.displayObject.addChild(displayObject);
+  }
+
+  animate(time) {
+    this.robotViews.forEach(view => view.animate(time));
   }
 }
 

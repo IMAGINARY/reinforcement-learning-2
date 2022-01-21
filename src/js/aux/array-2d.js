@@ -41,6 +41,20 @@ class Array2D {
   }
 
   /**
+   * Returns a 1D array with the flattened contents of the 2D array
+   * @return {*[]}
+   */
+  static flatten(a) {
+    const items = [];
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        items.push(a[y][x]);
+      }
+    }
+    return items;
+  }
+
+  /**
    * Returns true if the argument is an array of arrays and every inner
    * array has the same length.
    *
@@ -96,6 +110,20 @@ class Array2D {
   }
 
   /**
+   * Sets all cells to a fixed value
+   *
+   * @param a {any[][]}
+   * @param value {any}
+   */
+  static setAll(a, value) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = value;
+      }
+    }
+  }
+
+  /**
    * Returns all items as a flat array of [x, y, value] arrays.
    *
    * @param a {any[][]}
@@ -109,6 +137,68 @@ class Array2D {
       }
     }
     return items;
+  }
+
+  /**
+   * @callback coordinateCallback
+   * @param x {number}
+   * @param y {number}
+   * @return {any}
+   */
+  /**
+   * Fills the items in the array with the result of a callback
+   *
+   * @param a {any[][]}
+   * @param callback {coordinateCallback}
+   */
+  static fill(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = callback(x, y);
+      }
+    }
+  }
+
+  /**
+   * @callback reduceCallback
+   * @param accumulator {any}
+   * @param currentValue {any}
+   * @param x {number}
+   * @param y {number}
+   */
+  /**
+   *
+   * @param a {any[][]}
+   * @param callback {reduceCallback}
+   * @param initialValue {any}
+   * @return {any}
+   */
+  static reduce(a, callback, initialValue) {
+    let accumulator = initialValue;
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        accumulator = callback(accumulator, a[y][x], x, y);
+      }
+    }
+    return accumulator;
+  }
+
+  static forEach(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        callback(a[y][x], x, y);
+      }
+    }
+  }
+
+  static zip(a, b, callback) {
+    const yMax = Math.min(a.length, b.length);
+    for (let y = 0; y < yMax; y += 1) {
+      const xMax = Math.min(a[y].length, b[y].length);
+      for (let x = 0; x < xMax; x += 1) {
+        callback(a[y][x], b[y][x], x, y);
+      }
+    }
   }
 }
 

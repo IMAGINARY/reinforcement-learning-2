@@ -4926,6 +4926,20 @@ class Array2D {
   }
 
   /**
+   * Returns a 1D array with the flattened contents of the 2D array
+   * @return {*[]}
+   */
+  static flatten(a) {
+    const items = [];
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        items.push(a[y][x]);
+      }
+    }
+    return items;
+  }
+
+  /**
    * Returns true if the argument is an array of arrays and every inner
    * array has the same length.
    *
@@ -4981,6 +4995,20 @@ class Array2D {
   }
 
   /**
+   * Sets all cells to a fixed value
+   *
+   * @param a {any[][]}
+   * @param value {any}
+   */
+  static setAll(a, value) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = value;
+      }
+    }
+  }
+
+  /**
    * Returns all items as a flat array of [x, y, value] arrays.
    *
    * @param a {any[][]}
@@ -4994,6 +5022,68 @@ class Array2D {
       }
     }
     return items;
+  }
+
+  /**
+   * @callback coordinateCallback
+   * @param x {number}
+   * @param y {number}
+   * @return {any}
+   */
+  /**
+   * Fills the items in the array with the result of a callback
+   *
+   * @param a {any[][]}
+   * @param callback {coordinateCallback}
+   */
+  static fill(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = callback(x, y);
+      }
+    }
+  }
+
+  /**
+   * @callback reduceCallback
+   * @param accumulator {any}
+   * @param currentValue {any}
+   * @param x {number}
+   * @param y {number}
+   */
+  /**
+   *
+   * @param a {any[][]}
+   * @param callback {reduceCallback}
+   * @param initialValue {any}
+   * @return {any}
+   */
+  static reduce(a, callback, initialValue) {
+    let accumulator = initialValue;
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        accumulator = callback(accumulator, a[y][x], x, y);
+      }
+    }
+    return accumulator;
+  }
+
+  static forEach(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        callback(a[y][x], x, y);
+      }
+    }
+  }
+
+  static zip(a, b, callback) {
+    const yMax = Math.min(a.length, b.length);
+    for (let y = 0; y < yMax; y += 1) {
+      const xMax = Math.min(a[y].length, b[y].length);
+      for (let x = 0; x < xMax; x += 1) {
+        callback(a[y][x], b[y][x], x, y);
+      }
+    }
   }
 }
 
@@ -5983,6 +6073,7 @@ module.exports = MazeViewAIOverlay;
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 const PencilCursor = __webpack_require__(/*! ../../static/fa/pencil-alt-solid.svg */ "./static/fa/pencil-alt-solid.svg");
 const RobotView = __webpack_require__(/*! ./robot-view */ "./src/js/robot-view.js");
+const Array2D = __webpack_require__(/*! ./aux/array-2d */ "./src/js/aux/array-2d.js");
 
 class MazeView {
   constructor(maze, config, textures = { }) {
@@ -5999,37 +6090,65 @@ class MazeView {
     this.textures = textures;
     this.events = new EventEmitter();
 
-    this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
+    this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.robotViews = [];
 
-    let pointerActive = false;
-    $(window).on('mouseup', () => { pointerActive = false; });
+    const pointers = {};
 
-    this.maze.map.allCells().forEach(([i, j]) => {
+    this.maze.map.allCells().forEach(([x, y]) => {
       const floorTile = new PIXI.Graphics();
-      floorTile.x = i * MazeView.TILE_SIZE;
-      floorTile.y = j * MazeView.TILE_SIZE;
+      floorTile.x = x * MazeView.TILE_SIZE;
+      floorTile.y = y * MazeView.TILE_SIZE;
       floorTile.interactive = true;
-      floorTile.on('mousedown', (ev) => {
-        pointerActive = true;
-        this.events.emit('action', [i, j], {
+      floorTile.on('pointerdown', (ev) => {
+        pointers[ev.data.pointerId] = { lastTile: { x, y } };
+        this.events.emit('action', [x, y], {
           shiftKey: ev.data.originalEvent.shiftKey,
         });
       });
-      floorTile.on('mouseover', (ev) => {
-        if (pointerActive) {
-          this.events.emit('action', [i, j], {
-            shiftKey: ev.data.originalEvent.shiftKey,
-          });
-        }
-      });
-      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
-      this.floorTiles[this.maze.map.offset(i, j)] = floorTile;
 
-      this.renderCell(i, j);
+      // floorTile.on('pointermove', (ev) => {
+      //   if (pointerActive) {
+      //
+      //   }
+      //   // if (pointerActive && lastTile !== floorTile) {
+      //   //   lastTile = floorTile;
+      //     // this.events.emit('action', [i, j], {
+      //     //   shiftKey: ev.data.originalEvent.shiftKey,
+      //     // });
+      //   // }
+      // });
+
+      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+      this.floorTiles[y][x] = floorTile;
+
+      this.renderCell(x, y);
     });
 
-    this.tileLayer.addChild(...this.floorTiles);
+    this.tileLayer.interactive = true;
+    this.tileLayer.on('pointermove', (ev) => {
+      if (pointers[ev.data.pointerId] !== undefined) {
+        const tileCoords = this.getCoordsAtPosition(ev.data.global);
+        if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
+          if (tileCoords) {
+            this.events.emit('action', [tileCoords.x, tileCoords.y], {
+              shiftKey: ev.data.originalEvent.shiftKey,
+            });
+          }
+          pointers[ev.data.pointerId].lastTile = tileCoords;
+        }
+      }
+    });
+
+    const onEndPointer = (ev) => {
+      delete pointers[ev.data.pointerId];
+    };
+
+    this.tileLayer.on('pointerup', onEndPointer);
+    this.tileLayer.on('pointerupoutside', onEndPointer);
+    this.tileLayer.on('pointercancel', onEndPointer);
+
+    this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
@@ -6111,8 +6230,23 @@ class MazeView {
     }
   }
 
-  getFloorTile(i, j) {
-    return this.floorTiles[this.maze.map.offset(i, j)];
+  getFloorTile(x, y) {
+    return this.floorTiles[y][x];
+  }
+
+  getCoordsAtPosition(globalPoint) {
+    if (this.origin === undefined) {
+      this.origin = new PIXI.Point();
+    }
+    this.origin = this.displayObject.getGlobalPosition(this.origin, false);
+
+    const x = Math.floor((globalPoint.x - this.origin.x)
+      / this.displayObject.scale.x / MazeView.TILE_SIZE);
+    const y = Math.floor((globalPoint.y - this.origin.y)
+      / this.displayObject.scale.y / MazeView.TILE_SIZE);
+
+    return (x >= 0 && x < this.maze.map.width && y >= 0 && y < this.maze.map.height)
+      ? { x, y } : null;
   }
 
   renderCell(i, j) {
@@ -6812,4 +6946,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.764681cddd105ca907ef.js.map
+//# sourceMappingURL=default.aee80a15a7f6099699ce.js.map

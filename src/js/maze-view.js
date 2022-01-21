@@ -2,6 +2,7 @@
 const EventEmitter = require('events');
 const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
 const RobotView = require('./robot-view');
+const Array2D = require('./aux/array-2d');
 
 class MazeView {
   constructor(maze, config, textures = { }) {
@@ -18,37 +19,65 @@ class MazeView {
     this.textures = textures;
     this.events = new EventEmitter();
 
-    this.floorTiles = Array(this.maze.map.width * this.maze.map.height);
+    this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.robotViews = [];
 
-    let pointerActive = false;
-    $(window).on('mouseup', () => { pointerActive = false; });
+    const pointers = {};
 
-    this.maze.map.allCells().forEach(([i, j]) => {
+    this.maze.map.allCells().forEach(([x, y]) => {
       const floorTile = new PIXI.Graphics();
-      floorTile.x = i * MazeView.TILE_SIZE;
-      floorTile.y = j * MazeView.TILE_SIZE;
+      floorTile.x = x * MazeView.TILE_SIZE;
+      floorTile.y = y * MazeView.TILE_SIZE;
       floorTile.interactive = true;
-      floorTile.on('mousedown', (ev) => {
-        pointerActive = true;
-        this.events.emit('action', [i, j], {
+      floorTile.on('pointerdown', (ev) => {
+        pointers[ev.data.pointerId] = { lastTile: { x, y } };
+        this.events.emit('action', [x, y], {
           shiftKey: ev.data.originalEvent.shiftKey,
         });
       });
-      floorTile.on('mouseover', (ev) => {
-        if (pointerActive) {
-          this.events.emit('action', [i, j], {
-            shiftKey: ev.data.originalEvent.shiftKey,
-          });
-        }
-      });
-      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
-      this.floorTiles[this.maze.map.offset(i, j)] = floorTile;
 
-      this.renderCell(i, j);
+      // floorTile.on('pointermove', (ev) => {
+      //   if (pointerActive) {
+      //
+      //   }
+      //   // if (pointerActive && lastTile !== floorTile) {
+      //   //   lastTile = floorTile;
+      //     // this.events.emit('action', [i, j], {
+      //     //   shiftKey: ev.data.originalEvent.shiftKey,
+      //     // });
+      //   // }
+      // });
+
+      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+      this.floorTiles[y][x] = floorTile;
+
+      this.renderCell(x, y);
     });
 
-    this.tileLayer.addChild(...this.floorTiles);
+    this.tileLayer.interactive = true;
+    this.tileLayer.on('pointermove', (ev) => {
+      if (pointers[ev.data.pointerId] !== undefined) {
+        const tileCoords = this.getCoordsAtPosition(ev.data.global);
+        if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
+          if (tileCoords) {
+            this.events.emit('action', [tileCoords.x, tileCoords.y], {
+              shiftKey: ev.data.originalEvent.shiftKey,
+            });
+          }
+          pointers[ev.data.pointerId].lastTile = tileCoords;
+        }
+      }
+    });
+
+    const onEndPointer = (ev) => {
+      delete pointers[ev.data.pointerId];
+    };
+
+    this.tileLayer.on('pointerup', onEndPointer);
+    this.tileLayer.on('pointerupoutside', onEndPointer);
+    this.tileLayer.on('pointercancel', onEndPointer);
+
+    this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
@@ -130,8 +159,23 @@ class MazeView {
     }
   }
 
-  getFloorTile(i, j) {
-    return this.floorTiles[this.maze.map.offset(i, j)];
+  getFloorTile(x, y) {
+    return this.floorTiles[y][x];
+  }
+
+  getCoordsAtPosition(globalPoint) {
+    if (this.origin === undefined) {
+      this.origin = new PIXI.Point();
+    }
+    this.origin = this.displayObject.getGlobalPosition(this.origin, false);
+
+    const x = Math.floor((globalPoint.x - this.origin.x)
+      / this.displayObject.scale.x / MazeView.TILE_SIZE);
+    const y = Math.floor((globalPoint.y - this.origin.y)
+      / this.displayObject.scale.y / MazeView.TILE_SIZE);
+
+    return (x >= 0 && x < this.maze.map.width && y >= 0 && y < this.maze.map.height)
+      ? { x, y } : null;
   }
 
   renderCell(i, j) {

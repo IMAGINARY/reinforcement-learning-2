@@ -25,7 +25,8 @@ class MazeBrowser {
         $('<button></button>')
           .addClass('maze-browser-item')
           .append(this.createPreviewImage(mazeJSON))
-          .on('click', (ev) => {
+          .pointerclick()
+          .on('i.pointerclick', (ev) => {
             setSelection(ev.currentTarget);
             this.selectedData = id;
           })

@@ -4772,7 +4772,8 @@ class AITrainingView {
           `ai-training-view-button-${props.id}`,
         ])
         .html(props.icon ? '&nbsp;' : props.title || '')
-        .on('click', () => {
+        .pointerclick()
+        .on('i.pointerclick', () => {
           this.handleButton(props.id);
         });
 
@@ -5125,7 +5126,8 @@ class MazeBrowser {
         $('<button></button>')
           .addClass('maze-browser-item')
           .append(this.createPreviewImage(mazeJSON))
-          .on('click', (ev) => {
+          .pointerclick()
+          .on('i.pointerclick', (ev) => {
             setSelection(ev.currentTarget);
             this.selectedData = id;
           })
@@ -5212,7 +5214,8 @@ class MazeEditorPalette {
         backgroundColor: typeCfg.color,
         backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -5237,7 +5240,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: `url(${tool.icon})`,
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -5261,7 +5265,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -5285,7 +5290,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: `url(${action.icon})`,
       })
-      .on('click', () => {
+      .pointerclick()
+      .on('i.pointerclick', () => {
         this.events.emit('action', action.id);
       }));
   }
@@ -5921,6 +5927,63 @@ class Grid {
 }
 
 module.exports = Grid;
+
+
+/***/ }),
+
+/***/ "./src/js/jquery-plugins/jquery.pointerclick.js":
+/*!******************************************************!*\
+  !*** ./src/js/jquery-plugins/jquery.pointerclick.js ***!
+  \******************************************************/
+/***/ (() => {
+
+/**
+ * This jQuery plugin adds an 'i.pointerclick' event that is fired on pointerdown followed by
+ * a pointerup within the area of the original element.
+ *
+ * Install it by calling pointerclick() on a jQuery object:
+ *
+ * $('#my-element')
+ *  .pointerclick()
+ *  .on('i.pointerclick', function(event) {
+ *    // do something
+ *  });
+ *
+ *  This plugin was motivated because on multi-touch devices, the click event is not fired if a
+ *  different part of the screen is being touched at the time.
+ */
+(function initPlugins($) {
+  $.fn.pointerclick = function pointerClickHandler() {
+    return this.each(function pointerClickElementHandler() {
+      let trackedPointerId = null;
+
+      $(document)
+        .on('pointerup', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+          }
+        })
+        .on('pointercancel', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+          }
+        });
+
+      $(this)
+        .on('pointerdown', (ev) => {
+          trackedPointerId = ev.pointerId;
+          // On touch, apparently, the pointer is automatically captured by pointerdown
+          ev.delegateTarget.releasePointerCapture(ev.pointerId);
+        })
+        .on('pointerup', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+            $(this).trigger('i.pointerclick', ev);
+          }
+        });
+    });
+  };
+}(jQuery));
 
 
 /***/ }),
@@ -6866,6 +6929,7 @@ var __webpack_exports__ = {};
 /* globals PIXI */
 
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
 const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
@@ -6946,4 +7010,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.aee80a15a7f6099699ce.js.map
+//# sourceMappingURL=default.55f7293f78b3895334a0.js.map

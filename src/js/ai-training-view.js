@@ -48,7 +48,8 @@ class AITrainingView {
           `ai-training-view-button-${props.id}`,
         ])
         .html(props.icon ? '&nbsp;' : props.title || '')
-        .on('click', () => {
+        .pointerclick()
+        .on('i.pointerclick', () => {
           this.handleButton(props.id);
         });
 

@@ -2,6 +2,7 @@
 /* globals PIXI */
 
 const yaml = require('js-yaml');
+require('./jquery-plugins/jquery.pointerclick');
 const Maze = require('./maze.js');
 const Robot = require('./robot.js');
 const QLearningAI = require('./qlearning-ai.js');

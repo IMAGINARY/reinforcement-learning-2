@@ -37,7 +37,8 @@ class MazeEditorPalette {
         backgroundColor: typeCfg.color,
         backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -62,7 +63,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: `url(${tool.icon})`,
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -86,7 +88,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
       })
-      .on('click', (ev) => {
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
         if (this.activeButton) {
           this.activeButton.removeClass('active');
         }
@@ -110,7 +113,8 @@ class MazeEditorPalette {
       .css({
         backgroundImage: `url(${action.icon})`,
       })
-      .on('click', () => {
+      .pointerclick()
+      .on('i.pointerclick', () => {
         this.events.emit('action', action.id);
       }));
   }

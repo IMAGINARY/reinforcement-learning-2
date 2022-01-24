@@ -1,34 +1,3 @@
-tileTypes:
-  1:
-    name: Floor
-    color: '#ffffff'
-    walkable: true
-    reward: -1
-  2:
-    name: Wall
-    color: '#666666'
-    walkable: false
-  3:
-    name: Exit
-    color: '#99ff99'
-    walkable: true
-    exit: true
-    reward: 50
-    editorIcon: 'static/fa/door-open-solid.svg'
-  4:
-    name: Lava
-    color: '#ff3333'
-    walkable: true
-    reward: -5
-  5:
-    name: Gold
-    color: '#fff250'
-    walkable: true
-    reward: -0.5
-robots:
-  blue:
-    name: 'Blue Robot'
-    texture: 'static/fa/robot-solid-blue.svg'
 items:
   lemon:
     name: Lemon

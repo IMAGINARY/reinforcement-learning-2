@@ -2,6 +2,9 @@
 /* globals PIXI */
 
 const yaml = require('js-yaml');
+const CfgLoader = require('./cfg-loader/cfg-loader');
+const CfgReaderFetch = require('./cfg-loader/cfg-reader-fetch');
+const showFatalError = require('./aux/show-fatal-error');
 require('./jquery-plugins/jquery.pointerclick');
 const Maze = require('./maze.js');
 const Robot = require('./robot.js');
@@ -13,10 +16,16 @@ const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 
-fetch('./config.yml', { cache: 'no-store' })
-  .then(response => response.text())
-  .then(data => yaml.load(data))
+const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
+cfgLoader.load([
+  'config/tiles.yml',
+  'config/robots.yml',
+  'config/items.yml',
+  'config/default-settings.yml',
+  'settings.yml',
+])
   .catch((err) => {
+    showFatalError('Error loading configuration', err);
     console.error('Error loading configuration');
     console.error(err);
   })

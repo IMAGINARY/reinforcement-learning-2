@@ -5093,6 +5093,83 @@ module.exports = Array2D;
 
 /***/ }),
 
+/***/ "./src/js/aux/show-fatal-error.js":
+/*!****************************************!*\
+  !*** ./src/js/aux/show-fatal-error.js ***!
+  \****************************************/
+/***/ ((module) => {
+
+function showFatalError(text, error) {
+  $('<div></div>')
+    .addClass('fatal-error')
+    .append($('<div></div>')
+      .addClass('fatal-error-text')
+      .html(text))
+    .append($('<div></div>')
+      .addClass('fatal-error-details')
+      .html(error.message))
+    .appendTo('body');
+
+  $('html').addClass('with-fatal-error');
+}
+
+module.exports = showFatalError;
+
+
+/***/ }),
+
+/***/ "./src/js/cfg-loader/cfg-loader.js":
+/*!*****************************************!*\
+  !*** ./src/js/cfg-loader/cfg-loader.js ***!
+  \*****************************************/
+/***/ ((module) => {
+
+class CfgLoader {
+  constructor(cfgReader, cfgParser) {
+    this.reader = cfgReader;
+    this.parser = cfgParser;
+  }
+
+  async load(files) {
+    const segments = [];
+    const promises = [];
+
+    files.forEach((file, i) => {
+      promises.push(
+        this.reader(file)
+          .then(cfgText => this.parser(cfgText))
+          .then((cfgSegment) => {
+            // We keep the segments in order
+            segments[i] = cfgSegment;
+          })
+      );
+    });
+
+    return Promise.all(promises).then(() => Object.assign({}, ...segments));
+  }
+}
+
+module.exports = CfgLoader;
+
+
+/***/ }),
+
+/***/ "./src/js/cfg-loader/cfg-reader-fetch.js":
+/*!***********************************************!*\
+  !*** ./src/js/cfg-loader/cfg-reader-fetch.js ***!
+  \***********************************************/
+/***/ ((module) => {
+
+function CfgReaderFetch(filename) {
+  return fetch(filename, { cache: 'no-store' })
+    .then(response => response.text());
+}
+
+module.exports = CfgReaderFetch;
+
+
+/***/ }),
+
 /***/ "./src/js/editor/maze-browser.js":
 /*!***************************************!*\
   !*** ./src/js/editor/maze-browser.js ***!
@@ -6929,6 +7006,9 @@ var __webpack_exports__ = {};
 /* globals PIXI */
 
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
+const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
+const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
+const showFatalError = __webpack_require__(/*! ./aux/show-fatal-error */ "./src/js/aux/show-fatal-error.js");
 __webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
 const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
@@ -6940,10 +7020,16 @@ const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 
-fetch('./config.yml', { cache: 'no-store' })
-  .then(response => response.text())
-  .then(data => yaml.load(data))
+const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
+cfgLoader.load([
+  'config/tiles.yml',
+  'config/robots.yml',
+  'config/items.yml',
+  'config/default-settings.yml',
+  'settings.yml',
+])
   .catch((err) => {
+    showFatalError('Error loading configuration', err);
     console.error('Error loading configuration');
     console.error(err);
   })
@@ -7010,4 +7096,4 @@ fetch('./config.yml', { cache: 'no-store' })
 
 /******/ })()
 ;
-//# sourceMappingURL=default.55f7293f78b3895334a0.js.map
+//# sourceMappingURL=default.40affdee6d6e119964a8.js.map

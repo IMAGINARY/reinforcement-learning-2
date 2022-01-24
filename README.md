@@ -9,6 +9,12 @@ You can use `npm run build` or `npm run watch` in the root directory to build th
 
 The `.env` file in the root directory contains settings that are applied at compilation time.
 
+## Configuration
+
+The config directory has several data definitions.
+
+You can override any of them by creating a `settings.yml` file in the root directory.
+
 ## License
 
 Copyright (c) 2020-2021 IMAGINARY gGmbH

@@ -1,0 +1,67 @@
+$footer-height: 80px;
+$icon-size: 40px;
+
+.lang-switcher {
+  display: inline-block;
+  font-size: $icon-size;
+
+  .lang-switcher-trigger {
+    width: 2em;
+    height: 2em;
+    display: block;
+    font-size: 1em;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url("../../static/fa-4/international.svg");
+    pointer-events: all;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .lang-switcher-menu-mask {
+    position: absolute;
+    bottom: $footer-height;
+    right: -1em;
+    height: calc(100vh - #{$footer-height});
+    width: 100vw;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .lang-switcher-menu {
+    display: block;
+    position: absolute;
+    right: -100%;
+    bottom: 0 !important;
+    padding: 0.1em 0 0.2em 0;
+    margin: 0;
+    background-color: white;
+    border: 3px solid black;
+    transition: right 0.3s;
+
+    &.visible {
+      right: 50px !important;
+    }
+    li {
+      display: block;
+      padding: 0;
+      margin: 0;
+      button {
+        display: block;
+        width: 100%;
+        border: 0;
+        background-color: transparent;
+        font-size: 2.2rem;
+        text-align: left;
+        padding: 0.4em 1.5em;
+        min-width: 4.5em;
+        cursor: pointer;
+        pointer-events: all;
+      }
+    }
+  }
+}

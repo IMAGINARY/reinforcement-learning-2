@@ -1,0 +1,56 @@
+$viewport-width: 1920px;
+$viewport-height: 1080px;
+$viewport-padding: 20px;
+
+$panel-gutter: 40px;
+
+$viewport-inner-height: $viewport-height - 2 * $viewport-padding;
+$viewport-inner-width: $viewport-width - 2 * $viewport-padding;
+
+.rl2-exhibit {
+  width: $viewport-width;
+  height: $viewport-height;
+  padding: $viewport-padding;
+  position: relative;
+  overflow: hidden;
+}
+
+$panel-sm-height: ($viewport-inner-height - 2 * $panel-gutter) / 3;
+$panel-sm-width: ($viewport-inner-width - $panel-gutter) * 0.375;
+$panel-lg-height: $viewport-inner-height;
+$panel-lg-width: ($viewport-inner-width - $panel-gutter) * 0.625;
+
+.panel-sm {
+  height: $panel-sm-height;
+  width: $panel-sm-width;
+}
+
+.panel-lg {
+  height: $panel-lg-height;
+  width: $panel-lg-width;
+}
+
+#panel-1, #panel-2, #panel-3, #panel-4 {
+  position: absolute;
+}
+
+#panel-1, #panel-2, #panel-3 {
+  left: $viewport-padding;
+}
+
+#panel-1 {
+  top: $viewport-padding;
+}
+
+#panel-2 {
+  top: $viewport-padding + $panel-sm-height + $panel-gutter;
+}
+
+#panel-3 {
+  top: $viewport-padding + ($panel-sm-height + $panel-gutter) * 2;
+}
+
+#panel-4 {
+  top: $viewport-padding;
+  left: $viewport-padding + $panel-sm-width + $panel-gutter;
+}

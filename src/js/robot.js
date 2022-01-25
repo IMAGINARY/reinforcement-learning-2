@@ -30,6 +30,7 @@ class Robot {
   canMoveFromTo(x1, y1, x2, y2) {
     return this.maze.map.isValidCoords(x2, y2)
       && this.maze.isWalkable(x2, y2)
+      && !this.maze.isExit(x1, y1)
       && this.maze.map.stepDistance(x1, y1, x2, y2) === 1;
   }
 

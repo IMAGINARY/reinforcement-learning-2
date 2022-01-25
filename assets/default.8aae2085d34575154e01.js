@@ -6741,6 +6741,9 @@ class QLearningAI {
     this.q[y1][x1][direction] += this.learningRate
       * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);
 
+    console.log(`${this.q[y1][x1][direction]} += ${this.learningRate}
+      * (${reward} + ${this.discountFactor} * ${this.maxQ(x2, y2)} - ${this.q[y1][x1][direction]});`)
+
     this.events.emit('update');
   }
 }
@@ -6849,6 +6852,7 @@ class Robot {
   canMoveFromTo(x1, y1, x2, y2) {
     return this.maze.map.isValidCoords(x2, y2)
       && this.maze.isWalkable(x2, y2)
+      && !this.maze.isExit(x1, y1)
       && this.maze.map.stepDistance(x1, y1, x2, y2) === 1;
   }
 
@@ -7107,4 +7111,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.51014352138bc066326f.js.map
+//# sourceMappingURL=default.8aae2085d34575154e01.js.map

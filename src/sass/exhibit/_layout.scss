@@ -10,9 +10,40 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 .rl2-exhibit {
   width: $viewport-width;
   height: $viewport-height;
-  padding: $viewport-padding;
   position: relative;
   overflow: hidden;
+
+  #pixi-app-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100;
+  }
+
+  .panel {
+    z-index: 200;
+    pointer-events: none;
+  }
+
+  #training-ui {
+    position: absolute;
+    left: 20px;
+    top: 600px;
+    pointer-events: auto;
+  }
+
+  #lang-switcher-container {
+    .lang-switcher {
+      z-index: 200;
+    }
+  }
+
+  .maze-editor-palette {
+    pointer-events: auto;
+    top: 90px;
+  }
 }
 
 $panel-sm-height: ($viewport-inner-height - 2 * $panel-gutter) / 3;

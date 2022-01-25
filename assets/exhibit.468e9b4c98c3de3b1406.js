@@ -1,6 +1,525 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "./data/mazes/maze1.json":
+/*!*******************************!*\
+  !*** ./data/mazes/maze1.json ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,2,1,1,1,1,1,3],[1,2,1,1,1,2,2,1],[1,2,1,1,1,2,2,1],[1,1,1,2,1,1,1,1],[1,1,1,1,2,1,1,1],[1,2,2,1,1,1,1,1],[1,2,2,1,1,2,2,2],[1,1,1,1,1,1,1,1]]},"items":[{"type":"iceCream","x":0,"y":0},{"type":"lemon","x":6,"y":3},{"type":"lemon","x":6,"y":7},{"type":"candyCane","x":3,"y":1},{"type":"carrot","x":7,"y":5}]}');
+
+/***/ }),
+
+/***/ "./node_modules/events/events.js":
+/*!***************************************!*\
+  !*** ./node_modules/events/events.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+var R = typeof Reflect === 'object' ? Reflect : null
+var ReflectApply = R && typeof R.apply === 'function'
+  ? R.apply
+  : function ReflectApply(target, receiver, args) {
+    return Function.prototype.apply.call(target, receiver, args);
+  }
+
+var ReflectOwnKeys
+if (R && typeof R.ownKeys === 'function') {
+  ReflectOwnKeys = R.ownKeys
+} else if (Object.getOwnPropertySymbols) {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target)
+      .concat(Object.getOwnPropertySymbols(target));
+  };
+} else {
+  ReflectOwnKeys = function ReflectOwnKeys(target) {
+    return Object.getOwnPropertyNames(target);
+  };
+}
+
+function ProcessEmitWarning(warning) {
+  if (console && console.warn) console.warn(warning);
+}
+
+var NumberIsNaN = Number.isNaN || function NumberIsNaN(value) {
+  return value !== value;
+}
+
+function EventEmitter() {
+  EventEmitter.init.call(this);
+}
+module.exports = EventEmitter;
+module.exports.once = once;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._eventsCount = 0;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+var defaultMaxListeners = 10;
+
+function checkListener(listener) {
+  if (typeof listener !== 'function') {
+    throw new TypeError('The "listener" argument must be of type Function. Received type ' + typeof listener);
+  }
+}
+
+Object.defineProperty(EventEmitter, 'defaultMaxListeners', {
+  enumerable: true,
+  get: function() {
+    return defaultMaxListeners;
+  },
+  set: function(arg) {
+    if (typeof arg !== 'number' || arg < 0 || NumberIsNaN(arg)) {
+      throw new RangeError('The value of "defaultMaxListeners" is out of range. It must be a non-negative number. Received ' + arg + '.');
+    }
+    defaultMaxListeners = arg;
+  }
+});
+
+EventEmitter.init = function() {
+
+  if (this._events === undefined ||
+      this._events === Object.getPrototypeOf(this)._events) {
+    this._events = Object.create(null);
+    this._eventsCount = 0;
+  }
+
+  this._maxListeners = this._maxListeners || undefined;
+};
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function setMaxListeners(n) {
+  if (typeof n !== 'number' || n < 0 || NumberIsNaN(n)) {
+    throw new RangeError('The value of "n" is out of range. It must be a non-negative number. Received ' + n + '.');
+  }
+  this._maxListeners = n;
+  return this;
+};
+
+function _getMaxListeners(that) {
+  if (that._maxListeners === undefined)
+    return EventEmitter.defaultMaxListeners;
+  return that._maxListeners;
+}
+
+EventEmitter.prototype.getMaxListeners = function getMaxListeners() {
+  return _getMaxListeners(this);
+};
+
+EventEmitter.prototype.emit = function emit(type) {
+  var args = [];
+  for (var i = 1; i < arguments.length; i++) args.push(arguments[i]);
+  var doError = (type === 'error');
+
+  var events = this._events;
+  if (events !== undefined)
+    doError = (doError && events.error === undefined);
+  else if (!doError)
+    return false;
+
+  // If there is no 'error' event listener then throw.
+  if (doError) {
+    var er;
+    if (args.length > 0)
+      er = args[0];
+    if (er instanceof Error) {
+      // Note: The comments on the `throw` lines are intentional, they show
+      // up in Node's output if this results in an unhandled exception.
+      throw er; // Unhandled 'error' event
+    }
+    // At least give some kind of context to the user
+    var err = new Error('Unhandled error.' + (er ? ' (' + er.message + ')' : ''));
+    err.context = er;
+    throw err; // Unhandled 'error' event
+  }
+
+  var handler = events[type];
+
+  if (handler === undefined)
+    return false;
+
+  if (typeof handler === 'function') {
+    ReflectApply(handler, this, args);
+  } else {
+    var len = handler.length;
+    var listeners = arrayClone(handler, len);
+    for (var i = 0; i < len; ++i)
+      ReflectApply(listeners[i], this, args);
+  }
+
+  return true;
+};
+
+function _addListener(target, type, listener, prepend) {
+  var m;
+  var events;
+  var existing;
+
+  checkListener(listener);
+
+  events = target._events;
+  if (events === undefined) {
+    events = target._events = Object.create(null);
+    target._eventsCount = 0;
+  } else {
+    // To avoid recursion in the case that type === "newListener"! Before
+    // adding it to the listeners, first emit "newListener".
+    if (events.newListener !== undefined) {
+      target.emit('newListener', type,
+                  listener.listener ? listener.listener : listener);
+
+      // Re-assign `events` because a newListener handler could have caused the
+      // this._events to be assigned to a new object
+      events = target._events;
+    }
+    existing = events[type];
+  }
+
+  if (existing === undefined) {
+    // Optimize the case of one listener. Don't need the extra array object.
+    existing = events[type] = listener;
+    ++target._eventsCount;
+  } else {
+    if (typeof existing === 'function') {
+      // Adding the second element, need to change to array.
+      existing = events[type] =
+        prepend ? [listener, existing] : [existing, listener];
+      // If we've already got an array, just append.
+    } else if (prepend) {
+      existing.unshift(listener);
+    } else {
+      existing.push(listener);
+    }
+
+    // Check for listener leak
+    m = _getMaxListeners(target);
+    if (m > 0 && existing.length > m && !existing.warned) {
+      existing.warned = true;
+      // No error code for this since it is a Warning
+      // eslint-disable-next-line no-restricted-syntax
+      var w = new Error('Possible EventEmitter memory leak detected. ' +
+                          existing.length + ' ' + String(type) + ' listeners ' +
+                          'added. Use emitter.setMaxListeners() to ' +
+                          'increase limit');
+      w.name = 'MaxListenersExceededWarning';
+      w.emitter = target;
+      w.type = type;
+      w.count = existing.length;
+      ProcessEmitWarning(w);
+    }
+  }
+
+  return target;
+}
+
+EventEmitter.prototype.addListener = function addListener(type, listener) {
+  return _addListener(this, type, listener, false);
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.prependListener =
+    function prependListener(type, listener) {
+      return _addListener(this, type, listener, true);
+    };
+
+function onceWrapper() {
+  if (!this.fired) {
+    this.target.removeListener(this.type, this.wrapFn);
+    this.fired = true;
+    if (arguments.length === 0)
+      return this.listener.call(this.target);
+    return this.listener.apply(this.target, arguments);
+  }
+}
+
+function _onceWrap(target, type, listener) {
+  var state = { fired: false, wrapFn: undefined, target: target, type: type, listener: listener };
+  var wrapped = onceWrapper.bind(state);
+  wrapped.listener = listener;
+  state.wrapFn = wrapped;
+  return wrapped;
+}
+
+EventEmitter.prototype.once = function once(type, listener) {
+  checkListener(listener);
+  this.on(type, _onceWrap(this, type, listener));
+  return this;
+};
+
+EventEmitter.prototype.prependOnceListener =
+    function prependOnceListener(type, listener) {
+      checkListener(listener);
+      this.prependListener(type, _onceWrap(this, type, listener));
+      return this;
+    };
+
+// Emits a 'removeListener' event if and only if the listener was removed.
+EventEmitter.prototype.removeListener =
+    function removeListener(type, listener) {
+      var list, events, position, i, originalListener;
+
+      checkListener(listener);
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      list = events[type];
+      if (list === undefined)
+        return this;
+
+      if (list === listener || list.listener === listener) {
+        if (--this._eventsCount === 0)
+          this._events = Object.create(null);
+        else {
+          delete events[type];
+          if (events.removeListener)
+            this.emit('removeListener', type, list.listener || listener);
+        }
+      } else if (typeof list !== 'function') {
+        position = -1;
+
+        for (i = list.length - 1; i >= 0; i--) {
+          if (list[i] === listener || list[i].listener === listener) {
+            originalListener = list[i].listener;
+            position = i;
+            break;
+          }
+        }
+
+        if (position < 0)
+          return this;
+
+        if (position === 0)
+          list.shift();
+        else {
+          spliceOne(list, position);
+        }
+
+        if (list.length === 1)
+          events[type] = list[0];
+
+        if (events.removeListener !== undefined)
+          this.emit('removeListener', type, originalListener || listener);
+      }
+
+      return this;
+    };
+
+EventEmitter.prototype.off = EventEmitter.prototype.removeListener;
+
+EventEmitter.prototype.removeAllListeners =
+    function removeAllListeners(type) {
+      var listeners, events, i;
+
+      events = this._events;
+      if (events === undefined)
+        return this;
+
+      // not listening for removeListener, no need to emit
+      if (events.removeListener === undefined) {
+        if (arguments.length === 0) {
+          this._events = Object.create(null);
+          this._eventsCount = 0;
+        } else if (events[type] !== undefined) {
+          if (--this._eventsCount === 0)
+            this._events = Object.create(null);
+          else
+            delete events[type];
+        }
+        return this;
+      }
+
+      // emit removeListener for all listeners on all events
+      if (arguments.length === 0) {
+        var keys = Object.keys(events);
+        var key;
+        for (i = 0; i < keys.length; ++i) {
+          key = keys[i];
+          if (key === 'removeListener') continue;
+          this.removeAllListeners(key);
+        }
+        this.removeAllListeners('removeListener');
+        this._events = Object.create(null);
+        this._eventsCount = 0;
+        return this;
+      }
+
+      listeners = events[type];
+
+      if (typeof listeners === 'function') {
+        this.removeListener(type, listeners);
+      } else if (listeners !== undefined) {
+        // LIFO order
+        for (i = listeners.length - 1; i >= 0; i--) {
+          this.removeListener(type, listeners[i]);
+        }
+      }
+
+      return this;
+    };
+
+function _listeners(target, type, unwrap) {
+  var events = target._events;
+
+  if (events === undefined)
+    return [];
+
+  var evlistener = events[type];
+  if (evlistener === undefined)
+    return [];
+
+  if (typeof evlistener === 'function')
+    return unwrap ? [evlistener.listener || evlistener] : [evlistener];
+
+  return unwrap ?
+    unwrapListeners(evlistener) : arrayClone(evlistener, evlistener.length);
+}
+
+EventEmitter.prototype.listeners = function listeners(type) {
+  return _listeners(this, type, true);
+};
+
+EventEmitter.prototype.rawListeners = function rawListeners(type) {
+  return _listeners(this, type, false);
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  if (typeof emitter.listenerCount === 'function') {
+    return emitter.listenerCount(type);
+  } else {
+    return listenerCount.call(emitter, type);
+  }
+};
+
+EventEmitter.prototype.listenerCount = listenerCount;
+function listenerCount(type) {
+  var events = this._events;
+
+  if (events !== undefined) {
+    var evlistener = events[type];
+
+    if (typeof evlistener === 'function') {
+      return 1;
+    } else if (evlistener !== undefined) {
+      return evlistener.length;
+    }
+  }
+
+  return 0;
+}
+
+EventEmitter.prototype.eventNames = function eventNames() {
+  return this._eventsCount > 0 ? ReflectOwnKeys(this._events) : [];
+};
+
+function arrayClone(arr, n) {
+  var copy = new Array(n);
+  for (var i = 0; i < n; ++i)
+    copy[i] = arr[i];
+  return copy;
+}
+
+function spliceOne(list, index) {
+  for (; index + 1 < list.length; index++)
+    list[index] = list[index + 1];
+  list.pop();
+}
+
+function unwrapListeners(arr) {
+  var ret = new Array(arr.length);
+  for (var i = 0; i < ret.length; ++i) {
+    ret[i] = arr[i].listener || arr[i];
+  }
+  return ret;
+}
+
+function once(emitter, name) {
+  return new Promise(function (resolve, reject) {
+    function errorListener(err) {
+      emitter.removeListener(name, resolver);
+      reject(err);
+    }
+
+    function resolver() {
+      if (typeof emitter.removeListener === 'function') {
+        emitter.removeListener('error', errorListener);
+      }
+      resolve([].slice.call(arguments));
+    };
+
+    eventTargetAgnosticAddListener(emitter, name, resolver, { once: true });
+    if (name !== 'error') {
+      addErrorHandlerIfEventEmitter(emitter, errorListener, { once: true });
+    }
+  });
+}
+
+function addErrorHandlerIfEventEmitter(emitter, handler, flags) {
+  if (typeof emitter.on === 'function') {
+    eventTargetAgnosticAddListener(emitter, 'error', handler, flags);
+  }
+}
+
+function eventTargetAgnosticAddListener(emitter, name, listener, flags) {
+  if (typeof emitter.on === 'function') {
+    if (flags.once) {
+      emitter.once(name, listener);
+    } else {
+      emitter.on(name, listener);
+    }
+  } else if (typeof emitter.addEventListener === 'function') {
+    // EventTarget does not have `error` event semantics like Node
+    // EventEmitters, we do not listen for `error` events here.
+    emitter.addEventListener(name, function wrapListener(arg) {
+      // IE does not have builtin `{ once: true }` support so we
+      // have to do it manually.
+      if (flags.once) {
+        emitter.removeEventListener(name, wrapListener);
+      }
+      listener(arg);
+    });
+  } else {
+    throw new TypeError('The "emitter" argument must be of type EventEmitter. Received type ' + typeof emitter);
+  }
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/js-yaml/index.js":
 /*!***************************************!*\
   !*** ./node_modules/js-yaml/index.js ***!
@@ -4210,6 +4729,383 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/js/ai-training-view.js":
+/*!************************************!*\
+  !*** ./src/js/ai-training-view.js ***!
+  \************************************/
+/***/ ((module) => {
+
+class AITrainingView {
+  constructor(ai) {
+    this.ai = ai;
+    this.running = false;
+    this.timer = 0;
+    this.speed = 10;
+
+    this.$element = $('<div></div>')
+      .addClass('ai-training-view');
+
+    this.$explorationRateSlider = this.buildSlider(
+      'Exploration rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.exploreRate,
+      (value) => { this.ai.exploreRate = value;}
+    ).appendTo(this.$element);
+
+    this.$learningRateSlider = this.buildSlider(
+      'Learning rate',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.learningRate,
+      (value) => { this.ai.learningRate = value;}
+    ).appendTo(this.$element);
+
+    this.$discountFactorSlider = this.buildSlider(
+      'Discount factor',
+      { min: 0, max: 1, step: 0.1 },
+      this.ai.discountFactor,
+      (value) => { this.ai.discountFactor = value;}
+    ).appendTo(this.$element);
+
+    this.buttons = {};
+    this.buildUIButtons();
+
+    this.$element.append(Object.values(this.buttons));
+  }
+
+  buildUIButtons() {
+    AITrainingView.Buttons.forEach((props) => {
+      const button = $('<button></button>')
+        .attr({
+          type: 'button',
+          title: props.title,
+        })
+        .addClass([
+          'btn',
+          'ai-training-view-button',
+          `ai-training-view-button-${props.id}`,
+        ])
+        .html(props.icon ? '&nbsp;' : props.title || '')
+        .pointerclick()
+        .on('i.pointerclick', () => {
+          this.handleButton(props.id);
+        });
+
+      if (props.icon) {
+        button.css({
+          backgroundImage: `url(${props.icon})`,
+        });
+      }
+
+      this.buttons[props.id] = button;
+    });
+  }
+
+  buildSlider(title, options, initialValue, changeCallback) {
+    const $element = $('<div class="slider"></div>');
+
+    const $text = $('<div class="slider-text"></div>')
+      .appendTo($element);
+    const $input = $('<div class="slider-input"></div>')
+      .appendTo($element);
+    const $exploreValue = $('<span></span>')
+      .text(initialValue);
+    $('<label></label>')
+      .html(`${title}: `)
+      .append($exploreValue)
+      .appendTo($text);
+    const $exploreSlider = $('<input type="range"></input>')
+      .attr(options)
+      .on('change', () => {
+        changeCallback(Number($exploreSlider.val()));
+        $exploreValue.text(Number($exploreSlider.val()));
+      })
+      .val(initialValue)
+      .appendTo($input);
+
+    return $element;
+  }
+
+  handleButton(id) {
+    if (id === 'run') { this.handleRun(); }
+    if (id === 'step') { this.handleStep(); }
+    if (id === 'train-1') { this.handleTrain1(); }
+    if (id === 'clear') { this.handleClear(); }
+  }
+
+  handleRun() {
+    if (this.running) {
+      this.buttons.run.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
+      this.running = false;
+    } else {
+      this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+      this.running = true;
+    }
+  }
+
+  handleStep() {
+    this.ai.step();
+  }
+
+  handleTrain1() {
+
+  }
+
+  handleClear() {
+    this.ai.clear();
+  }
+
+  animate(time) {
+    if (this.running) {
+      this.timer += time;
+      if (this.timer > this.speed) {
+        this.ai.step();
+        this.timer %= this.speed;
+      }
+    }
+  }
+}
+
+AITrainingView.Buttons = [
+  {
+    id: 'run',
+    icon: 'static/fa/play-solid.svg',
+    title: 'Run',
+  },
+  {
+    id: 'step',
+    icon: 'static/fa/step-forward-solid.svg',
+    title: 'Step',
+  },
+  // {
+  //   id: 'train-1',
+  //   title: 'Train 1 step',
+  // },
+  {
+    id: 'clear',
+    title: 'Clear',
+  },
+];
+
+module.exports = AITrainingView;
+
+
+/***/ }),
+
+/***/ "./src/js/aux/array-2d.js":
+/*!********************************!*\
+  !*** ./src/js/aux/array-2d.js ***!
+  \********************************/
+/***/ ((module) => {
+
+/**
+ * This class provides helper functions to work with 2D arrays.
+ * (arrays of arrays)
+ */
+class Array2D {
+  /**
+   * Create and initialize a 2D Array
+   *
+   * @param width {number} Number of columns (inner arrays size)
+   * @param height {number} Number of rows (outer array size)
+   * @param initValue {any} Initial value for inner array items
+   * @return {any[][]}
+   */
+  static create(width, height, initValue = 0) {
+    const rows = [];
+    for (let i = 0; i < height; i += 1) {
+      const row = [];
+      for (let j = 0; j < width; j += 1) {
+        row[j] = initValue;
+      }
+      rows.push(row);
+    }
+    return rows;
+  }
+
+  /**
+   * Creates a 2D array from a 1D array in cells[y * width + x] format
+   *
+   * @param width {number}
+   * @param height {number}
+   * @param cells {any[]}
+   */
+  static fromFlat(width, height, cells) {
+    const answer = Array2D.create(width, height);
+    for (let x = 0; x < width; x += 1) {
+      for (let y = 0; y < height; y += 1) {
+        answer[y][x] = cells[y * width + x];
+      }
+    }
+    return answer;
+  }
+
+  /**
+   * Returns a 1D array with the flattened contents of the 2D array
+   * @return {*[]}
+   */
+  static flatten(a) {
+    const items = [];
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        items.push(a[y][x]);
+      }
+    }
+    return items;
+  }
+
+  /**
+   * Returns true if the argument is an array of arrays and every inner
+   * array has the same length.
+   *
+   * @param a {any[][]}
+   * @return {boolean}
+   */
+  static isValid(a) {
+    return Array.isArray(a) && a.length > 0
+      && Array.isArray(a[0]) && a[0].length > 0
+      && a.every(row => row.length === a[0].length);
+  }
+
+  /**
+   * Returns the size of a 2D array as [width, height]
+   *
+   * Assumes the argument is a valid 2D Array.
+   *
+   * @param a {any[][]}
+   * @return {number[]}
+   */
+  static size(a) {
+    return [a[0].length, a.length];
+  }
+
+  /**
+   * Clones the 2D Array.
+   *
+   * Assumes the argument is a valid 2D Array. The items in the 2D
+   * array are not deep copied, only the outer and inner arrays.
+   *
+   * @param a {any[][]}
+   * @return {any[][]}
+   */
+  static clone(a) {
+    return a.map(row => Array.from(row));
+  }
+
+  /**
+   * Copies the contents of a 2D array into another.
+   *
+   * Assumes the arguments are valid 2D arrays with the same size.
+   *
+   * @param src {any[][]}
+   * @param dest {any[][]}
+   */
+  static copy(src, dest) {
+    for (let i = 0; i < src.length; i += 1) {
+      for (let j = 0; j < src[i].length; j += 1) {
+        // eslint-disable-next-line no-param-reassign
+        dest[i][j] = src[i][j];
+      }
+    }
+  }
+
+  /**
+   * Sets all cells to a fixed value
+   *
+   * @param a {any[][]}
+   * @param value {any}
+   */
+  static setAll(a, value) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = value;
+      }
+    }
+  }
+
+  /**
+   * Returns all items as a flat array of [x, y, value] arrays.
+   *
+   * @param a {any[][]}
+   * @return {[number, number, any][]}
+   */
+  static items(a) {
+    const items = [];
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        items.push([x, y, a[y][x]]);
+      }
+    }
+    return items;
+  }
+
+  /**
+   * @callback coordinateCallback
+   * @param x {number}
+   * @param y {number}
+   * @return {any}
+   */
+  /**
+   * Fills the items in the array with the result of a callback
+   *
+   * @param a {any[][]}
+   * @param callback {coordinateCallback}
+   */
+  static fill(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        a[y][x] = callback(x, y);
+      }
+    }
+  }
+
+  /**
+   * @callback reduceCallback
+   * @param accumulator {any}
+   * @param currentValue {any}
+   * @param x {number}
+   * @param y {number}
+   */
+  /**
+   *
+   * @param a {any[][]}
+   * @param callback {reduceCallback}
+   * @param initialValue {any}
+   * @return {any}
+   */
+  static reduce(a, callback, initialValue) {
+    let accumulator = initialValue;
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        accumulator = callback(accumulator, a[y][x], x, y);
+      }
+    }
+    return accumulator;
+  }
+
+  static forEach(a, callback) {
+    for (let y = 0; y < a.length; y += 1) {
+      for (let x = 0; x < a[y].length; x += 1) {
+        callback(a[y][x], x, y);
+      }
+    }
+  }
+
+  static zip(a, b, callback) {
+    const yMax = Math.min(a.length, b.length);
+    for (let y = 0; y < yMax; y += 1) {
+      const xMax = Math.min(a[y].length, b[y].length);
+      for (let x = 0; x < xMax; x += 1) {
+        callback(a[y][x], b[y][x], x, y);
+      }
+    }
+  }
+}
+
+module.exports = Array2D;
+
+
+/***/ }),
+
 /***/ "./src/js/aux/show-fatal-error.js":
 /*!****************************************!*\
   !*** ./src/js/aux/show-fatal-error.js ***!
@@ -4287,6 +5183,654 @@ module.exports = CfgReaderFetch;
 
 /***/ }),
 
+/***/ "./src/js/editor/maze-browser.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/maze-browser.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Maze = __webpack_require__(/*! ../maze.js */ "./src/js/maze.js");
+
+class MazeBrowser {
+  constructor($element, config, mazeStore, saveMode = false) {
+    this.$element = $element;
+    this.config = config;
+    this.$selectedButton = null;
+    this.selectedData = null;
+
+    this.$element.addClass('maze-browser');
+
+    const setSelection = (button) => {
+      if (this.$selectedButton) {
+        this.$selectedButton.removeClass('selected');
+      }
+      this.$selectedButton = $(button);
+      this.$selectedButton.addClass('selected');
+    };
+
+    const buttons = Object.entries(
+      saveMode ? mazeStore.getAllUserObjects() : mazeStore.getAllObjects()
+    ).map(([id, mazeJSON]) => $('<div></div>')
+      .addClass(['col-6', 'col-md-2', 'mb-3'])
+      .append(
+        $('<button></button>')
+          .addClass('maze-browser-item')
+          .append(this.createPreviewImage(mazeJSON))
+          .pointerclick()
+          .on('i.pointerclick', (ev) => {
+            setSelection(ev.currentTarget);
+            this.selectedData = id;
+          })
+      ));
+
+    if (saveMode) {
+      buttons.unshift($('<div></div>')
+        .addClass(['col-6', 'col-md-2', 'mb-3'])
+        .append($('<button></button>')
+          .addClass('maze-browser-item-new')
+          .on('click', (ev) => {
+            setSelection(ev.currentTarget);
+            this.selectedData = 'new';
+          })));
+    }
+
+    this.$element.append($('<div class="row"></div>').append(buttons));
+  }
+
+  createPreviewImage(mazeJSON) {
+    const maze = Maze.fromJSON(mazeJSON);
+    const $canvas = $('<canvas class="maze-browser-item-preview"></canvas>')
+      .attr({
+        width: maze.map.width,
+        height: maze.map.height,
+      });
+    const ctx = $canvas[0].getContext('2d');
+    maze.map.allCells().forEach(([i, j, value]) => {
+      ctx.fillStyle = (this.config.tileTypes && this.config.tileTypes[value].color) || '#000000';
+      ctx.fillRect(i, j, 1, 1);
+    });
+
+    return $canvas;
+  }
+}
+
+module.exports = MazeBrowser;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/maze-editor-palette.js":
+/*!**********************************************!*\
+  !*** ./src/js/editor/maze-editor-palette.js ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class MazeEditorPalette {
+  constructor($element, config) {
+    this.$element = $element;
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass('maze-editor-palette');
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+
+    this.$bar1.append(this.buildActionButtons());
+
+    this.$bar2.append(this.buildTileButtons(config));
+    this.$bar2.append($('<div class="separator"></div>'));
+    this.$bar2.append(this.buildToolButtons(config));
+    this.$bar2.append(this.buildItemButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: typeCfg.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tile',
+        `editor-palette-button-tile-${id}`,
+      ])
+      .css({
+        backgroundColor: typeCfg.color,
+        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.tileId = Number(id);
+        this.events.emit('change', 'tile', Number(id));
+      }));
+  }
+
+  buildToolButtons() {
+    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: tool.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tool',
+        `editor-palette-button-tool-${tool.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${tool.icon})`,
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', tool.id);
+      }));
+  }
+
+  buildItemButtons(config) {
+    return Object.entries(config.items).map(([id, props]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: props.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-item',
+        `editor-palette-button-item-${id}`,
+      ])
+      .css({
+        backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', 'item', id);
+      }));
+  }
+
+  buildActionButtons() {
+    return MazeEditorPalette.Actions.map(action => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: action.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-action',
+        `editor-palette-button-action-${action.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${action.icon})`,
+      })
+      .pointerclick()
+      .on('i.pointerclick', () => {
+        this.events.emit('action', action.id);
+      }));
+  }
+}
+
+MazeEditorPalette.Tools = [
+  {
+    id: 'start',
+    title: 'Set the starting point',
+    icon: 'static/fa/robot-solid-blue.svg',
+  },
+  {
+    id: 'erase',
+    title: 'Remove items',
+    icon: 'static/fa/times-solid.svg',
+  },
+];
+
+MazeEditorPalette.Actions = [
+  {
+    id: 'reset',
+    title: 'Reset',
+    icon: 'static/fa/sync-solid.svg',
+  },
+  {
+    id: 'load',
+    title: 'Load maze',
+    icon: 'static/fa/folder-open-solid.svg',
+  },
+  {
+    id: 'save',
+    title: 'Save maze',
+    icon: 'static/fa/save-solid.svg',
+  },
+  {
+    id: 'import',
+    title: 'Import maze',
+    icon: 'static/fa/file-import-solid.svg',
+  },
+  {
+    id: 'export',
+    title: 'Export maze',
+    icon: 'static/fa/file-export-solid.svg',
+  },
+];
+
+module.exports = MazeEditorPalette;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/maze-editor.js":
+/*!**************************************!*\
+  !*** ./src/js/editor/maze-editor.js ***!
+  \**************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Maze = __webpack_require__(/*! ../maze.js */ "./src/js/maze.js");
+const MazeView = __webpack_require__(/*! ../maze-view.js */ "./src/js/maze-view.js");
+const MazeEditorPalette = __webpack_require__(/*! ./maze-editor-palette.js */ "./src/js/editor/maze-editor-palette.js");
+const ModalLoad = __webpack_require__(/*! ./modal-load.js */ "./src/js/editor/modal-load.js");
+const ModalSave = __webpack_require__(/*! ./modal-save.js */ "./src/js/editor/modal-save.js");
+const ModalExport = __webpack_require__(/*! ./modal-export.js */ "./src/js/editor/modal-export.js");
+const ModalImport = __webpack_require__(/*! ./modal-import.js */ "./src/js/editor/modal-import.js");
+const ObjectStore = __webpack_require__(/*! ./object-store.js */ "./src/js/editor/object-store.js");
+
+class MazeEditor {
+  constructor($element, maze, config, textures) {
+    this.$element = $element;
+    this.maze = maze;
+    this.config = config;
+
+    this.mazeView = new MazeView(maze, config, textures);
+    this.displayObject = this.mazeView.displayObject;
+
+    this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
+
+    const tools = {
+      start: (x, y) => {
+        if (this.maze.robots.length > 0) {
+          this.maze.robots[0].setPosition(x, y);
+        }
+      },
+      erase: (x, y) => {
+        this.maze.removeItem(x, y);
+      },
+      tile: (tileType, x, y) => {
+        this.maze.map.set(x, y, tileType);
+      },
+      item: (itemType, x, y) => {
+        if (this.maze.isWalkable(x, y)) {
+          this.maze.placeItem(itemType, x, y);
+        }
+      },
+    };
+
+    this.toolHandler = null;
+    this.palette.events.on('change', (tool, type = null) => {
+      if (type !== null) {
+        this.toolHandler = tools[tool].bind(this, type);
+      } else {
+        this.toolHandler = tools[tool].bind(this);
+      }
+    });
+
+    this.palette.events.on('action', (id) => {
+      if (this.actionHandlers[id]) {
+        this.actionHandlers[id]();
+      }
+    });
+
+    let lastEdit = null;
+    this.mazeView.events.on('action', ([x, y], props) => {
+      if (this.toolHandler !== null) {
+        if (lastEdit && props.shiftKey) {
+          const [lastX, lastY] = lastEdit;
+          for (let i = Math.min(lastX, x); i <= Math.max(lastX, x); i += 1) {
+            for (let j = Math.min(lastY, y); j <= Math.max(lastY, y); j += 1) {
+              this.toolHandler(i, j);
+            }
+          }
+        } else {
+          this.toolHandler(x, y);
+        }
+        lastEdit = [x, y];
+      }
+    });
+
+    this.objectStore = new ObjectStore();
+    this.actionHandlers = {
+      load: () => {
+        const modal = new ModalLoad(this.config, this.objectStore);
+        modal.show().then((id) => {
+          const jsonMaze = id && this.objectStore.get(id);
+          if (jsonMaze) {
+            this.maze.copy(Maze.fromJSON(jsonMaze));
+          }
+        });
+      },
+      save: () => {
+        const modal = new ModalSave(this.config, this.objectStore);
+        modal.show().then((id) => {
+          if (id) {
+            this.objectStore.set(id === 'new' ? null : id, this.maze.toJSON());
+          }
+        });
+      },
+      import: () => {
+        const modal = new ModalImport();
+        modal.show().then((importedData) => {
+          if (importedData) {
+            this.maze.copy(Maze.fromJSON(importedData));
+          }
+        });
+      },
+      export: () => {
+        const modal = new ModalExport(JSON.stringify(this.maze));
+        modal.show();
+      },
+      reset: () => {
+        this.maze.reset();
+      },
+    };
+  }
+}
+
+module.exports = MazeEditor;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-export.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/modal-export.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+
+class ModalExport extends Modal {
+  constructor(exportData) {
+    super({
+      title: 'Export maze',
+    });
+
+    this.$dataContainer = $('<textarea class="form-control"></textarea>')
+      .attr({
+        rows: 10,
+      })
+      .text(exportData)
+      .appendTo(this.$body);
+
+    this.$copyButton = $('<button></button>')
+      .addClass(['btn', 'btn-outline-dark', 'btn-copy', 'mt-2'])
+      .text('Copy to clipboard')
+      .on('click', () => {
+        this.$dataContainer[0].select();
+        document.execCommand('copy');
+        this.hide();
+      })
+      .appendTo(this.$footer);
+  }
+}
+
+module.exports = ModalExport;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-import.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/modal-import.js ***!
+  \***************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+
+class ModalImport extends Modal {
+  constructor() {
+    super({
+      title: 'Import maze',
+    });
+
+    this.$dataContainer = $('<textarea class="form-control"></textarea>')
+      .attr({
+        rows: 10,
+        placeholder: 'Paste the JSON object here.',
+      })
+      .appendTo(this.$body);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$errorText = $('<p class="text-danger"></p>')
+      .appendTo(this.$footer)
+      .hide();
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$copyButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Import')
+      .on('click', () => {
+        try {
+          const imported = JSON.parse(this.$dataContainer.val());
+          this.hide(imported);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalImport;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-load.js":
+/*!*************************************!*\
+  !*** ./src/js/editor/modal-load.js ***!
+  \*************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+const CityBrowser = __webpack_require__(/*! ./maze-browser.js */ "./src/js/editor/maze-browser.js");
+
+class ModalLoad extends Modal {
+  constructor(config, mazeStore) {
+    super({
+      title: 'Load maze',
+      size: 'lg',
+    });
+
+    this.$browserContainer = $('<div></div>')
+      .appendTo(this.$body);
+    this.browser = new CityBrowser(this.$browserContainer, config, mazeStore);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$cancelButton = $('<button></button>')
+      .addClass(['btn', 'btn-secondary'])
+      .text('Cancel')
+      .on('click', () => {
+        this.hide(null);
+      })
+      .appendTo(this.$footer);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$loadButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Load')
+      .on('click', () => {
+        try {
+          this.hide(this.browser.selectedData);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalLoad;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/modal-save.js":
+/*!*************************************!*\
+  !*** ./src/js/editor/modal-save.js ***!
+  \*************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const Modal = __webpack_require__(/*! ../modal.js */ "./src/js/modal.js");
+const MazeBrowser = __webpack_require__(/*! ./maze-browser.js */ "./src/js/editor/maze-browser.js");
+
+class ModalSave extends Modal {
+  constructor(config, mazeStore) {
+    super({
+      title: 'Save maze',
+      size: 'lg',
+    });
+
+    this.$browserContainer = $('<div></div>')
+      .appendTo(this.$body);
+    this.browser = new MazeBrowser(this.$browserContainer, config, mazeStore, true);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$cancelButton = $('<button></button>')
+      .addClass(['btn', 'btn-secondary'])
+      .text('Cancel')
+      .on('click', () => {
+        this.hide(null);
+      })
+      .appendTo(this.$footer);
+
+    // noinspection JSUnusedGlobalSymbols
+    this.$saveButton = $('<button></button>')
+      .addClass(['btn', 'btn-primary'])
+      .text('Save')
+      .on('click', () => {
+        try {
+          this.hide(this.browser.selectedData);
+        } catch (err) {
+          this.showError(err.message);
+        }
+      })
+      .appendTo(this.$footer);
+  }
+
+  showError(errorText) {
+    this.$errorText.html(errorText);
+    this.$errorText.show();
+  }
+}
+
+module.exports = ModalSave;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/object-store.js":
+/*!***************************************!*\
+  !*** ./src/js/editor/object-store.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+class ObjectStore {
+  constructor(fixedObjectsPath = null) {
+    this.fixedObjects = [];
+    this.userObjects = [];
+
+    this.loadUserObjects();
+    if (fixedObjectsPath) {
+      this.loadFixedObjects(fixedObjectsPath);
+    }
+  }
+
+  async loadFixedObjects(path) {
+    fetch(path, { cache: 'no-store' })
+      .then(response => response.json())
+      .then((data) => {
+        this.fixedObjects = data.mazes;
+      });
+  }
+
+  loadUserObjects() {
+    const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
+    if (userObjects) {
+      this.userObjects = userObjects;
+    }
+  }
+
+  saveLocal() {
+    localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+  }
+
+  getAllObjects() {
+    return Object.assign(
+      {},
+      this.getAllUserObjects(),
+      this.getAllFixedObjects(),
+    );
+  }
+
+  getAllFixedObjects() {
+    return Object.fromEntries(this.fixedObjects.map((obj, i) => [
+      `F${i}`,
+      obj,
+    ]));
+  }
+
+  getAllUserObjects() {
+    return Object.fromEntries(this.userObjects.map((obj, i) => [
+      `L${i}`,
+      obj,
+    ]).reverse());
+  }
+
+  get(id) {
+    if (id[0] === 'F') {
+      return this.fixedObjects[id.substr(1)];
+    }
+    return this.userObjects[id.substr(1)];
+  }
+
+  set(id, obj) {
+    if (id === null || this.userObjects[id.substr(1)] === undefined) {
+      this.userObjects.push(obj);
+    } else {
+      this.userObjects[id.substr(1)] = obj;
+    }
+    this.saveLocal();
+  }
+}
+
+module.exports = ObjectStore;
+
+
+/***/ }),
+
 /***/ "./src/js/exhibit/i18n.js":
 /*!********************************!*\
   !*** ./src/js/exhibit/i18n.js ***!
@@ -4324,6 +5868,280 @@ module.exports = {
   init,
   setLanguage,
 };
+
+
+/***/ }),
+
+/***/ "./src/js/grid.js":
+/*!************************!*\
+  !*** ./src/js/grid.js ***!
+  \************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const Array2D = __webpack_require__(/*! ./aux/array-2d.js */ "./src/js/aux/array-2d.js");
+
+/**
+ * Represents a 2D grid map that stores a single Number per cell
+ */
+class Grid {
+  /**
+   * Create a new grid
+   *
+   * @param {number} width
+   * @param {number} height
+   * @param {number[][]} cells
+   */
+  constructor(width, height, cells = null) {
+    this.width = width;
+    this.height = height;
+    this.cells = cells || Array2D.create(width, height, 0);
+    this.events = new EventEmitter();
+  }
+
+  /**
+   * Create a new Grid from a JSON string
+   *
+   * @param jsonObject {object} JSON object
+   * @return {Grid}
+   */
+  static fromJSON(jsonObject) {
+    const { width, height, cells } = jsonObject;
+    return new Grid(width, height, cells);
+  }
+
+  /**
+   * Serializes to a JSON object
+   * @return {{cells: number[][], width: number, height: number}}
+   */
+  toJSON() {
+    return {
+      width: this.width,
+      height: this.height,
+      cells: Array2D.clone(this.cells),
+    };
+  }
+
+  copy(grid) {
+    this.width = grid.width;
+    this.height = grid.height;
+    this.replace(grid.cells);
+  }
+
+  /**
+   * Retrieves the value at (x,y)
+   *
+   * @param {number} x
+   * @param {number} y
+   * @return {number}
+   */
+  get(x, y) {
+    return this.cells[y][x];
+  }
+
+  /**
+   * Set the value at (x, y)
+   *
+   * @fires Grid.events#update
+   *
+   * @param {number} x
+   * @param {number} y
+   * @param {number} value
+   */
+  set(x, y, value) {
+    this.cells[y][x] = value;
+
+    /**
+     * Update event.
+     *
+     * Argument is an array of updated cells. Each updated cell is represented
+     * by an array with three elements: [x, y, value]
+     *
+     * @event Grid.events#update
+     * @type {[[number, number, number]]}
+     */
+    this.events.emit('update', [[x, y, value]]);
+  }
+
+  /**
+   * Backwards compatibility function that maps (x, y) to a single index in a flat array
+   * @deprecated
+   * @param x {number}
+   * @param y {number}
+   * @return {number}
+   */
+  offset(x, y) {
+    return y * this.width + x;
+  }
+
+  replace(cells) {
+    Array2D.copy(cells, this.cells);
+    this.events.emit('update', this.allCells());
+  }
+
+  /**
+   * Returns true if (x, y) are valid coordinates within the grid's bounds.
+   *
+   * @param {number} x
+   * @param {number} y
+   * @return {boolean}
+   */
+  isValidCoords(x, y) {
+    return x >= 0 && y >= 0 && x < this.width && y < this.height;
+  }
+
+  /**
+   * Returns all cells, represented as [x, y, value] arrays.
+   *
+   * @return {[[number, number, number]]}
+   */
+  allCells() {
+    return Array2D.items(this.cells);
+  }
+
+  /**
+   * Get cells adjacent to the cell at (i, j).
+   *
+   * Each cell is represented by an array of the form [i, j, value]
+   * A cell has at most four adjacent cells, which share one side
+   * (diagonals are not adjacent).
+   *
+   * @param {number} i
+   * @param {number} j
+   * @return {[[number, number, number]]}
+   */
+  adjacentCells(i, j) {
+    return [[i, j - 1], [i + 1, j], [i, j + 1], [i - 1, j]]
+      .filter(([x, y]) => this.isValidCoords(x, y))
+      .map(([x, y]) => [x, y, this.get(x, y)]);
+  }
+
+  /**
+   * Returns the cells around the cell at (i, j).
+   *
+   * Each cells returned is represented as an array [i, j, value].
+   * Cells "around" are those reachable by no less than <distance> steps in
+   * any direction, including diagonals.
+   *
+   * @param {number} i
+   * @param {number} j
+   * @param {number} distance
+   * @return {[[number, number, number]]}
+   */
+  nearbyCells(i, j, distance = 1) {
+    const coords = [];
+    // Top
+    for (let x = i - distance; x < i + distance; x += 1) {
+      coords.push([x, j - distance]);
+    }
+    // Right
+    for (let y = j - distance; y < j + distance; y += 1) {
+      coords.push([i + distance, y]);
+    }
+    // Bottom
+    for (let x = i + distance; x > i - distance; x -= 1) {
+      coords.push([x, j + distance]);
+    }
+    // Left
+    for (let y = j + distance; y > j - distance; y -= 1) {
+      coords.push([i - distance, y]);
+    }
+
+    return coords
+      .filter(([x, y]) => this.isValidCoords(x, y))
+      .map(([x, y]) => [x, y, this.get(x, y)]);
+  }
+
+  stepDistance(x1, y1, x2, y2) {
+    return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+  }
+}
+
+module.exports = Grid;
+
+
+/***/ }),
+
+/***/ "./src/js/jquery-plugins/jquery.pointerclick.js":
+/*!******************************************************!*\
+  !*** ./src/js/jquery-plugins/jquery.pointerclick.js ***!
+  \******************************************************/
+/***/ (() => {
+
+/**
+ * This jQuery plugin adds an 'i.pointerclick' event that is fired on pointerdown followed by
+ * a pointerup within the area of the original element.
+ *
+ * Install it by calling pointerclick() on a jQuery object:
+ *
+ * $('#my-element')
+ *  .pointerclick()
+ *  .on('i.pointerclick', function(event) {
+ *    // do something
+ *  });
+ *
+ *  This plugin was motivated because on multi-touch devices, the click event is not fired if a
+ *  different part of the screen is being touched at the time.
+ */
+(function initPlugins($) {
+  $.fn.pointerclick = function pointerClickHandler() {
+    return this.each(function pointerClickElementHandler() {
+      let trackedPointerId = null;
+
+      $(document)
+        .on('pointerup', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+          }
+        })
+        .on('pointercancel', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+          }
+        });
+
+      $(this)
+        .on('pointerdown', (ev) => {
+          trackedPointerId = ev.pointerId;
+          // On touch, apparently, the pointer is automatically captured by pointerdown
+          ev.delegateTarget.releasePointerCapture(ev.pointerId);
+        })
+        .on('pointerup', (ev) => {
+          if (ev.pointerId === trackedPointerId) {
+            trackedPointerId = null;
+            $(this).trigger('i.pointerclick', ev);
+          }
+        });
+    });
+  };
+}(jQuery));
+
+
+/***/ }),
+
+/***/ "./src/js/keyboard-controller.js":
+/*!***************************************!*\
+  !*** ./src/js/keyboard-controller.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+function setupKeyControls(robot) {
+  const keyMap = {
+    ArrowLeft: () => { robot.go('w'); },
+    ArrowRight: () => { robot.go('e'); },
+    ArrowUp: () => { robot.go('n'); },
+    ArrowDown: () => { robot.go('s'); },
+  };
+
+  window.addEventListener('keydown', (ev) => {
+    if (keyMap[ev.code]) {
+      keyMap[ev.code]();
+      ev.preventDefault();
+    }
+  });
+}
+
+module.exports = setupKeyControls;
 
 
 /***/ }),
@@ -4405,6 +6223,839 @@ class LangSwitcher {
 module.exports = LangSwitcher;
 
 
+/***/ }),
+
+/***/ "./src/js/maze-view-ai-overlay.js":
+/*!****************************************!*\
+  !*** ./src/js/maze-view-ai-overlay.js ***!
+  \****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* globals PIXI */
+const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
+
+class MazeViewAIOverlay {
+  constructor(mazeView, ai) {
+    this.view = mazeView;
+    this.ai = ai;
+    this.visible = false;
+    this.displayObject = new PIXI.Container();
+    this.displayObject.visible = this.visible;
+
+    this.fontSize = 18;
+    this.padding = 2;
+
+    this.texts = [];
+    this.createTexts();
+    this.update();
+
+    this.ai.events.on('update', (x, y, direction) => {
+      this.update();
+    });
+  }
+
+  toggle() {
+    if (this.visible) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+
+  show() {
+    this.visible = true;
+    this.displayObject.visible = true;
+  }
+
+  hide() {
+    this.visible = false;
+    this.displayObject.visible = false;
+  }
+
+  createTexts() {
+    const { height, width } = this.view.maze.map;
+    const options = { fontFamily: 'Arial', fontSize: this.fontSize };
+
+    const createText = (align) => {
+      const text = new PIXI.Text('', Object.assign({}, options, { align }));
+      this.displayObject.addChild(text);
+      return text;
+    };
+
+    for (let j = 0; j < height; j += 1) {
+      this.texts[j] = new Array(width);
+      for (let i = 0; i < width; i += 1) {
+        this.texts[j][i] = {
+          n: createText('center'),
+          s: createText('center'),
+          e: createText('right'),
+          w: createText('left'),
+        };
+      }
+    }
+  }
+
+  positionText(text, x, y, direction) {
+    switch (direction) {
+      case 'n':
+        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+        text.y = MazeView.TILE_SIZE * y + this.padding;
+        break;
+      case 's':
+        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+        text.y = MazeView.TILE_SIZE * (y + 1) - (this.fontSize + this.padding);
+        break;
+      case 'e':
+        text.x = MazeView.TILE_SIZE * (x + 1) - (text.width + this.padding);
+        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        break;
+      case 'w':
+        text.x = MazeView.TILE_SIZE * x + this.padding;
+        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        break;
+      default:
+        break;
+    }
+  }
+
+  update() {
+    for (let j = 0; j < this.texts.length; j += 1) {
+      for (let i = 0; i < this.texts[j].length; i += 1) {
+        Object.keys(this.texts[j][i]).forEach((direction) => {
+          const textObject = this.texts[j][i][direction];
+          textObject.text = this.ai.q[j][i][direction].toFixed(3);
+          this.positionText(textObject, i, j, direction);
+        });
+      }
+    }
+  }
+}
+
+module.exports = MazeViewAIOverlay;
+
+
+/***/ }),
+
+/***/ "./src/js/maze-view.js":
+/*!*****************************!*\
+  !*** ./src/js/maze-view.js ***!
+  \*****************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* globals PIXI */
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const PencilCursor = __webpack_require__(/*! ../../static/fa/pencil-alt-solid.svg */ "./static/fa/pencil-alt-solid.svg");
+const RobotView = __webpack_require__(/*! ./robot-view */ "./src/js/robot-view.js");
+const Array2D = __webpack_require__(/*! ./aux/array-2d */ "./src/js/aux/array-2d.js");
+
+class MazeView {
+  constructor(maze, config, textures = { }) {
+    this.displayObject = new PIXI.Container();
+    this.tileLayer = new PIXI.Container();
+    this.itemLayer = new PIXI.Container();
+    this.robotLayer = new PIXI.Container();
+    this.displayObject.addChild(this.tileLayer);
+    this.displayObject.addChild(this.itemLayer);
+    this.displayObject.addChild(this.robotLayer);
+
+    this.maze = maze;
+    this.config = config;
+    this.textures = textures;
+    this.events = new EventEmitter();
+
+    this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
+    this.robotViews = [];
+
+    const pointers = {};
+
+    this.maze.map.allCells().forEach(([x, y]) => {
+      const floorTile = new PIXI.Graphics();
+      floorTile.x = x * MazeView.TILE_SIZE;
+      floorTile.y = y * MazeView.TILE_SIZE;
+      floorTile.interactive = true;
+      floorTile.on('pointerdown', (ev) => {
+        pointers[ev.data.pointerId] = { lastTile: { x, y } };
+        this.events.emit('action', [x, y], {
+          shiftKey: ev.data.originalEvent.shiftKey,
+        });
+      });
+
+      // floorTile.on('pointermove', (ev) => {
+      //   if (pointerActive) {
+      //
+      //   }
+      //   // if (pointerActive && lastTile !== floorTile) {
+      //   //   lastTile = floorTile;
+      //     // this.events.emit('action', [i, j], {
+      //     //   shiftKey: ev.data.originalEvent.shiftKey,
+      //     // });
+      //   // }
+      // });
+
+      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+      this.floorTiles[y][x] = floorTile;
+
+      this.renderCell(x, y);
+    });
+
+    this.tileLayer.interactive = true;
+    this.tileLayer.on('pointermove', (ev) => {
+      if (pointers[ev.data.pointerId] !== undefined) {
+        const tileCoords = this.getCoordsAtPosition(ev.data.global);
+        if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
+          if (tileCoords) {
+            this.events.emit('action', [tileCoords.x, tileCoords.y], {
+              shiftKey: ev.data.originalEvent.shiftKey,
+            });
+          }
+          pointers[ev.data.pointerId].lastTile = tileCoords;
+        }
+      }
+    });
+
+    const onEndPointer = (ev) => {
+      delete pointers[ev.data.pointerId];
+    };
+
+    this.tileLayer.on('pointerup', onEndPointer);
+    this.tileLayer.on('pointerupoutside', onEndPointer);
+    this.tileLayer.on('pointercancel', onEndPointer);
+
+    this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
+    this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
+    this.handleCityUpdate(this.maze.map.allCells());
+
+    this.robotViews = this.maze.robots.map((robot) => {
+      const robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures[`robot-${robot.id}`]);
+
+      robot.events.on('move', (direction, x1, y1, x2, y2) => {
+        if (direction) {
+          robotView.moveTo(x2, y2);
+        } else {
+          robotView.setPosition(x2, y2);
+        }
+      });
+
+      robot.events.on('exited', () => {
+        robot.canMove = false;
+        setTimeout(() => {
+          this.maze.reset();
+          robot.canMove = true;
+        }, 1000);
+      });
+
+      return robotView;
+    });
+
+    this.itemSprites = {};
+    this.maze.items.forEach((item) => { this.createItemSprite(item); });
+    this.maze.events.on('itemPlaced', (item) => {
+      this.createItemSprite(item);
+    });
+
+    this.maze.events.on('itemRemoved', (item) => {
+      this.removeItemSprite(item);
+    });
+
+    this.maze.events.on('itemPicked', (item) => {
+      this.handleItemPicked(item);
+    });
+
+    this.maze.events.on('itemReset', (item) => {
+      this.handleItemReset(item);
+    });
+
+    this.robotLayer.addChild(...this.robotViews.map(view => view.sprite));
+  }
+
+  createItemSprite(item) {
+    const sprite = new PIXI.Sprite();
+    sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
+    sprite.width = MazeView.TILE_SIZE * 0.5;
+    sprite.height = MazeView.TILE_SIZE * 0.5;
+    sprite.roundPixels = true;
+    sprite.texture = this.textures[`item-${item.type}`];
+
+    this.itemSprites[item.id] = sprite;
+
+    this.itemLayer.addChild(sprite);
+  }
+
+  removeItemSprite(item) {
+    if (this.itemSprites[item.id]) {
+      const sprite = this.itemSprites[item.id];
+      this.itemLayer.removeChild(sprite);
+      sprite.destroy();
+      delete this.itemSprites[item.id];
+    }
+  }
+
+  handleItemPicked(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = false;
+    }
+  }
+
+  handleItemReset(item) {
+    if (this.itemSprites[item.id]) {
+      this.itemSprites[item.id].visible = true;
+    }
+  }
+
+  getFloorTile(x, y) {
+    return this.floorTiles[y][x];
+  }
+
+  getCoordsAtPosition(globalPoint) {
+    if (this.origin === undefined) {
+      this.origin = new PIXI.Point();
+    }
+    this.origin = this.displayObject.getGlobalPosition(this.origin, false);
+
+    const x = Math.floor((globalPoint.x - this.origin.x)
+      / this.displayObject.scale.x / MazeView.TILE_SIZE);
+    const y = Math.floor((globalPoint.y - this.origin.y)
+      / this.displayObject.scale.y / MazeView.TILE_SIZE);
+
+    return (x >= 0 && x < this.maze.map.width && y >= 0 && y < this.maze.map.height)
+      ? { x, y } : null;
+  }
+
+  renderCell(i, j) {
+    this.renderFloor(i, j);
+  }
+
+  renderFloor(i, j) {
+    const tileType = this.config.tileTypes[this.maze.map.get(i, j)] || null;
+    this.getFloorTile(i, j)
+      .clear()
+      .lineStyle(2, 0x0, 0.3)
+      .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
+      .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
+      .endFill();
+  }
+
+  handleCityUpdate(updates) {
+    updates.forEach(([i, j]) => { this.renderCell(i, j); });
+  }
+
+  addOverlay(displayObject) {
+    this.displayObject.addChild(displayObject);
+  }
+
+  animate(time) {
+    this.robotViews.forEach(view => view.animate(time));
+  }
+}
+
+MazeView.TILE_SIZE = 120;
+
+module.exports = MazeView;
+
+
+/***/ }),
+
+/***/ "./src/js/maze.js":
+/*!************************!*\
+  !*** ./src/js/maze.js ***!
+  \************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const Grid = __webpack_require__(/*! ./grid.js */ "./src/js/grid.js");
+const Array2D = __webpack_require__(/*! ./aux/array-2d.js */ "./src/js/aux/array-2d.js");
+
+class Maze {
+  constructor(width, height, cells = null, config) {
+    this.map = new Grid(width, height, cells);
+    this.config = config;
+    this.robots = [];
+    this.items = [];
+    this.lastItemId = 0;
+    this.startPosition = [0, height - 1];
+
+    this.events = new EventEmitter();
+  }
+
+  toJSON() {
+    const { map } = this;
+    return {
+      map: map.toJSON(),
+      items: this.items.map(({ type, x, y }) => ({ type, x, y })),
+    };
+  }
+
+  static fromJSON(jsonObject) {
+    const { map, items } = jsonObject;
+    const { width, height } = map;
+    const maze = new Maze(width, height, Array2D.clone(map.cells));
+    (items || []).forEach(({ type, x, y }) => {
+      maze.placeItem(type, x, y);
+    });
+    return maze;
+  }
+
+  copy(maze) {
+    this.map.copy(maze.map);
+    this.clearItems();
+    (maze.items || []).forEach(({ type, x, y }) => {
+      this.placeItem(type, x, y);
+    });
+    this.lastItemId = maze.lastItemId;
+  }
+
+  addRobot(robot) {
+    this.robots.push(robot);
+    robot.maze = this;
+    // Put the robot in the lower left corner
+    const [startX, startY] = this.startPosition;
+    robot.x = startX;
+    robot.y = startY;
+  }
+
+  placeItem(type, x, y) {
+    this.removeItem(x, y);
+    this.lastItemId += 1;
+    const newItem = {
+      id: this.lastItemId,
+      type,
+      x,
+      y,
+      picked: false,
+    };
+    this.items.push(newItem);
+    this.events.emit('itemPlaced', newItem);
+  }
+
+  getItem(x, y) {
+    const found = this.items.find(item => item.x === x && item.y === y);
+    return found;
+  }
+
+  removeItem(x, y) {
+    const item = this.getItem(x, y);
+    if (item) {
+      this.events.emit('itemRemoved', item);
+      this.items = this.items.filter(any => any.id !== item.id);
+    }
+  }
+
+  pickItem(x, y) {
+    const item = this.getItem(x, y);
+    if (item && !item.picked) {
+      this.events.emit('itemPicked', item);
+      item.picked = true;
+      return item;
+    }
+    return null;
+  }
+
+  clearItems() {
+    this.items.forEach((item) => {
+      this.events.emit('itemRemoved', item);
+    });
+    this.items = [];
+  }
+
+  isWalkable(x, y) {
+    return this.config.tileTypes
+      && this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].walkable;
+  }
+
+  isExit(x, y) {
+    return this.config.tileTypes
+      && this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].exit;
+  }
+
+  reset() {
+    this.robots.forEach((robot) => {
+      robot.setPosition(...this.startPosition);
+      robot.resetScore();
+    });
+
+    this.items.forEach((item) => {
+      item.picked = false;
+      this.events.emit('itemReset', item);
+    });
+  }
+
+  getItemReward(item) {
+    return (this.config.items[item.type] && this.config.items[item.type].reward) || 0;
+  }
+
+  getPositionReward(x, y) {
+    return (
+      this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].reward
+    ) || 0;
+  }
+}
+
+module.exports = Maze;
+
+
+/***/ }),
+
+/***/ "./src/js/modal.js":
+/*!*************************!*\
+  !*** ./src/js/modal.js ***!
+  \*************************/
+/***/ ((module) => {
+
+class Modal {
+  /**
+   * @param {object} options
+   *  Modal dialog options
+   * @param {string} options.title
+   *  Dialog title.
+   * @param {string} options.size
+   *  Modal size (lg or sm).
+   * @param {boolean} options.showCloseButton
+   *  Shows a close button in the dialog if true.
+   * @param {boolean} options.showFooter
+   *  Adds a footer area to the dialog if true.
+   */
+  constructor(options) {
+    this.returnValue = null;
+
+    this.$element = $('<div class="modal fade"></div>');
+    this.$dialog = $('<div class="modal-dialog"></div>').appendTo(this.$element);
+    this.$content = $('<div class="modal-content"></div>').appendTo(this.$dialog);
+    this.$header = $('<div class="modal-header"></div>').appendTo(this.$content);
+    this.$body = $('<div class="modal-body"></div>').appendTo(this.$content);
+    this.$footer = $('<div class="modal-footer"></div>').appendTo(this.$content);
+
+    this.$closeButton = $('<button type="button" class="close" data-dismiss="modal">')
+      .append($('<span>&times;</span>'))
+      .appendTo(this.$header);
+
+    if (options.title) {
+      $('<h5 class="modal-title"></h5>')
+        .html(options.title)
+        .prependTo(this.$header);
+    }
+    if (options.size) {
+      this.$dialog.addClass(`modal-${options.size}`);
+    }
+
+    if (options.showCloseButton === false) {
+      this.$closeButton.remove();
+    }
+    if (options.showFooter === false) {
+      this.$footer.remove();
+    }
+  }
+
+  async show() {
+    return new Promise((resolve) => {
+      $('body').append(this.$element);
+      this.$element.modal();
+      this.$element.on('hidden.bs.modal', () => {
+        this.$element.remove();
+        resolve(this.returnValue);
+      });
+    });
+  }
+
+  hide(returnValue) {
+    this.returnValue = returnValue;
+    this.$element.modal('hide');
+  }
+}
+
+module.exports = Modal;
+
+
+/***/ }),
+
+/***/ "./src/js/qlearning-ai.js":
+/*!********************************!*\
+  !*** ./src/js/qlearning-ai.js ***!
+  \********************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
+
+class QLearningAI {
+  constructor(robot) {
+    this.robot = robot;
+    this.q = this.initQ();
+    this.learningRate = 1;
+    this.discountFactor = 1;
+    this.exploreRate = 0.1;
+    this.learning = true;
+    this.events = new EventEmitter();
+
+    this.robot.events.on('move', (direction, x1, y1, x2, y2, reward) => {
+      if (this.learning && direction !== null) {
+        this.update(direction, x1, y1, x2, y2, reward);
+      }
+    });
+  }
+
+  initQ() {
+    const { height, width } = this.robot.maze.map;
+    const table = new Array(height);
+
+    for (let j = 0; j < height; j += 1) {
+      table[j] = new Array(width);
+      for (let i = 0; i < width; i += 1) {
+        table[j][i] = Object.fromEntries(
+          Object.keys(Robot.Directions).map(direction => [direction, 0])
+        );
+      }
+    }
+
+    return table;
+  }
+
+  clear() {
+    this.q = this.initQ();
+    this.events.emit('update');
+  }
+
+  greedyPolicy() {
+    const { x, y } = this.robot;
+    const directions = this.robot.availableDirections();
+    const dirValuePairs = Object.entries(this.q[y][x])
+      .filter(([direction]) => directions.includes(direction));
+    if (dirValuePairs.length > 0) {
+      return dirValuePairs.sort(([, valA], [, valB]) => valA - valB)
+        .pop()[0];
+    }
+    return null;
+  }
+
+  randomPolicy() {
+    const directions = this.robot.availableDirections();
+    if (directions.length) {
+      return directions[Math.floor(Math.random() * directions.length)];
+    }
+    return null;
+  }
+
+  epsilonGreedyPolicy() {
+    if (Math.random() >= this.exploreRate) {
+      return this.greedyPolicy();
+    }
+    return this.randomPolicy();
+  }
+
+  step() {
+    const direction = this.epsilonGreedyPolicy();
+    if (direction) {
+      this.robot.go(direction);
+    }
+  }
+
+  maxQ(x, y) {
+    const directions = this.robot.availableDirectionsAt(x, y);
+    return directions.length > 0
+      ? Math.max(...Object.entries(this.q[y][x])
+        .filter(([direction]) => directions.includes(direction))
+        .map(([, value]) => value))
+      : 0;
+  }
+
+  update(direction, x1, y1, x2, y2, reward) {
+    this.q[y1][x1][direction] += this.learningRate
+      * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);
+
+    this.events.emit('update');
+  }
+}
+
+module.exports = QLearningAI;
+
+
+/***/ }),
+
+/***/ "./src/js/robot-view.js":
+/*!******************************!*\
+  !*** ./src/js/robot-view.js ***!
+  \******************************/
+/***/ ((module) => {
+
+/* globals PIXI */
+
+class RobotView {
+  constructor(robot, tileSize, texture) {
+    this.robot = robot;
+    this.tileSize = tileSize;
+
+    this.waypoints = [];
+    this.speed = 15;
+
+    this.sprite = RobotView.createSprite(tileSize, texture);
+    this.setPosition(this.robot.x, this.robot.y);
+  }
+
+  static createSprite(tileSize, texture) {
+    const sprite = new PIXI.Sprite();
+    sprite.width = tileSize;
+    sprite.height = tileSize;
+    sprite.roundPixels = true;
+    sprite.texture = texture;
+
+    return sprite;
+  }
+
+  setPosition(x, y) {
+    this.sprite.x = x * this.tileSize;
+    this.sprite.y = y * this.tileSize;
+  }
+
+  moveTo(x, y) {
+    this.waypoints.push([x, y]);
+  }
+
+  animate(time) {
+    if (this.waypoints.length > 0) {
+      const destX = this.waypoints[0][0] * this.tileSize;
+      const destY = this.waypoints[0][1] * this.tileSize;
+      const deltaX = destX - this.sprite.x;
+      const deltaY = destY - this.sprite.y;
+
+      this.sprite.x += Math.min(Math.abs(deltaX), time * this.speed) * Math.sign(deltaX);
+      this.sprite.y += Math.min(Math.abs(deltaY), time * this.speed) * Math.sign(deltaY);
+
+      if (this.sprite.x === destX && this.sprite.y === destY) {
+        this.waypoints = this.waypoints.slice(1);
+      }
+    }
+  }
+}
+
+module.exports = RobotView;
+
+
+/***/ }),
+
+/***/ "./src/js/robot.js":
+/*!*************************!*\
+  !*** ./src/js/robot.js ***!
+  \*************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class Robot {
+  constructor(id, props) {
+    this.id = id;
+    this.name = props.name || id;
+    this.maze = null;
+    this.x = 0;
+    this.y = 0;
+    this.score = 0;
+    this.canMove = true;
+
+    this.events = new EventEmitter();
+  }
+
+  setPosition(x, y) {
+    this.onMoved(null, this.x, this.y, x, y);
+    this.x = x;
+    this.y = y;
+  }
+
+  canMoveTo(x, y) {
+    return this.canMove
+      && this.maze
+      && this.maze.map.isValidCoords(x, y)
+      && this.maze.isWalkable(x, y)
+      && this.maze.map.stepDistance(this.x, this.y, x, y) === 1;
+  }
+
+  canMoveFromTo(x1, y1, x2, y2) {
+    return this.maze.map.isValidCoords(x2, y2)
+      && this.maze.isWalkable(x2, y2)
+      && this.maze.map.stepDistance(x1, y1, x2, y2) === 1;
+  }
+
+  moveTo(direction, x, y) {
+    if (this.canMoveTo(x, y)) {
+      this.onMoved(direction, this.x, this.y, x, y);
+      this.x = x;
+      this.y = y;
+    }
+  }
+
+  onMoved(direction, oldX, oldY, x, y) {
+    let reward = 0;
+    reward += this.maze.getPositionReward(x, y);
+    const item = this.maze.pickItem(x, y);
+    if (item) {
+      reward += this.maze.getItemReward(item);
+    }
+    this.events.emit('move', direction, this.x, this.y, x, y, reward);
+    this.addScore(reward);
+
+    if (this.maze.isExit(x, y)) {
+      this.onExit(x, y);
+    }
+  }
+
+  onExit(x, y) {
+    this.events.emit('exited', x, y);
+  }
+
+  availableDirections() {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveTo(
+        this.x + Robot.Directions[dir][0],
+        this.y + Robot.Directions[dir][1])
+      );
+  }
+
+  availableDirectionsAt(x, y) {
+    return Object.keys(Robot.Directions)
+      .filter(dir => this.canMoveFromTo(
+        x,
+        y,
+        x + Robot.Directions[dir][0],
+        y + Robot.Directions[dir][1]));
+  }
+
+  go(direction) {
+    const [deltaX, deltaY] = Robot.Directions[direction];
+    this.moveTo(direction, this.x + deltaX, this.y + deltaY);
+  }
+
+  resetScore() {
+    this.score = 0;
+  }
+
+  addScore(amount) {
+    this.score += amount;
+    this.events.emit('scoreChanged', amount, this.score);
+  }
+}
+
+Robot.Directions = {
+  n: [0, -1],
+  s: [0, 1],
+  e: [1, 0],
+  w: [-1, 0],
+};
+
+module.exports = Robot;
+
+
+/***/ }),
+
+/***/ "./static/fa/pencil-alt-solid.svg":
+/*!****************************************!*\
+  !*** ./static/fa/pencil-alt-solid.svg ***!
+  \****************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
+
 /***/ })
 
 /******/ 	});
@@ -4434,6 +7085,18 @@ module.exports = LangSwitcher;
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/global */
+/******/ 	(() => {
+/******/ 		__webpack_require__.g = (function() {
+/******/ 			if (typeof globalThis === 'object') return globalThis;
+/******/ 			try {
+/******/ 				return this || new Function('return this')();
+/******/ 			} catch (e) {
+/******/ 				if (typeof window === 'object') return window;
+/******/ 			}
+/******/ 		})();
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
 /******/ 	(() => {
 /******/ 		// define __esModule on exports
@@ -4445,6 +7108,26 @@ module.exports = LangSwitcher;
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		var scriptUrl;
+/******/ 		if (__webpack_require__.g.importScripts) scriptUrl = __webpack_require__.g.location + "";
+/******/ 		var document = __webpack_require__.g.document;
+/******/ 		if (!scriptUrl && document) {
+/******/ 			if (document.currentScript)
+/******/ 				scriptUrl = document.currentScript.src
+/******/ 			if (!scriptUrl) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 			}
+/******/ 		}
+/******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
+/******/ 		// or pass an empty string ("") and set the __webpack_public_path__ variable from your code to use your own logic.
+/******/ 		if (!scriptUrl) throw new Error("Automatic publicPath is not supported in this browser");
+/******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
+/******/ 		__webpack_require__.p = scriptUrl;
+/******/ 	})();
+/******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
@@ -4452,15 +7135,24 @@ var __webpack_exports__ = {};
 /*!********************************!*\
   !*** ./src/js/main-exhibit.js ***!
   \********************************/
-/* globals IMAGINARY */
+/* globals IMAGINARY, PIXI */
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 __webpack_require__(/*! ../sass/exhibit.scss */ "./src/sass/exhibit.scss");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
 const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
 const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
 const showFatalError = __webpack_require__(/*! ./aux/show-fatal-error */ "./src/js/aux/show-fatal-error.js");
 const LangSwitcher = __webpack_require__(/*! ./lang-switcher */ "./src/js/lang-switcher.js");
+const Maze = __webpack_require__(/*! ./maze */ "./src/js/maze.js");
+const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
+const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
+const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
+const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -4507,10 +7199,69 @@ cfgLoader.load([
       { languages: config.languages },
       code => I18n.setLanguage(code)
     );
+
+    const app = new PIXI.Application({
+      width: 1920,
+      height: 1080,
+      backgroundColor: 0xffffff,
+    });
+
+    // CHAOS
+    const textures = {};
+    Object.entries(config.robots).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `robot-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    Object.entries(config.items).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `item-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    app.loader.load((loader, resources) => {
+      Object.keys(textures).forEach((id) => {
+        textures[id] = resources[id].texture;
+      });
+
+      const maze = Maze.fromJSON(maze1);
+      maze.config = config;
+      Object.entries(config.robots).forEach(([id, props]) => {
+        const robot = new Robot(id, props);
+        maze.addRobot(robot);
+      });
+      const ai = new QLearningAI(maze.robots[0]);
+      setupKeyControls(maze.robots[0]);
+
+      $('#pixi-app-container').append(app.view);
+      // const mazeView = new MazeView(maze, config, textures);
+      const mazeView = new MazeEditor($('#panel-4'), maze, config, textures);
+      app.stage.addChild(mazeView.displayObject);
+      mazeView.displayObject.width = 720;
+      mazeView.displayObject.height = 720;
+      mazeView.displayObject.x = 1080;
+      mazeView.displayObject.y = (1080 - 720) / 2;
+
+      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+      mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyD') {
+          aiOverlay.toggle();
+        }
+      });
+      app.ticker.add(time => mazeView.mazeView.animate(time));
+
+      const trainingView = new AITrainingView(ai);
+      $('#training-ui').append(trainingView.$element);
+      app.ticker.add(time => trainingView.animate(time));
+    });
   });
 
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.27f8822c4258adcd8ca0.js.map
+//# sourceMappingURL=exhibit.468e9b4c98c3de3b1406.js.map

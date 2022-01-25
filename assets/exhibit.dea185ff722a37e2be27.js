@@ -5259,183 +5259,6 @@ module.exports = MazeBrowser;
 
 /***/ }),
 
-/***/ "./src/js/editor/maze-editor-palette.js":
-/*!**********************************************!*\
-  !*** ./src/js/editor/maze-editor-palette.js ***!
-  \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
-
-class MazeEditorPalette {
-  constructor($container, config) {
-    this.$container = $container;
-    this.$element = $('<div></div>').appendTo(this.$container);
-    this.config = config;
-    this.activeButton = null;
-    this.tileId = null;
-    this.events = new EventEmitter();
-
-    this.$element.addClass('maze-editor-palette');
-    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-
-    this.$bar1.append(this.buildActionButtons());
-
-    this.$bar2.append(this.buildTileButtons(config));
-    this.$bar2.append($('<div class="separator"></div>'));
-    this.$bar2.append(this.buildToolButtons(config));
-    this.$bar2.append(this.buildItemButtons(config));
-  }
-
-  buildTileButtons(config) {
-    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: typeCfg.name,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tile',
-        `editor-palette-button-tile-${id}`,
-      ])
-      .css({
-        backgroundColor: typeCfg.color,
-        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.tileId = Number(id);
-        this.events.emit('change', 'tile', Number(id));
-      }));
-  }
-
-  buildToolButtons() {
-    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: tool.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tool',
-        `editor-palette-button-tool-${tool.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${tool.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.events.emit('change', tool.id);
-      }));
-  }
-
-  buildItemButtons(config) {
-    return Object.entries(config.items)
-      .filter(([, props]) => props.inPalette !== false)
-      .map(([id, props]) => $('<button></button>')
-        .attr({
-          type: 'button',
-          title: props.name,
-        })
-        .addClass([
-          'editor-palette-button',
-          'editor-palette-button-item',
-          `editor-palette-button-item-${id}`,
-        ])
-        .css({
-          backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
-        })
-        .pointerclick()
-        .on('i.pointerclick', (ev) => {
-          if (this.activeButton) {
-            this.activeButton.removeClass('active');
-          }
-          this.activeButton = $(ev.target);
-          this.activeButton.addClass('active');
-          this.events.emit('change', 'item', id);
-        }));
-  }
-
-  buildActionButtons() {
-    return MazeEditorPalette.Actions.map(action => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: action.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-action',
-        `editor-palette-button-action-${action.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${action.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', () => {
-        this.events.emit('action', action.id);
-      }));
-  }
-}
-
-MazeEditorPalette.Tools = [
-  {
-    id: 'start',
-    title: 'Set the starting point',
-    icon: 'static/fa/robot-solid-blue.svg',
-  },
-  {
-    id: 'erase',
-    title: 'Remove items',
-    icon: 'static/fa/times-solid.svg',
-  },
-];
-
-MazeEditorPalette.Actions = [
-  {
-    id: 'reset',
-    title: 'Reset',
-    icon: 'static/fa/sync-solid.svg',
-  },
-  {
-    id: 'load',
-    title: 'Load maze',
-    icon: 'static/fa/folder-open-solid.svg',
-  },
-  {
-    id: 'save',
-    title: 'Save maze',
-    icon: 'static/fa/save-solid.svg',
-  },
-  {
-    id: 'import',
-    title: 'Import maze',
-    icon: 'static/fa/file-import-solid.svg',
-  },
-  {
-    id: 'export',
-    title: 'Export maze',
-    icon: 'static/fa/file-export-solid.svg',
-  },
-];
-
-module.exports = MazeEditorPalette;
-
-
-/***/ }),
-
 /***/ "./src/js/editor/maze-editor.js":
 /*!**************************************!*\
   !*** ./src/js/editor/maze-editor.js ***!
@@ -5835,6 +5658,63 @@ class ObjectStore {
 }
 
 module.exports = ObjectStore;
+
+
+/***/ }),
+
+/***/ "./src/js/exhibit/exhibit-maze-editor-palette.js":
+/*!*******************************************************!*\
+  !*** ./src/js/exhibit/exhibit-maze-editor-palette.js ***!
+  \*******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class ExhibitMazeEditorPalette {
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass(['maze-editor-palette', 'exhibit-maze-editor-palette']);
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+
+    this.$bar1.append(this.buildTileButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: typeCfg.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tile',
+        `editor-palette-button-tile-${id}`,
+      ])
+      .css({
+        backgroundColor: typeCfg.color,
+        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.tileId = Number(id);
+        this.events.emit('change', 'tile', Number(id));
+      }));
+  }
+}
+
+module.exports = ExhibitMazeEditorPalette;
 
 
 /***/ }),
@@ -7159,10 +7039,10 @@ const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/maz
 const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
 const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
 const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
+const ExhibitMazeEditorPalette = __webpack_require__(/*! ./exhibit/exhibit-maze-editor-palette */ "./src/js/exhibit/exhibit-maze-editor-palette.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
 const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
 const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
-const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -7248,7 +7128,7 @@ cfgLoader.load([
 
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new MazeEditorPalette($('#panel-4'), config);
+      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
       const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 720;
@@ -7275,4 +7155,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.d72d5a2b6de8be30459a.js.map
+//# sourceMappingURL=exhibit.dea185ff722a37e2be27.js.map

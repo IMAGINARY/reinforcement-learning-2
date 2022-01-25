@@ -13,10 +13,10 @@ const maze1 = require('../../data/mazes/maze1.json');
 const Robot = require('./robot');
 const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
+const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette');
 const MazeEditor = require('./editor/maze-editor');
 const MazeViewAIOverlay = require('./maze-view-ai-overlay');
 const AITrainingView = require('./ai-training-view');
-const MazeEditorPalette = require('./editor/maze-editor-palette');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -102,7 +102,7 @@ cfgLoader.load([
 
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new MazeEditorPalette($('#panel-4'), config);
+      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
       const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 720;

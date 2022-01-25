@@ -8,9 +8,11 @@ class MazeView {
   constructor(maze, config, textures = { }) {
     this.displayObject = new PIXI.Container();
     this.tileLayer = new PIXI.Container();
+    this.textureLayer = new PIXI.Container();
     this.itemLayer = new PIXI.Container();
     this.robotLayer = new PIXI.Container();
     this.displayObject.addChild(this.tileLayer);
+    this.displayObject.addChild(this.textureLayer);
     this.displayObject.addChild(this.itemLayer);
     this.displayObject.addChild(this.robotLayer);
 
@@ -20,6 +22,8 @@ class MazeView {
     this.events = new EventEmitter();
 
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
+    this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
+
     this.robotViews = [];
 
     const pointers = {};
@@ -35,21 +39,16 @@ class MazeView {
           shiftKey: ev.data.originalEvent.shiftKey,
         });
       });
-
-      // floorTile.on('pointermove', (ev) => {
-      //   if (pointerActive) {
-      //
-      //   }
-      //   // if (pointerActive && lastTile !== floorTile) {
-      //   //   lastTile = floorTile;
-      //     // this.events.emit('action', [i, j], {
-      //     //   shiftKey: ev.data.originalEvent.shiftKey,
-      //     // });
-      //   // }
-      // });
-
       floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
       this.floorTiles[y][x] = floorTile;
+
+      const floorTexture = new PIXI.Sprite();
+      floorTexture.x = x * MazeView.TILE_SIZE;
+      floorTexture.y = y * MazeView.TILE_SIZE;
+      floorTexture.width = MazeView.TILE_SIZE;
+      floorTexture.height = MazeView.TILE_SIZE;
+      floorTexture.roundPixels = true;
+      this.floorTextures[y][x] = floorTexture;
 
       this.renderCell(x, y);
     });
@@ -78,6 +77,8 @@ class MazeView {
     this.tileLayer.on('pointercancel', onEndPointer);
 
     this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
+    this.textureLayer.addChild(...Array2D.flatten(this.floorTextures));
+
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
@@ -163,6 +164,10 @@ class MazeView {
     return this.floorTiles[y][x];
   }
 
+  getFloorTexture(x, y) {
+    return this.floorTextures[y][x];
+  }
+
   getCoordsAtPosition(globalPoint) {
     if (this.origin === undefined) {
       this.origin = new PIXI.Point();
@@ -183,13 +188,21 @@ class MazeView {
   }
 
   renderFloor(i, j) {
-    const tileType = this.config.tileTypes[this.maze.map.get(i, j)] || null;
+    const tileTypeId = this.maze.map.get(i, j);
+    const tileType = this.config.tileTypes[tileTypeId] || null;
     this.getFloorTile(i, j)
       .clear()
       .lineStyle(2, 0x0, 0.3)
       .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
       .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
       .endFill();
+
+    if (tileType.texture !== undefined) {
+      this.getFloorTexture(i, j).texture = this.textures[`tile-${tileTypeId}`];
+      this.getFloorTexture(i, j).visible = true;
+    } else {
+      this.getFloorTexture(i, j).visible = false;
+    }
   }
 
   handleCityUpdate(updates) {

@@ -51,6 +51,13 @@ cfgLoader.load([
         app.loader.add(textureId, props.texture);
       }
     });
+    Object.entries(config.tileTypes).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `tile-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
     app.loader.load((loader, resources) => {
       Object.keys(textures).forEach((id) => {
         textures[id] = resources[id].texture;

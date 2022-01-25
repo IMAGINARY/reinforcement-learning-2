@@ -86,9 +86,6 @@ class QLearningAI {
     this.q[y1][x1][direction] += this.learningRate
       * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);
 
-    console.log(`${this.q[y1][x1][direction]} += ${this.learningRate}
-      * (${reward} + ${this.discountFactor} * ${this.maxQ(x2, y2)} - ${this.q[y1][x1][direction]});`)
-
     this.events.emit('update');
   }
 }

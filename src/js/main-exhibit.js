@@ -27,7 +27,7 @@ cfgLoader.load([
   'config/items.yml',
   'config/i18n.yml',
   'config/default-settings.yml',
-  'settings.yml',
+  'settings-exhibit.yml',
 ])
   .catch((err) => {
     showFatalError('Error loading configuration', err);
@@ -82,6 +82,13 @@ cfgLoader.load([
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.texture);
+      }
+    });
+    Object.entries(config.tileTypes).forEach(([id, props]) => {
+      if (props.texture) {
+        const textureId = `tile-${id}`;
         textures[textureId] = null;
         app.loader.add(textureId, props.texture);
       }

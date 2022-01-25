@@ -8,6 +8,8 @@ tileTypes:
     name: Wall
     color: '#666666'
     walkable: false
+    texture: 'static/icons/wall.svg'
+    editorIcon: 'static/icons/wall.svg'
   3:
     name: Exit
     color: '#99ff99'

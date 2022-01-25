@@ -25,10 +25,17 @@ class MazeEditor {
         }
       },
       erase: (x, y) => {
-        this.maze.removeItem(x, y);
+        const item = this.maze.getItem(x, y);
+        if (item && item.erasable) {
+          this.maze.removeItem(x, y);
+        }
       },
       tile: (tileType, x, y) => {
+        this.maze.removeItem(x, y);
         this.maze.map.set(x, y, tileType);
+        if (this.config.tileTypes[tileType].item !== undefined) {
+          this.maze.placeItem(this.config.tileTypes[tileType].item, x, y, false);
+        }
       },
       item: (itemType, x, y) => {
         if (this.maze.isWalkable(x, y)) {

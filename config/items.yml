@@ -3,19 +3,20 @@ items:
     name: Lemon
     editorIcon: 'static/fa/lemon-solid.svg'
     texture: 'static/fa/lemon-solid.svg'
-    reward: 2
+    reward: 0.1
   carrot:
     name: Carrot
     editorIcon: 'static/fa/carrot-solid.svg'
     texture: 'static/fa/carrot-solid.svg'
-    reward: 5
-  candyCane:
-    name: Candy Cane
-    editorIcon: 'static/fa/candy-cane-solid.svg'
-    texture: 'static/fa/candy-cane-solid.svg'
-    reward: 10
+    reward: 0.2
   iceCream:
     name: Ice Cream
     editorIcon: 'static/fa/ice-cream-solid.svg'
     texture: 'static/fa/ice-cream-solid.svg'
-    reward: 20
+    reward: 0.7
+  candy:
+    name: Candy
+    editorIcon: 'static/fa/candy-cane-solid.svg'
+    texture: 'static/fa/candy-cane-solid.svg'
+    reward: 0
+    inPalette: false

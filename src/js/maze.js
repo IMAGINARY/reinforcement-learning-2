@@ -50,7 +50,7 @@ class Maze {
     robot.y = startY;
   }
 
-  placeItem(type, x, y) {
+  placeItem(type, x, y, erasable=true) {
     this.removeItem(x, y);
     this.lastItemId += 1;
     const newItem = {
@@ -59,6 +59,7 @@ class Maze {
       x,
       y,
       picked: false,
+      erasable,
     };
     this.items.push(newItem);
     this.events.emit('itemPlaced', newItem);

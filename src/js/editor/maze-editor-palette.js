@@ -75,28 +75,30 @@ class MazeEditorPalette {
   }
 
   buildItemButtons(config) {
-    return Object.entries(config.items).map(([id, props]) => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: props.name,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-item',
-        `editor-palette-button-item-${id}`,
-      ])
-      .css({
-        backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.events.emit('change', 'item', id);
-      }));
+    return Object.entries(config.items)
+      .filter(([, props]) => props.inPalette !== false)
+      .map(([id, props]) => $('<button></button>')
+        .attr({
+          type: 'button',
+          title: props.name,
+        })
+        .addClass([
+          'editor-palette-button',
+          'editor-palette-button-item',
+          `editor-palette-button-item-${id}`,
+        ])
+        .css({
+          backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
+        })
+        .pointerclick()
+        .on('i.pointerclick', (ev) => {
+          if (this.activeButton) {
+            this.activeButton.removeClass('active');
+          }
+          this.activeButton = $(ev.target);
+          this.activeButton.addClass('active');
+          this.events.emit('change', 'item', id);
+        }));
   }
 
   buildActionButtons() {

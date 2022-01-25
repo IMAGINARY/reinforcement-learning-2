@@ -21,7 +21,9 @@ tileTypes:
     walkable: true
     reward: -5
   5:
-    name: Gold
+    name: Candy
     color: '#fff250'
     walkable: true
-    reward: -0.5
+    reward: -0.2
+    item: candy
+    editorIcon: 'static/fa/candy-cane-solid.svg'

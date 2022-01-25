@@ -27,3 +27,9 @@ tileTypes:
     reward: -0.2
     item: candy
     editorIcon: 'static/fa/candy-cane-solid.svg'
+  6:
+    name: Pit
+    color: '#000000'
+    walkable: true
+    exit: true
+    reward: -50

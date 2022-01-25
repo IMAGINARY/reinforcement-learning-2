@@ -1,6 +1,5 @@
 const Maze = require('../maze.js');
 const MazeView = require('../maze-view.js');
-const MazeEditorPalette = require('./maze-editor-palette.js');
 const ModalLoad = require('./modal-load.js');
 const ModalSave = require('./modal-save.js');
 const ModalExport = require('./modal-export.js');
@@ -8,15 +7,14 @@ const ModalImport = require('./modal-import.js');
 const ObjectStore = require('./object-store.js');
 
 class MazeEditor {
-  constructor($element, maze, config, textures) {
+  constructor($element, maze, palette, config, textures) {
     this.$element = $element;
     this.maze = maze;
+    this.palette = palette;
     this.config = config;
 
     this.mazeView = new MazeView(maze, config, textures);
     this.displayObject = this.mazeView.displayObject;
-
-    this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
 
     const tools = {
       start: (x, y) => {

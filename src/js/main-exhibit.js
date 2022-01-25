@@ -16,6 +16,7 @@ const setupKeyControls = require('./keyboard-controller');
 const MazeEditor = require('./editor/maze-editor');
 const MazeViewAIOverlay = require('./maze-view-ai-overlay');
 const AITrainingView = require('./ai-training-view');
+const MazeEditorPalette = require('./editor/maze-editor-palette');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -101,7 +102,8 @@ cfgLoader.load([
 
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeView = new MazeEditor($('#panel-4'), maze, config, textures);
+      const mazeEditorPalette = new MazeEditorPalette($('#panel-4'), config);
+      const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 720;
       mazeView.displayObject.height = 720;

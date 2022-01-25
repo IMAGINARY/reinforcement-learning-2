@@ -4716,19 +4716,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/sass/exhibit.scss":
-/*!*******************************!*\
-  !*** ./src/sass/exhibit.scss ***!
-  \*******************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-// extracted by mini-css-extract-plugin
-
-
-/***/ }),
-
 /***/ "./src/js/ai-training-view.js":
 /*!************************************!*\
   !*** ./src/js/ai-training-view.js ***!
@@ -5268,8 +5255,9 @@ module.exports = MazeBrowser;
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 
 class MazeEditorPalette {
-  constructor($element, config) {
-    this.$element = $element;
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
     this.config = config;
     this.activeButton = null;
     this.tileId = null;
@@ -5443,7 +5431,6 @@ module.exports = MazeEditorPalette;
 
 const Maze = __webpack_require__(/*! ../maze.js */ "./src/js/maze.js");
 const MazeView = __webpack_require__(/*! ../maze-view.js */ "./src/js/maze-view.js");
-const MazeEditorPalette = __webpack_require__(/*! ./maze-editor-palette.js */ "./src/js/editor/maze-editor-palette.js");
 const ModalLoad = __webpack_require__(/*! ./modal-load.js */ "./src/js/editor/modal-load.js");
 const ModalSave = __webpack_require__(/*! ./modal-save.js */ "./src/js/editor/modal-save.js");
 const ModalExport = __webpack_require__(/*! ./modal-export.js */ "./src/js/editor/modal-export.js");
@@ -5451,15 +5438,14 @@ const ModalImport = __webpack_require__(/*! ./modal-import.js */ "./src/js/edito
 const ObjectStore = __webpack_require__(/*! ./object-store.js */ "./src/js/editor/object-store.js");
 
 class MazeEditor {
-  constructor($element, maze, config, textures) {
+  constructor($element, maze, palette, config, textures) {
     this.$element = $element;
     this.maze = maze;
+    this.palette = palette;
     this.config = config;
 
     this.mazeView = new MazeView(maze, config, textures);
     this.displayObject = this.mazeView.displayObject;
-
-    this.palette = new MazeEditorPalette($('<div></div>').appendTo(this.$element), config);
 
     const tools = {
       start: (x, y) => {
@@ -5840,47 +5826,6 @@ module.exports = ObjectStore;
 
 /***/ }),
 
-/***/ "./src/js/exhibit/i18n.js":
-/*!********************************!*\
-  !*** ./src/js/exhibit/i18n.js ***!
-  \********************************/
-/***/ ((module) => {
-
-/* globals IMAGINARY */
-
-function setLanguage(code) {
-  return IMAGINARY.i18n.setLang(code).then(() => {
-    $('[data-i18n-text]').each((i, element) => {
-      $(element).html(
-        IMAGINARY.i18n.t($(element).data('i18n-text'))
-      );
-    });
-  });
-}
-
-function init(config, initialLanguage) {
-  return IMAGINARY.i18n.init({
-    queryStringVariable: 'lang',
-    translationsDirectory: 'tr',
-    defaultLanguage: 'en',
-  })
-    .then(() => {
-      const languages = Object.keys(config.languages);
-      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
-    })
-    .then(() => {
-      return setLanguage(initialLanguage);
-    });
-}
-
-module.exports = {
-  init,
-  setLanguage,
-};
-
-
-/***/ }),
-
 /***/ "./src/js/grid.js":
 /*!************************!*\
   !*** ./src/js/grid.js ***!
@@ -6151,85 +6096,6 @@ function setupKeyControls(robot) {
 }
 
 module.exports = setupKeyControls;
-
-
-/***/ }),
-
-/***/ "./src/js/lang-switcher.js":
-/*!*********************************!*\
-  !*** ./src/js/lang-switcher.js ***!
-  \*********************************/
-/***/ ((module) => {
-
-class LangSwitcher {
-  constructor(container, config, langChangeCallback) {
-    this.menuVisible = false;
-    this.container = container;
-    this.config = config;
-    this.langChangeCallback = langChangeCallback;
-
-    this.render();
-  }
-
-  render() {
-    this.element = document.createElement('div');
-    this.element.classList.add('lang-switcher');
-
-    this.trigger = document.createElement('button');
-    this.trigger.setAttribute('type', 'button');
-    this.trigger.classList.add('lang-switcher-trigger');
-    this.element.appendChild(this.trigger);
-
-    const mask = document.createElement('div');
-    mask.classList.add('lang-switcher-menu-mask');
-    this.element.appendChild(mask);
-
-    this.menu = document.createElement('ul');
-    this.menu.classList.add('lang-switcher-menu');
-    mask.appendChild(this.menu);
-
-    Object.entries(this.config.languages).forEach(([code, name]) => {
-      const item = document.createElement(('li'));
-      const link = document.createElement('button');
-      link.setAttribute('type', 'button');
-      link.innerText = name;
-      link.addEventListener('pointerdown', (ev) => {
-        this.langChangeCallback(code);
-        ev.preventDefault();
-      });
-      item.appendChild(link);
-      this.menu.appendChild(item);
-    });
-
-    this.container.appendChild(this.element);
-
-    this.menu.style.bottom = `${this.menu.clientHeight * -1 - 10}px`;
-
-    window.document.addEventListener('pointerdown', (ev) => {
-      if (this.menuVisible) {
-        this.hideMenu();
-      }
-    });
-    this.trigger.addEventListener('pointerdown', (ev) => {
-      if (!this.menuVisible) {
-        this.showMenu();
-        ev.stopPropagation();
-      }
-    });
-  }
-
-  showMenu() {
-    this.menuVisible = true;
-    this.menu.classList.add('visible');
-  }
-
-  hideMenu() {
-    this.menuVisible = false;
-    this.menu.classList.remove('visible');
-  }
-}
-
-module.exports = LangSwitcher;
 
 
 /***/ }),
@@ -7142,36 +7008,33 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!********************************!*\
-  !*** ./src/js/main-exhibit.js ***!
-  \********************************/
-/* globals IMAGINARY, PIXI */
-__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
-__webpack_require__(/*! ../sass/exhibit.scss */ "./src/sass/exhibit.scss");
-__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
+/*!************************!*\
+  !*** ./src/js/main.js ***!
+  \************************/
+/* eslint-disable no-console */
+/* globals PIXI */
+
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
 const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
-const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
 const showFatalError = __webpack_require__(/*! ./aux/show-fatal-error */ "./src/js/aux/show-fatal-error.js");
-const LangSwitcher = __webpack_require__(/*! ./lang-switcher */ "./src/js/lang-switcher.js");
-const Maze = __webpack_require__(/*! ./maze */ "./src/js/maze.js");
-const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
-const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
+const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
+const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
+const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay.js */ "./src/js/maze-view-ai-overlay.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
-const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
-const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
-const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
-
-const qs = new URLSearchParams(window.location.search);
+__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
+const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
   'config/robots.yml',
   'config/items.yml',
-  'config/i18n.yml',
   'config/default-settings.yml',
   'settings.yml',
 ])
@@ -7180,43 +7043,12 @@ cfgLoader.load([
     console.error('Error loading configuration');
     console.error(err);
   })
-  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
-    .then(() => config))
-  .then(config => IMAGINARY.i18n.init({
-    queryStringVariable: 'lang',
-    translationsDirectory: 'tr',
-    defaultLanguage: 'en',
-  })
-    .then(() => {
-      const languages = Object.keys(config.languages);
-      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
-    })
-    .then(() => {
-      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
-      return IMAGINARY.i18n.setLang(defaultLanguage);
-    })
-    .then(() => config)
-    .catch((err) => {
-      showFatalError('Error loading translations', err);
-      console.error('Error loading translations');
-      console.error(err);
-    }))
   .then((config) => {
-    const container = $('[data-component=rl2-exhibit]');
-    // eslint-disable-next-line no-unused-vars
-    const langSwitcher = new LangSwitcher(
-      container.find('#lang-switcher-container')[0],
-      { languages: config.languages },
-      code => I18n.setLanguage(code)
-    );
-
     const app = new PIXI.Application({
       width: 1920,
-      height: 1080,
-      backgroundColor: 0xffffff,
+      height: 1920,
+      backgroundColor: 0xf2f2f2,
     });
-
-    // CHAOS
     const textures = {};
     Object.entries(config.robots).forEach(([id, props]) => {
       if (props.texture) {
@@ -7246,14 +7078,15 @@ cfgLoader.load([
       const ai = new QLearningAI(maze.robots[0]);
       setupKeyControls(maze.robots[0]);
 
-      $('#pixi-app-container').append(app.view);
+      $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeView = new MazeEditor($('#panel-4'), maze, config, textures);
+      const mazeEditorPalette = new MazeEditorPalette($('body'), config);
+      const mazeView = new MazeEditor($('body'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
-      mazeView.displayObject.width = 720;
-      mazeView.displayObject.height = 720;
-      mazeView.displayObject.x = 1080;
-      mazeView.displayObject.y = (1080 - 720) / 2;
+      mazeView.displayObject.width = 1920;
+      mazeView.displayObject.height = 1920;
+      mazeView.displayObject.x = 0;
+      mazeView.displayObject.y = 0;
 
       const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
@@ -7265,7 +7098,7 @@ cfgLoader.load([
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai);
-      $('#training-ui').append(trainingView.$element);
+      $('.sidebar').append(trainingView.$element);
       app.ticker.add(time => trainingView.animate(time));
     });
   });
@@ -7274,4 +7107,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.6d0ced1c8b9be022b3e4.js.map
+//# sourceMappingURL=default.51014352138bc066326f.js.map

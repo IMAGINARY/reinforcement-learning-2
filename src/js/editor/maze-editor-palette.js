@@ -1,8 +1,9 @@
 const EventEmitter = require('events');
 
 class MazeEditorPalette {
-  constructor($element, config) {
-    this.$element = $element;
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
     this.config = config;
     this.activeButton = null;
     this.tileId = null;

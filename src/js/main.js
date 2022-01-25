@@ -15,6 +15,7 @@ const MazeEditor = require('./editor/maze-editor.js');
 const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
+const MazeEditorPalette = require('./editor/maze-editor-palette');
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
@@ -66,7 +67,8 @@ cfgLoader.load([
 
       $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeView = new MazeEditor($('body'), maze, config, textures);
+      const mazeEditorPalette = new MazeEditorPalette($('body'), config);
+      const mazeView = new MazeEditor($('body'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 1920;
       mazeView.displayObject.height = 1920;

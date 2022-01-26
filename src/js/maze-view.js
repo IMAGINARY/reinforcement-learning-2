@@ -126,11 +126,12 @@ class MazeView {
   }
 
   createItemSprite(item) {
+    const textureScale = this.config.items[item.type].textureScale || 0.5;
     const sprite = new PIXI.Sprite();
     sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
     sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
-    sprite.width = MazeView.TILE_SIZE * 0.5;
-    sprite.height = MazeView.TILE_SIZE * 0.5;
+    sprite.width = MazeView.TILE_SIZE * textureScale;
+    sprite.height = MazeView.TILE_SIZE * textureScale;
     sprite.roundPixels = true;
     sprite.texture = this.textures[`item-${item.type}`];
 

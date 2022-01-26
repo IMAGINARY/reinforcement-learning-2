@@ -16,7 +16,7 @@ items:
     reward: 0.7
   candy:
     name: Candy
-    editorIcon: 'static/fa/candy-cane-solid.svg'
-    texture: 'static/fa/candy-cane-solid.svg'
+    editorIcon: 'static/icons/candy.svg'
+    texture: 'static/icons/candy.svg'
     reward: 0
     inPalette: false

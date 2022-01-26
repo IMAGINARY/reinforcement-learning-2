@@ -16,7 +16,8 @@ tileTypes:
     walkable: true
     exit: true
     reward: 50
-    editorIcon: 'static/fa/door-open-solid.svg'
+    texture: 'static/icons/exit.svg'
+    editorIcon: 'static/icons/exit.svg'
   4:
     name: Lava
     color: '#ff3333'
@@ -24,11 +25,11 @@ tileTypes:
     reward: -5
   5:
     name: Candy
-    color: '#fff250'
+    color: '#fff799'
     walkable: true
     reward: -0.2
     item: candy
-    editorIcon: 'static/fa/candy-cane-solid.svg'
+    editorIcon: 'static/icons/candy.svg'
   6:
     name: Pit
     color: '#000000'

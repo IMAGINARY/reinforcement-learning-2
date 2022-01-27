@@ -1,5 +1,6 @@
 const EventEmitter = require('events');
 const Robot = require('./robot.js');
+const { shuffleArray } = require('./aux/shuffle');
 
 class QLearningAI {
   constructor(robot) {
@@ -7,7 +8,7 @@ class QLearningAI {
     this.q = this.initQ();
     this.learningRate = 1;
     this.discountFactor = 1;
-    this.exploreRate = 0.1;
+    this.exploreRate = 0.2;
     this.learning = true;
     this.events = new EventEmitter();
 
@@ -45,7 +46,7 @@ class QLearningAI {
     const dirValuePairs = Object.entries(this.q[y][x])
       .filter(([direction]) => directions.includes(direction));
     if (dirValuePairs.length > 0) {
-      return dirValuePairs.sort(([, valA], [, valB]) => valA - valB)
+      return shuffleArray(dirValuePairs).sort(([, valA], [, valB]) => valA - valB)
         .pop()[0];
     }
     return null;

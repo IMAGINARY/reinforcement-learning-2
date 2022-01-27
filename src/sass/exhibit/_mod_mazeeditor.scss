@@ -1,0 +1,51 @@
+$button-spacing: 8px;
+
+.maze-editor-palette {
+  .maze-editor-palette-bar {
+    .editor-palette-button {
+      width: 60px;
+      height: 60px;
+      background-size: 100%;
+      border: 2px solid black;
+      margin-bottom: $button-spacing;
+
+      &.active {
+        border: 2px solid black;
+        outline: 8px solid $c-yellow;
+        margin: 0;
+        width: 70px;
+        height: 70px;
+        margin-top: -5px;
+        margin-bottom: -5px + $button-spacing;
+        margin-left: -5px;
+        z-index: 100;
+        position: relative;
+      }
+    }
+
+    .item {
+      position: relative;
+      .label {
+        display: block;
+        position: absolute;
+        width: 9.5em;
+        left: 80px;
+        top: 19px;
+        line-height: 1.2;
+      }
+    }
+  }
+}
+
+.maze-editor-palette .editor-palette-button-action-reset-map {
+  font-size: 1rem;
+  border: 1px solid black;
+  width: 14em;
+  background-color: white;
+  background-size: contain;
+  background-position: center center;
+  padding: 0.1em 0.1em;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1.7em;
+}

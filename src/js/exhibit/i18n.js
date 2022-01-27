@@ -1,5 +1,9 @@
 /* globals IMAGINARY */
 
+function getLanguage() {
+  return IMAGINARY.i18n.getLang();
+}
+
 function setLanguage(code) {
   return IMAGINARY.i18n.setLang(code).then(() => {
     $('[data-i18n-text]').each((i, element) => {
@@ -27,5 +31,6 @@ function init(config, initialLanguage) {
 
 module.exports = {
   init,
+  getLanguage,
   setLanguage,
 };

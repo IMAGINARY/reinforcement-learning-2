@@ -4,12 +4,14 @@ tileTypes:
     color: '#ffffff'
     walkable: true
     reward: -1
+    type: floor
   2:
     name: Wall
     color: '#666666'
     walkable: false
     texture: 'static/icons/wall.svg'
     editorIcon: 'static/icons/wall.svg'
+    type: wall
   3:
     name: Exit
     color: '#99ff99'
@@ -18,11 +20,13 @@ tileTypes:
     reward: 50
     texture: 'static/icons/exit.svg'
     editorIcon: 'static/icons/exit.svg'
+    type: exit
   4:
     name: Lava
     color: '#ff3333'
     walkable: true
     reward: -5
+    type: lava
   5:
     name: Candy
     color: '#fff799'
@@ -30,12 +34,14 @@ tileTypes:
     reward: -0.2
     item: candy
     editorIcon: 'static/icons/candy.svg'
+    type: candy
   6:
     name: Pit
     color: '#000000'
     walkable: true
     exit: true
     reward: -50
+    type: pit
   7:
     name: Cone
     color: '#ffffff'
@@ -45,3 +51,4 @@ tileTypes:
     texture: 'static/icons/cone.svg'
     textureVisited: 'static/icons/cone-down.svg'
     editorIcon: 'static/icons/cone.svg'
+    type: cone

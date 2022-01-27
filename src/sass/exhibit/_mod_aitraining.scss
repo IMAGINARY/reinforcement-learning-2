@@ -1,0 +1,94 @@
+.ai-training-view-slider-exploration-rate {
+  display: inline-block;
+  position: relative;
+  width: 13em;
+  height: 2.6em;
+  margin: 0 1.5em;
+  .slider-text {
+    label {
+      display: none;
+    }
+
+    .slider-limit {
+      display: block;
+      position: absolute;
+    }
+
+    .slider-limit-min {
+      left: 0;
+      bottom: 0;
+    }
+
+    .slider-limit-max {
+      right: 0;
+      bottom: 0;
+    }
+  }
+
+  .slider-input {
+    input {
+      display: block;
+      width: calc(100% - 2.5em);
+      margin-left: 1.25em;
+    }
+  }
+}
+
+.ai-training-view-slider-learning-rate {
+  display: none;
+}
+
+.ai-training-view-slider-discount-factor {
+  display: none;
+}
+
+.ai-training-view-button {
+  border-radius: 10px;
+  padding: 0.7em 1.4em;
+  border: 2px solid $c-black;
+
+  &.round {
+    border-radius: 50%;
+    padding: 0;
+  }
+
+  &.active {
+    background-color: $c-yellow;
+    border-color: $c-black-burnt;
+  }
+
+  &:focus, &:focus-visible {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.ai-training-view-button-run {
+  width: 80px;
+  height: 80px;
+  margin-right: 1em;
+  background-position: calc(50% + 0.2em) center;
+
+  &.active {
+    background-position: center center;
+    background-color: transparent;
+  }
+}
+
+.ai-training-view-button-turbo {
+  width: 60px;
+  height: 60px;
+  background-position: calc(50% + 0.1em) center;
+
+  &.active {
+    border-color: $c-black-burnt;
+  }
+}
+
+.ai-training-view-button-step {
+  display: none;
+}
+
+.ai-training-view-button-clear {
+  width: 14em;
+}

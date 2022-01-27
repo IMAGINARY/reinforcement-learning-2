@@ -217,7 +217,10 @@ class MazeView {
   }
 
   handleMazeUpdate(updates) {
-    updates.forEach(([i, j]) => { this.renderCell(i, j); });
+    updates.forEach(([i, j]) => {
+      this.visited[j][i] = false;
+      this.renderCell(i, j);
+    });
   }
 
   addOverlay(displayObject) {

@@ -4716,6 +4716,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/sass/exhibit.scss":
+/*!*******************************!*\
+  !*** ./src/sass/exhibit.scss ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/js/ai-training-view.js":
 /*!************************************!*\
   !*** ./src/js/ai-training-view.js ***!
@@ -4742,72 +4755,133 @@ class AITrainingView {
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
 
-    this.$explorationRateSlider = this.buildSlider(
-      'Exploration rate',
-      { min: 0, max: 1, step: 0.1 },
-      this.ai.exploreRate,
-      (value) => { this.ai.exploreRate = value;}
-    ).appendTo(this.$element);
+    this.$runButton = this.buildButton({
+      id: 'run',
+      icon: 'static/fa/play-solid.svg',
+      title: 'Run / Pause',
+    })
+      .on('i.pointerclick', () => {
+        if (this.running) {
+          this.$runButton.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
+          this.$runButton.removeClass('active');
+          this.running = false;
+        } else if (this.robotIdle) {
+          this.$runButton.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+          this.$runButton.addClass('active');
+          this.running = true;
+          this.robotIdle = false;
+          this.ai.step();
+        }
+      })
+      .appendTo(this.$element);
 
-    this.$learningRateSlider = this.buildSlider(
-      'Learning rate',
-      { min: 0, max: 1, step: 0.1 },
-      this.ai.learningRate,
-      (value) => { this.ai.learningRate = value;}
-    ).appendTo(this.$element);
+    this.$turboButton = this.buildButton({
+      id: 'turbo',
+      icon: 'static/fa/forward-solid.svg',
+      title: 'Hold to speed up',
+    })
+      .on('i.pointerdown', () => {
+        if (this.running) {
+          this.$turboButton.addClass('active');
+          this.robotView.speed = RobotView.Speed.TURBO;
+        }
+      })
+      .on('i.pointerup', () => {
+        this.$turboButton.removeClass('active');
+        this.robotView.speed = RobotView.Speed.DEFAULT;
+      })
+      .appendTo(this.$element);
 
-    this.$discountFactorSlider = this.buildSlider(
-      'Discount factor',
-      { min: 0, max: 1, step: 0.1 },
-      this.ai.discountFactor,
-      (value) => { this.ai.discountFactor = value;}
-    ).appendTo(this.$element);
+    this.$stepButton = this.buildButton({
+      id: 'step',
+      icon: 'static/fa/step-forward-solid.svg',
+      title: 'Step',
+    })
+      .on('i.pointerclick', () => {
+        if (this.robotIdle) {
+          this.robotIdle = false;
+          this.ai.step();
+        }
+      })
+      .appendTo(this.$element);
 
-    this.buttons = {};
-    this.buildUIButtons();
+    this.$explorationRateSlider = this.buildSlider({
+      id: 'exploration-rate',
+      title: 'Exploration rate',
+      options: { min: 0, max: 1, step: 0.1 },
+      limitLabels: ['Exploit', 'Explore'],
+      initialValue: this.ai.exploreRate,
+      changeCallback: (value) => {
+        this.ai.exploreRate = value;
+      },
+    }).appendTo(this.$element);
 
-    this.$element.append(Object.values(this.buttons));
+    this.$learningRateSlider = this.buildSlider({
+      id: 'learning-rate',
+      title: 'Learning rate',
+      options: { min: 0, max: 1, step: 0.1 },
+      initialValue: this.ai.learningRate,
+      changeCallback: (value) => {
+        this.ai.learningRate = value;
+      },
+    }).appendTo(this.$element);
+
+    this.$discountFactorSlider = this.buildSlider({
+      id: 'discount-factor',
+      title: 'Discount factor',
+      options: { min: 0, max: 1, step: 0.1 },
+      initialValue: this.ai.discountFactor,
+      changeCallback: (value) => {
+        this.ai.discountFactor = value;
+      },
+    }).appendTo(this.$element);
+
+    this.$clearButton = this.buildButton({
+      id: 'clear',
+      title: 'Clear',
+    })
+      .on('i.pointerclick', () => {
+        this.ai.clear();
+      })
+      .appendTo(this.$element);
   }
 
-  buildUIButtons() {
-    AITrainingView.Buttons.forEach((props) => {
-      const button = $('<button></button>')
-        .attr({
-          type: 'button',
-          title: props.title,
-        })
-        .addClass([
-          'btn',
-          'ai-training-view-button',
-          `ai-training-view-button-${props.id}`,
-        ])
-        .html(props.icon ? '&nbsp;' : props.title || '')
-        .pointerclick()
-        .on('i.pointerclick', () => {
-          this.handleButtonClick(props.id);
-        })
-        .on('pointerdown', () => {
-          this.handleButtonDown(props.id);
-        })
-        .on('pointerup', () => {
-          this.handleButtonUp(props.id);
-        })
-        .on('pointercancel', () => {
-          this.handleButtonUp(props.id);
-        });
+  buildButton(props) {
+    const button = $('<button></button>')
+      .attr({
+        type: 'button',
+        title: props.title,
+        'data-i18n-text': `ai-training-view-button-${props.id}`,
+      })
+      .addClass([
+        'btn',
+        'ai-training-view-button',
+        `ai-training-view-button-${props.id}`,
+      ])
+      .html(props.icon ? '&nbsp;' : props.title || '')
+      .pointerclick();
 
-      if (props.icon) {
-        button.css({
-          backgroundImage: `url(${props.icon})`,
-        });
-      }
+    if (props.icon) {
+      button.css({
+        backgroundImage: `url(${props.icon})`,
+      });
+      button.addClass('round');
+    }
 
-      this.buttons[props.id] = button;
-    });
+    return button;
   }
 
-  buildSlider(title, options, initialValue, changeCallback) {
-    const $element = $('<div class="slider"></div>');
+  buildSlider(props) {
+    const {
+      id, title, options, initialValue, changeCallback,
+    } = props;
+
+    const $element = $('<div></div>')
+      .addClass([
+        'slider',
+        'ai-training-view-slider',
+        `ai-training-view-slider-${id}`,
+      ]);
 
     const $text = $('<div class="slider-text"></div>')
       .appendTo($element);
@@ -4819,7 +4893,23 @@ class AITrainingView {
       .html(`${title}: `)
       .append($exploreValue)
       .appendTo($text);
+
+    if (props.limitLabels) {
+      const [minLabel, maxLabel] = props.limitLabels;
+      $('<span></span>')
+        .addClass(['slider-limit', 'slider-limit-min'])
+        .text(minLabel)
+        .attr('data-i18n-text', `ai-training-view-slider-${id}-limit-min`)
+        .appendTo($text);
+      $('<span></span>')
+        .addClass(['slider-limit', 'slider-limit-max'])
+        .text(maxLabel)
+        .attr('data-i18n-text', `ai-training-view-slider-${id}-limit-max`)
+        .appendTo($text);
+    }
+
     const $exploreSlider = $('<input type="range"></input>')
+      .addClass('form-control-range')
       .attr(options)
       .on('change', () => {
         changeCallback(Number($exploreSlider.val()));
@@ -4830,76 +4920,7 @@ class AITrainingView {
 
     return $element;
   }
-
-  handleButtonClick(id) {
-    if (id === 'run') { this.handleRun(); }
-    if (id === 'step') { this.handleStep(); }
-    if (id === 'clear') { this.handleClear(); }
-  }
-
-  handleButtonDown(id) {
-    if (id === 'turbo') { this.turboStart(); }
-  }
-
-  handleButtonUp(id) {
-    if (id === 'turbo') { this.turboEnd(); }
-  }
-
-  handleRun() {
-    if (this.running) {
-      this.buttons.run.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
-      this.running = false;
-    } else {
-      if (this.robotIdle) {
-        this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
-        this.running = true;
-        this.robotIdle = false;
-        this.ai.step();
-      }
-    }
-  }
-
-  handleStep() {
-    if (this.robotIdle) {
-      this.robotIdle = false;
-      this.ai.step();
-    }
-  }
-
-  handleClear() {
-    this.ai.clear();
-  }
-
-  turboStart() {
-    this.robotView.speed = RobotView.Speed.TURBO;
-  }
-
-  turboEnd() {
-    this.robotView.speed = RobotView.Speed.DEFAULT;
-  }
 }
-
-AITrainingView.Buttons = [
-  {
-    id: 'run',
-    icon: 'static/fa/play-solid.svg',
-    title: 'Run',
-  },
-  {
-    id: 'turbo',
-    icon: 'static/fa/forward-solid.svg',
-    title: 'Hold to speed up',
-  },
-  {
-    id: 'step',
-    icon: 'static/fa/step-forward-solid.svg',
-    title: 'Step',
-  },
-  {
-    id: 'clear',
-    title: 'Clear',
-  },
-];
 
 module.exports = AITrainingView;
 
@@ -5146,6 +5167,24 @@ module.exports = showFatalError;
 
 /***/ }),
 
+/***/ "./src/js/aux/shuffle.js":
+/*!*******************************!*\
+  !*** ./src/js/aux/shuffle.js ***!
+  \*******************************/
+/***/ ((module) => {
+
+function shuffleArray(unshuffled) {
+  return unshuffled
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value);
+}
+
+module.exports = { shuffleArray };
+
+
+/***/ }),
+
 /***/ "./src/js/cfg-loader/cfg-loader.js":
 /*!*****************************************!*\
   !*** ./src/js/cfg-loader/cfg-loader.js ***!
@@ -5270,183 +5309,6 @@ class MazeBrowser {
 }
 
 module.exports = MazeBrowser;
-
-
-/***/ }),
-
-/***/ "./src/js/editor/maze-editor-palette.js":
-/*!**********************************************!*\
-  !*** ./src/js/editor/maze-editor-palette.js ***!
-  \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
-
-class MazeEditorPalette {
-  constructor($container, config) {
-    this.$container = $container;
-    this.$element = $('<div></div>').appendTo(this.$container);
-    this.config = config;
-    this.activeButton = null;
-    this.tileId = null;
-    this.events = new EventEmitter();
-
-    this.$element.addClass('maze-editor-palette');
-    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-
-    this.$bar1.append(this.buildActionButtons());
-
-    this.$bar2.append(this.buildTileButtons(config));
-    this.$bar2.append($('<div class="separator"></div>'));
-    this.$bar2.append(this.buildToolButtons(config));
-    this.$bar2.append(this.buildItemButtons(config));
-  }
-
-  buildTileButtons(config) {
-    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: typeCfg.name,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tile',
-        `editor-palette-button-tile-${id}`,
-      ])
-      .css({
-        backgroundColor: typeCfg.color,
-        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.tileId = Number(id);
-        this.events.emit('change', 'tile', Number(id));
-      }));
-  }
-
-  buildToolButtons() {
-    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: tool.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tool',
-        `editor-palette-button-tool-${tool.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${tool.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.events.emit('change', tool.id);
-      }));
-  }
-
-  buildItemButtons(config) {
-    return Object.entries(config.items)
-      .filter(([, props]) => props.inPalette !== false)
-      .map(([id, props]) => $('<button></button>')
-        .attr({
-          type: 'button',
-          title: props.name,
-        })
-        .addClass([
-          'editor-palette-button',
-          'editor-palette-button-item',
-          `editor-palette-button-item-${id}`,
-        ])
-        .css({
-          backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
-        })
-        .pointerclick()
-        .on('i.pointerclick', (ev) => {
-          if (this.activeButton) {
-            this.activeButton.removeClass('active');
-          }
-          this.activeButton = $(ev.target);
-          this.activeButton.addClass('active');
-          this.events.emit('change', 'item', id);
-        }));
-  }
-
-  buildActionButtons() {
-    return MazeEditorPalette.Actions.map(action => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: action.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-action',
-        `editor-palette-button-action-${action.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${action.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', () => {
-        this.events.emit('action', action.id);
-      }));
-  }
-}
-
-MazeEditorPalette.Tools = [
-  {
-    id: 'start',
-    title: 'Set the starting point',
-    icon: 'static/fa/robot-solid-blue.svg',
-  },
-  {
-    id: 'erase',
-    title: 'Remove items',
-    icon: 'static/fa/times-solid.svg',
-  },
-];
-
-MazeEditorPalette.Actions = [
-  {
-    id: 'reset',
-    title: 'Reset',
-    icon: 'static/fa/sync-solid.svg',
-  },
-  {
-    id: 'load',
-    title: 'Load maze',
-    icon: 'static/fa/folder-open-solid.svg',
-  },
-  {
-    id: 'save',
-    title: 'Save maze',
-    icon: 'static/fa/save-solid.svg',
-  },
-  {
-    id: 'import',
-    title: 'Import maze',
-    icon: 'static/fa/file-import-solid.svg',
-  },
-  {
-    id: 'export',
-    title: 'Export maze',
-    icon: 'static/fa/file-export-solid.svg',
-  },
-];
-
-module.exports = MazeEditorPalette;
 
 
 /***/ }),
@@ -5854,6 +5716,135 @@ module.exports = ObjectStore;
 
 /***/ }),
 
+/***/ "./src/js/exhibit/exhibit-maze-editor-palette.js":
+/*!*******************************************************!*\
+  !*** ./src/js/exhibit/exhibit-maze-editor-palette.js ***!
+  \*******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class ExhibitMazeEditorPalette {
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass(['maze-editor-palette', 'exhibit-maze-editor-palette']);
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+
+    this.$bar1.append(this.buildTileButtons(config));
+
+    $('<button></button>')
+      .attr({
+        type: 'button',
+        title: 'Reset map',
+        'data-i18n-text': 'editor-palette-button-action-reset-map',
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-action',
+        'editor-palette-button-action-reset-map',
+      ])
+      // .css({
+      //   backgroundImage: 'url("static/fa/sync-solid.svg")',
+      // })
+      .html('Reset map')
+      .pointerclick()
+      .on('i.pointerclick', () => {
+        this.events.emit('action', 'reset-map');
+      })
+      .appendTo(this.$element);
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<div></div>')
+      .addClass('item')
+      .append($('<button></button>')
+        .attr({
+          type: 'button',
+          title: typeCfg.name,
+        })
+        .addClass([
+          'editor-palette-button',
+          'editor-palette-button-tile',
+          `editor-palette-button-tile-${id}`,
+        ])
+        .css({
+          backgroundColor: typeCfg.color,
+          backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+        })
+        .pointerclick()
+        .on('i.pointerclick', (ev) => {
+          if (this.activeButton) {
+            this.activeButton.removeClass('active');
+          }
+          this.activeButton = $(ev.target);
+          this.activeButton.addClass('active');
+          this.tileId = Number(id);
+          this.events.emit('change', 'tile', Number(id));
+        }))
+      .append($('<div></div>')
+        .addClass('label')
+        .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`)));
+  }
+}
+
+module.exports = ExhibitMazeEditorPalette;
+
+
+/***/ }),
+
+/***/ "./src/js/exhibit/i18n.js":
+/*!********************************!*\
+  !*** ./src/js/exhibit/i18n.js ***!
+  \********************************/
+/***/ ((module) => {
+
+/* globals IMAGINARY */
+
+function getLanguage() {
+  return IMAGINARY.i18n.getLang();
+}
+
+function setLanguage(code) {
+  return IMAGINARY.i18n.setLang(code).then(() => {
+    $('[data-i18n-text]').each((i, element) => {
+      $(element).html(
+        IMAGINARY.i18n.t($(element).data('i18n-text'))
+      );
+    });
+  });
+}
+
+function init(config, initialLanguage) {
+  return IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      return setLanguage(initialLanguage);
+    });
+}
+
+module.exports = {
+  init,
+  getLanguage,
+  setLanguage,
+};
+
+
+/***/ }),
+
 /***/ "./src/js/grid.js":
 /*!************************!*\
   !*** ./src/js/grid.js ***!
@@ -6074,23 +6065,29 @@ module.exports = Grid;
         .on('pointerup', (ev) => {
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
           }
         })
         .on('pointercancel', (ev) => {
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
           }
         });
 
       $(this)
         .on('pointerdown', (ev) => {
+          ev.preventDefault();
           trackedPointerId = ev.pointerId;
           // On touch, apparently, the pointer is automatically captured by pointerdown
           ev.delegateTarget.releasePointerCapture(ev.pointerId);
+          $(this).trigger('i.pointerdown', ev);
         })
         .on('pointerup', (ev) => {
+          ev.preventDefault();
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
             $(this).trigger('i.pointerclick', ev);
           }
         });
@@ -6124,6 +6121,85 @@ function setupKeyControls(robot) {
 }
 
 module.exports = setupKeyControls;
+
+
+/***/ }),
+
+/***/ "./src/js/lang-switcher.js":
+/*!*********************************!*\
+  !*** ./src/js/lang-switcher.js ***!
+  \*********************************/
+/***/ ((module) => {
+
+class LangSwitcher {
+  constructor(container, config, langChangeCallback) {
+    this.menuVisible = false;
+    this.container = container;
+    this.config = config;
+    this.langChangeCallback = langChangeCallback;
+
+    this.render();
+  }
+
+  render() {
+    this.element = document.createElement('div');
+    this.element.classList.add('lang-switcher');
+
+    this.trigger = document.createElement('button');
+    this.trigger.setAttribute('type', 'button');
+    this.trigger.classList.add('lang-switcher-trigger');
+    this.element.appendChild(this.trigger);
+
+    const mask = document.createElement('div');
+    mask.classList.add('lang-switcher-menu-mask');
+    this.element.appendChild(mask);
+
+    this.menu = document.createElement('ul');
+    this.menu.classList.add('lang-switcher-menu');
+    mask.appendChild(this.menu);
+
+    Object.entries(this.config.languages).forEach(([code, name]) => {
+      const item = document.createElement(('li'));
+      const link = document.createElement('button');
+      link.setAttribute('type', 'button');
+      link.innerText = name;
+      link.addEventListener('pointerdown', (ev) => {
+        this.langChangeCallback(code);
+        ev.preventDefault();
+      });
+      item.appendChild(link);
+      this.menu.appendChild(item);
+    });
+
+    this.container.appendChild(this.element);
+
+    this.menu.style.bottom = `${this.menu.clientHeight * -1 - 10}px`;
+
+    window.document.addEventListener('pointerdown', (ev) => {
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+    });
+    this.trigger.addEventListener('pointerdown', (ev) => {
+      if (!this.menuVisible) {
+        this.showMenu();
+        ev.stopPropagation();
+      }
+    });
+  }
+
+  showMenu() {
+    this.menuVisible = true;
+    this.menu.classList.add('visible');
+  }
+
+  hideMenu() {
+    this.menuVisible = false;
+    this.menu.classList.remove('visible');
+  }
+}
+
+module.exports = LangSwitcher;
 
 
 /***/ }),
@@ -6464,7 +6540,10 @@ class MazeView {
   }
 
   handleMazeUpdate(updates) {
-    updates.forEach(([i, j]) => { this.renderCell(i, j); });
+    updates.forEach(([i, j]) => {
+      this.visited[j][i] = false;
+      this.renderCell(i, j);
+    });
   }
 
   addOverlay(displayObject) {
@@ -6706,6 +6785,7 @@ module.exports = Modal;
 
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
+const { shuffleArray } = __webpack_require__(/*! ./aux/shuffle */ "./src/js/aux/shuffle.js");
 
 class QLearningAI {
   constructor(robot) {
@@ -6713,7 +6793,7 @@ class QLearningAI {
     this.q = this.initQ();
     this.learningRate = 1;
     this.discountFactor = 1;
-    this.exploreRate = 0.1;
+    this.exploreRate = 0.2;
     this.learning = true;
     this.events = new EventEmitter();
 
@@ -6751,7 +6831,7 @@ class QLearningAI {
     const dirValuePairs = Object.entries(this.q[y][x])
       .filter(([direction]) => directions.includes(direction));
     if (dirValuePairs.length > 0) {
-      return dirValuePairs.sort(([, valA], [, valB]) => valA - valB)
+      return shuffleArray(dirValuePairs).sort(([, valA], [, valB]) => valA - valB)
         .pop()[0];
     }
     return null;
@@ -7137,47 +7217,82 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!************************!*\
-  !*** ./src/js/main.js ***!
-  \************************/
-/* eslint-disable no-console */
-/* globals PIXI */
-
+/*!********************************!*\
+  !*** ./src/js/main-exhibit.js ***!
+  \********************************/
+/* globals IMAGINARY, PIXI */
+__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+__webpack_require__(/*! ../sass/exhibit.scss */ "./src/sass/exhibit.scss");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
 const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
+const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
 const showFatalError = __webpack_require__(/*! ./aux/show-fatal-error */ "./src/js/aux/show-fatal-error.js");
-__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
-const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
-const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
-const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
-const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay.js */ "./src/js/maze-view-ai-overlay.js");
-const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
-const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
-__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+const LangSwitcher = __webpack_require__(/*! ./lang-switcher */ "./src/js/lang-switcher.js");
+const Maze = __webpack_require__(/*! ./maze */ "./src/js/maze.js");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
-const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
+const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
+const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
+const ExhibitMazeEditorPalette = __webpack_require__(/*! ./exhibit/exhibit-maze-editor-palette */ "./src/js/exhibit/exhibit-maze-editor-palette.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
+const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
+
+const qs = new URLSearchParams(window.location.search);
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
   'config/robot.yml',
   'config/items.yml',
+  'config/i18n.yml',
   'config/default-settings.yml',
-  'settings.yml',
+  'settings-exhibit.yml',
 ])
   .catch((err) => {
     showFatalError('Error loading configuration', err);
     console.error('Error loading configuration');
     console.error(err);
   })
+  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+    .then(() => config))
+  .then(config => IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
+      return IMAGINARY.i18n.setLang(defaultLanguage);
+    })
+    .then(() => config)
+    .catch((err) => {
+      showFatalError('Error loading translations', err);
+      console.error('Error loading translations');
+      console.error(err);
+    }))
   .then((config) => {
+    const container = $('[data-component=rl2-exhibit]');
+    // eslint-disable-next-line no-unused-vars
+    const langSwitcher = new LangSwitcher(
+      container.find('#lang-switcher-container')[0],
+      { languages: config.languages },
+      code => I18n.setLanguage(code)
+    );
+
     const app = new PIXI.Application({
       width: 1920,
-      height: 1920,
-      backgroundColor: 0xf2f2f2,
+      height: 1080,
+      backgroundColor: 0xffffff,
     });
+
+    // CHAOS
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
@@ -7210,17 +7325,26 @@ cfgLoader.load([
       const robot = new Robot();
       maze.addRobot(robot);
       const ai = new QLearningAI(maze.robot);
-      setupKeyControls(maze.robot);
+      setupKeyControls(robot);
 
-      $('[data-component="app-container"]').append(app.view);
+      $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new MazeEditorPalette($('body'), config);
-      const mazeView = new MazeEditor($('body'), maze, mazeEditorPalette, config, textures);
+      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
+      mazeEditorPalette.events.on('action', (type) => {
+        if (type === 'reset-map') {
+          maze.copy(Maze.fromJSON(maze1));
+          maze.reset();
+          robot.reset();
+          ai.clear();
+        }
+      });
+
+      const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
-      mazeView.displayObject.width = 1920;
-      mazeView.displayObject.height = 1920;
-      mazeView.displayObject.x = 0;
-      mazeView.displayObject.y = 0;
+      mazeView.displayObject.width = 720;
+      mazeView.displayObject.height = 720;
+      mazeView.displayObject.x = 1080;
+      mazeView.displayObject.y = (1080 - 720) / 2;
 
       const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
@@ -7232,12 +7356,22 @@ cfgLoader.load([
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
-      $('.sidebar').append(trainingView.$element);
+      $('#training-ui').append(trainingView.$element);
+
+      // Refresh language
+      I18n.setLanguage(I18n.getLanguage());
     });
   });
+
+// Disable context menu on long touch
+$(window).on('contextmenu', (event) => {
+  if (event.button != 2 && !(event.clientX == event.clientY == 1)) {
+    event.preventDefault();
+  }
+});
 
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=default.7b53f3ade0791ea96629.js.map
+//# sourceMappingURL=exhibit.39cd89ae02749b308c25.js.map

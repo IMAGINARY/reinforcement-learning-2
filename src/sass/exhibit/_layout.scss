@@ -29,8 +29,8 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   #training-ui {
     position: absolute;
-    left: 20px;
-    top: 600px;
+    left: 326px;
+    bottom: 56px;
     pointer-events: auto;
   }
 
@@ -42,7 +42,9 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   .maze-editor-palette {
     pointer-events: auto;
-    top: 90px;
+    bottom: 230px;
+    left: 55px;
+    top: auto;
   }
 }
 

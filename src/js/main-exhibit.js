@@ -108,6 +108,15 @@ cfgLoader.load([
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
       const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
+      mazeEditorPalette.events.on('action', (type) => {
+        if (type === 'reset-map') {
+          maze.copy(Maze.fromJSON(maze1));
+          maze.reset();
+          robot.reset();
+          ai.clear();
+        }
+      });
+
       const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 720;
@@ -126,5 +135,15 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('#training-ui').append(trainingView.$element);
+
+      // Refresh language
+      I18n.setLanguage(I18n.getLanguage());
     });
   });
+
+// Disable context menu on long touch
+$(window).on('contextmenu', (event) => {
+  if (event.button != 2 && !(event.clientX == event.clientY == 1)) {
+    event.preventDefault();
+  }
+});

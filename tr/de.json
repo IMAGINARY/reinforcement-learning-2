@@ -2,5 +2,16 @@
   "panel-1": "Eine KI, die <strong>Reinforcement Learning</strong> (Bestärkendes Lernen) verwendet, lernt durch Versuch und Irrtum, indem sie direkt mit ihrer Umgebung interagiert. Das ist vergleichbar damit, wie Menschen und Tiere lernen.",
   "panel-2": "Die KI entdeckt Aktionen, die eine positive <strong>Belohnung</strong> (Erreichen des Ausgangs) oder eine negative Belohnung (Betreten von Lava) haben. Sie versucht, eine Folge von Aktionen zu finden, die die Gesamtbelohnung maximiert.",
   "panel-3": "Die KI muss die besten Aktionen, die sie gelernt hat, <strong>nutzen</strong>, aber auch andere Optionen <strong>erkunden</strong>, um vielleicht noch höhere Belohnungen zu finden und um sich an verändernde Umgebungen anzupassen.\n",
-  "panel-4": "Du kannst dein <strong>eigenes Labyrinth zeichnen</strong> und der Roboter wird langsam lernen, den Ausgang zu finden und gefährliche Bereiche zu vermeiden. Experimentiere damit, spezielle Belohnungen auf dem Weg zu hinterlassen."
+  "panel-4": "Du kannst dein <strong>eigenes Labyrinth zeichnen</strong> und der Roboter wird langsam lernen, den Ausgang zu finden und gefährliche Bereiche zu vermeiden. Experimentiere damit, spezielle Belohnungen auf dem Weg zu hinterlassen.",
+  "ai-training-view-slider-exploration-rate-limit-min": "Ausnutzen",
+  "ai-training-view-slider-exploration-rate-limit-max": "Erkunden",
+  "ai-training-view-button-clear": "Training zurücksetzen",
+  "editor-palette-button-tile-floor": "Boden",
+  "editor-palette-button-tile-wall": "Wand",
+  "editor-palette-button-tile-lava": "Lava",
+  "editor-palette-button-tile-exit": "Ausgang",
+  "editor-palette-button-tile-candy": "Bonbon",
+  "editor-palette-button-tile-cone": "Verkehrshütchen",
+  "editor-palette-button-tile-pit": "Grube",
+  "editor-palette-button-action-reset-map": "Labyrinth zurücksetzen"
 }

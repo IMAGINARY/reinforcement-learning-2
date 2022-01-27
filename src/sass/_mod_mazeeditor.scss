@@ -9,6 +9,11 @@
     padding: 4px;
     margin-right: 5px;
     background-color: white;
+    .item {
+      .label {
+        display: none;
+      }
+    }
   }
 
   .editor-palette-button {
@@ -37,6 +42,10 @@
       &:last-child {
         margin-bottom: -2px;
       }
+    }
+
+    &.editor-palette-button-tile {
+      background-size: 100%;
     }
   }
 

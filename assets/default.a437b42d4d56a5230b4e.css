@@ -77,6 +77,8 @@ html.with-fatal-error {
     padding: 4px;
     margin-right: 5px;
     background-color: white; }
+    .maze-editor-palette .maze-editor-palette-bar .item .label {
+      display: none; }
   .maze-editor-palette .editor-palette-button {
     display: block;
     width: 40px;
@@ -98,6 +100,8 @@ html.with-fatal-error {
       margin-bottom: 2px; }
       .maze-editor-palette .editor-palette-button.active:last-child {
         margin-bottom: -2px; }
+    .maze-editor-palette .editor-palette-button.editor-palette-button-tile {
+      background-size: 100%; }
   .maze-editor-palette .separator {
     height: 6px;
     border-bottom: 6px solid #f2f2f2;
@@ -157,5 +161,8 @@ button.maze-browser-item-new {
   margin-right: 0.5em;
   margin-bottom: 0.5em; }
 
+.ai-training-view-slider .slider-text .slider-limit {
+  display: none; }
 
-/*# sourceMappingURL=default.22fa11091c688e00d67c.css.map*/
+
+/*# sourceMappingURL=default.a437b42d4d56a5230b4e.css.map*/

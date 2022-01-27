@@ -2,5 +2,16 @@
   "panel-1": "An AI that uses <strong>Reinforcement Learning</strong> learns through trial and error by directly interacting with its environment. It’s similar to how humans and animals learn.",
   "panel-2": "The AI discovers actions that have a positive <strong>reward</strong> (reaching the exit) or a negative one (stepping on lava). It tries to find a sequence of actions that maximizes the total reward.",
   "panel-3": "The AI has to <strong>exploit</strong> the best actions it has learned but also needs to <strong>explore</strong> other options to find possibly higher rewards and to adapt to a changing environment.",
-  "panel-4": "You can <strong>draw your own maze</strong> and the robot will slowly learn to find the exit and to avoid dangerous areas. Experiment with leaving bonus rewards on their way to reinforce certain paths."
+  "panel-4": "You can <strong>draw your own maze</strong> and the robot will slowly learn to find the exit and to avoid dangerous areas. Experiment with leaving bonus rewards on their way to reinforce certain paths.",
+  "ai-training-view-slider-exploration-rate-limit-min": "Exploit",
+  "ai-training-view-slider-exploration-rate-limit-max": "Explore",
+  "ai-training-view-button-clear": "Reset training",
+  "editor-palette-button-tile-floor": "Floor",
+  "editor-palette-button-tile-wall": "Wall",
+  "editor-palette-button-tile-lava": "Lava",
+  "editor-palette-button-tile-exit": "Exit",
+  "editor-palette-button-tile-candy": "Candy",
+  "editor-palette-button-tile-cone": "Traffic cone",
+  "editor-palette-button-tile-pit": "Pit",
+  "editor-palette-button-action-reset-map": "Reset maze"
 }

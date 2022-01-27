@@ -22,23 +22,29 @@
         .on('pointerup', (ev) => {
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
           }
         })
         .on('pointercancel', (ev) => {
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
           }
         });
 
       $(this)
         .on('pointerdown', (ev) => {
+          ev.preventDefault();
           trackedPointerId = ev.pointerId;
           // On touch, apparently, the pointer is automatically captured by pointerdown
           ev.delegateTarget.releasePointerCapture(ev.pointerId);
+          $(this).trigger('i.pointerdown', ev);
         })
         .on('pointerup', (ev) => {
+          ev.preventDefault();
           if (ev.pointerId === trackedPointerId) {
             trackedPointerId = null;
+            $(this).trigger('i.pointerup', ev);
             $(this).trigger('i.pointerclick', ev);
           }
         });

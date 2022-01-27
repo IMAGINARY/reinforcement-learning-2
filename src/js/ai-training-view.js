@@ -1,9 +1,19 @@
+const RobotView = require('./robot-view');
+
 class AITrainingView {
-  constructor(ai) {
+  constructor(ai, robotView) {
     this.ai = ai;
+    this.robotView = robotView;
     this.running = false;
     this.timer = 0;
-    this.speed = 10;
+    this.robotIdle = true;
+    this.robotView.events.on('idle', () => {
+      if (this.running) {
+        this.ai.step();
+      } else {
+        this.robotIdle = true;
+      }
+    });
 
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
@@ -50,7 +60,16 @@ class AITrainingView {
         .html(props.icon ? '&nbsp;' : props.title || '')
         .pointerclick()
         .on('i.pointerclick', () => {
-          this.handleButton(props.id);
+          this.handleButtonClick(props.id);
+        })
+        .on('pointerdown', () => {
+          this.handleButtonDown(props.id);
+        })
+        .on('pointerup', () => {
+          this.handleButtonUp(props.id);
+        })
+        .on('pointercancel', () => {
+          this.handleButtonUp(props.id);
         });
 
       if (props.icon) {
@@ -88,11 +107,18 @@ class AITrainingView {
     return $element;
   }
 
-  handleButton(id) {
+  handleButtonClick(id) {
     if (id === 'run') { this.handleRun(); }
     if (id === 'step') { this.handleStep(); }
-    if (id === 'train-1') { this.handleTrain1(); }
     if (id === 'clear') { this.handleClear(); }
+  }
+
+  handleButtonDown(id) {
+    if (id === 'turbo') { this.turboStart(); }
+  }
+
+  handleButtonUp(id) {
+    if (id === 'turbo') { this.turboEnd(); }
   }
 
   handleRun() {
@@ -100,31 +126,32 @@ class AITrainingView {
       this.buttons.run.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
       this.running = false;
     } else {
-      this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
-      this.running = true;
+      if (this.robotIdle) {
+        this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+        this.running = true;
+        this.robotIdle = false;
+        this.ai.step();
+      }
     }
   }
 
   handleStep() {
-    this.ai.step();
-  }
-
-  handleTrain1() {
-
+    if (this.robotIdle) {
+      this.robotIdle = false;
+      this.ai.step();
+    }
   }
 
   handleClear() {
     this.ai.clear();
   }
 
-  animate(time) {
-    if (this.running) {
-      this.timer += time;
-      if (this.timer > this.speed) {
-        this.ai.step();
-        this.timer %= this.speed;
-      }
-    }
+  turboStart() {
+    this.robotView.speed = RobotView.Speed.TURBO;
+  }
+
+  turboEnd() {
+    this.robotView.speed = RobotView.Speed.DEFAULT;
   }
 }
 
@@ -135,14 +162,15 @@ AITrainingView.Buttons = [
     title: 'Run',
   },
   {
+    id: 'turbo',
+    icon: 'static/fa/forward-solid.svg',
+    title: 'Hold to speed up',
+  },
+  {
     id: 'step',
     icon: 'static/fa/step-forward-solid.svg',
     title: 'Step',
   },
-  // {
-  //   id: 'train-1',
-  //   title: 'Train 1 step',
-  // },
   {
     id: 'clear',
     title: 'Clear',

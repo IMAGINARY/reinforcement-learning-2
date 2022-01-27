@@ -4720,14 +4720,24 @@ __webpack_require__.r(__webpack_exports__);
 /*!************************************!*\
   !*** ./src/js/ai-training-view.js ***!
   \************************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const RobotView = __webpack_require__(/*! ./robot-view */ "./src/js/robot-view.js");
 
 class AITrainingView {
-  constructor(ai) {
+  constructor(ai, robotView) {
     this.ai = ai;
+    this.robotView = robotView;
     this.running = false;
     this.timer = 0;
-    this.speed = 10;
+    this.robotIdle = true;
+    this.robotView.events.on('idle', () => {
+      if (this.running) {
+        this.ai.step();
+      } else {
+        this.robotIdle = true;
+      }
+    });
 
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
@@ -4774,7 +4784,16 @@ class AITrainingView {
         .html(props.icon ? '&nbsp;' : props.title || '')
         .pointerclick()
         .on('i.pointerclick', () => {
-          this.handleButton(props.id);
+          this.handleButtonClick(props.id);
+        })
+        .on('pointerdown', () => {
+          this.handleButtonDown(props.id);
+        })
+        .on('pointerup', () => {
+          this.handleButtonUp(props.id);
+        })
+        .on('pointercancel', () => {
+          this.handleButtonUp(props.id);
         });
 
       if (props.icon) {
@@ -4812,11 +4831,18 @@ class AITrainingView {
     return $element;
   }
 
-  handleButton(id) {
+  handleButtonClick(id) {
     if (id === 'run') { this.handleRun(); }
     if (id === 'step') { this.handleStep(); }
-    if (id === 'train-1') { this.handleTrain1(); }
     if (id === 'clear') { this.handleClear(); }
+  }
+
+  handleButtonDown(id) {
+    if (id === 'turbo') { this.turboStart(); }
+  }
+
+  handleButtonUp(id) {
+    if (id === 'turbo') { this.turboEnd(); }
   }
 
   handleRun() {
@@ -4824,31 +4850,32 @@ class AITrainingView {
       this.buttons.run.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
       this.running = false;
     } else {
-      this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
-      this.running = true;
+      if (this.robotIdle) {
+        this.buttons.run.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+        this.running = true;
+        this.robotIdle = false;
+        this.ai.step();
+      }
     }
   }
 
   handleStep() {
-    this.ai.step();
-  }
-
-  handleTrain1() {
-
+    if (this.robotIdle) {
+      this.robotIdle = false;
+      this.ai.step();
+    }
   }
 
   handleClear() {
     this.ai.clear();
   }
 
-  animate(time) {
-    if (this.running) {
-      this.timer += time;
-      if (this.timer > this.speed) {
-        this.ai.step();
-        this.timer %= this.speed;
-      }
-    }
+  turboStart() {
+    this.robotView.speed = RobotView.Speed.TURBO;
+  }
+
+  turboEnd() {
+    this.robotView.speed = RobotView.Speed.DEFAULT;
   }
 }
 
@@ -4859,14 +4886,15 @@ AITrainingView.Buttons = [
     title: 'Run',
   },
   {
+    id: 'turbo',
+    icon: 'static/fa/forward-solid.svg',
+    title: 'Hold to speed up',
+  },
+  {
     id: 'step',
     icon: 'static/fa/step-forward-solid.svg',
     title: 'Step',
   },
-  // {
-  //   id: 'train-1',
-  //   title: 'Train 1 step',
-  // },
   {
     id: 'clear',
     title: 'Clear',
@@ -6243,7 +6271,7 @@ class MazeView {
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
 
-    this.robotViews = [];
+    this.robotView = null;
 
     const pointers = {};
 
@@ -6301,26 +6329,27 @@ class MazeView {
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
-    this.robotViews = this.maze.robots.map((robot) => {
-      const robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures[`robot-${robot.id}`]);
+    const { robot } = this.maze;
+    this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
 
-      robot.events.on('move', (direction, x1, y1, x2, y2) => {
-        if (direction) {
-          robotView.moveTo(x2, y2);
-        } else {
-          robotView.setPosition(x2, y2);
-        }
-      });
+    robot.events.on('move', (direction, x1, y1, x2, y2) => {
+      if (direction) {
+        this.robotView.moveTo(x2, y2);
+      } else {
+        this.robotView.teleport(x2, y2);
+      }
+    });
 
-      robot.events.on('exited', () => {
-        robot.canMove = false;
-        setTimeout(() => {
-          this.maze.reset();
-          robot.canMove = true;
-        }, 1000);
-      });
+    robot.events.on('exited', () => {
+      this.robotView.exitMaze();
+    });
 
-      return robotView;
+    robot.events.on('reset', () => {
+      this.robotView.reset();
+    });
+
+    this.robotView.events.on('resetEnd', () => {
+      this.maze.reset();
     });
 
     this.itemSprites = {};
@@ -6341,7 +6370,7 @@ class MazeView {
       this.handleItemReset(item);
     });
 
-    this.robotLayer.addChild(...this.robotViews.map(view => view.sprite));
+    this.robotLayer.addChild(this.robotView.sprite);
   }
 
   createItemSprite(item) {
@@ -6434,7 +6463,7 @@ class MazeView {
   }
 
   animate(time) {
-    this.robotViews.forEach(view => view.animate(time));
+    this.robotView.animate(time);
   }
 }
 
@@ -6459,7 +6488,7 @@ class Maze {
   constructor(width, height, cells = null, config) {
     this.map = new Grid(width, height, cells);
     this.config = config;
-    this.robots = [];
+    this.robot = null;
     this.items = [];
     this.lastItemId = 0;
     this.startPosition = [0, height - 1];
@@ -6495,7 +6524,10 @@ class Maze {
   }
 
   addRobot(robot) {
-    this.robots.push(robot);
+    if (this.robot) {
+      throw new Error('Robot already exists');
+    }
+    this.robot = robot;
     robot.maze = this;
     // Put the robot in the lower left corner
     const [startX, startY] = this.startPosition;
@@ -6561,11 +6593,6 @@ class Maze {
   }
 
   reset() {
-    this.robots.forEach((robot) => {
-      robot.setPosition(...this.startPosition);
-      robot.resetScore();
-    });
-
     this.items.forEach((item) => {
       item.picked = false;
       this.events.emit('itemReset', item);
@@ -6768,20 +6795,24 @@ module.exports = QLearningAI;
 /*!******************************!*\
   !*** ./src/js/robot-view.js ***!
   \******************************/
-/***/ ((module) => {
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 /* globals PIXI */
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 
 class RobotView {
   constructor(robot, tileSize, texture) {
     this.robot = robot;
     this.tileSize = tileSize;
+    this.events = new EventEmitter();
 
-    this.waypoints = [];
-    this.speed = 15;
+    this.speed = RobotView.Speed.DEFAULT;
 
     this.sprite = RobotView.createSprite(tileSize, texture);
-    this.setPosition(this.robot.x, this.robot.y);
+    this.sprite.x = this.robot.x * this.tileSize;
+    this.sprite.y = this.robot.y * this.tileSize;
+
+    this.animationQueue = [];
   }
 
   static createSprite(tileSize, texture) {
@@ -6794,31 +6825,91 @@ class RobotView {
     return sprite;
   }
 
-  setPosition(x, y) {
-    this.sprite.x = x * this.tileSize;
-    this.sprite.y = y * this.tileSize;
+  teleport(x, y) {
+    this.animationQueue.push({ type: 'teleport', x, y });
   }
 
   moveTo(x, y) {
-    this.waypoints.push([x, y]);
+    this.animationQueue.push({ type: 'move', x, y });
+  }
+
+  exitMaze() {
+    this.animationQueue.push({ type: 'delay', time: 60 });
+  }
+
+  reset() {
+    this.animationQueue.push({ type: 'reset' });
+  }
+
+  animateTeleport(time, animation) {
+    this.sprite.x = animation.x * this.tileSize;
+    this.sprite.y = animation.y * this.tileSize;
+    animation.done = true;
+  }
+
+  animateMove(time, animation) {
+    const destX = animation.x * this.tileSize;
+    const destY = animation.y * this.tileSize;
+    const deltaX = destX - this.sprite.x;
+    const deltaY = destY - this.sprite.y;
+
+    this.sprite.x += Math.min(Math.abs(deltaX), time * this.speed) * Math.sign(deltaX);
+    this.sprite.y += Math.min(Math.abs(deltaY), time * this.speed) * Math.sign(deltaY);
+
+    if (this.sprite.x === destX && this.sprite.y === destY) {
+      animation.done = true;
+    }
+  }
+
+  animateDelay(time, animation) {
+    if (animation.elapsed === undefined) {
+      animation.elapsed = 0;
+    }
+    animation.elapsed += (time) * (this.speed / RobotView.Speed.DEFAULT);
+    if (animation.elapsed >= animation.time) {
+      animation.done = true;
+    }
+  }
+
+  animateReset(time, animation) {
+    animation.done = true;
   }
 
   animate(time) {
-    if (this.waypoints.length > 0) {
-      const destX = this.waypoints[0][0] * this.tileSize;
-      const destY = this.waypoints[0][1] * this.tileSize;
-      const deltaX = destX - this.sprite.x;
-      const deltaY = destY - this.sprite.y;
+    if (this.animationQueue.length !== 0) {
+      switch (this.animationQueue[0].type) {
+        case 'move':
+          this.animateMove(time, this.animationQueue[0]);
+          break;
+        case 'teleport':
+          this.animateTeleport(time, this.animationQueue[0]);
+          break;
+        case 'delay':
+          this.animateDelay(time, this.animationQueue[0]);
+          break;
+        case 'reset':
+          this.animateReset(time, this.animationQueue[0]);
+          break;
+        default:
+          throw new Error(`Unknown animation type: ${this.animationQueue[0].type}`);
+      }
 
-      this.sprite.x += Math.min(Math.abs(deltaX), time * this.speed) * Math.sign(deltaX);
-      this.sprite.y += Math.min(Math.abs(deltaY), time * this.speed) * Math.sign(deltaY);
+      if (this.animationQueue[0].done) {
+        this.events.emit(`${this.animationQueue[0].type}End`);
+        this.animationQueue.shift();
+      }
 
-      if (this.sprite.x === destX && this.sprite.y === destY) {
-        this.waypoints = this.waypoints.slice(1);
+      if (this.animationQueue.length === 0) {
+        this.events.emit('idle');
       }
     }
   }
 }
+
+RobotView.Speed = {
+  DEFAULT: 10,
+  TURBO: 30,
+};
 
 module.exports = RobotView;
 
@@ -6834,9 +6925,7 @@ module.exports = RobotView;
 const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
 
 class Robot {
-  constructor(id, props) {
-    this.id = id;
-    this.name = props.name || id;
+  constructor() {
     this.maze = null;
     this.x = 0;
     this.y = 0;
@@ -6844,12 +6933,15 @@ class Robot {
     this.canMove = true;
 
     this.events = new EventEmitter();
+    window.robot = this;
   }
 
   setPosition(x, y) {
-    this.onMoved(null, this.x, this.y, x, y);
+    const oldX = this.x;
+    const oldY = this.y;
     this.x = x;
     this.y = y;
+    this.onMoved(null, oldX, oldY, x, y);
   }
 
   canMoveTo(x, y) {
@@ -6869,10 +6961,20 @@ class Robot {
 
   moveTo(direction, x, y) {
     if (this.canMoveTo(x, y)) {
-      this.onMoved(direction, this.x, this.y, x, y);
+      const oldX = this.x;
+      const oldY = this.y;
       this.x = x;
       this.y = y;
+      this.onMoved(direction, oldX, oldY, x, y);
     }
+  }
+
+  reset() {
+    const [x, y] = this.maze.startPosition;
+    this.resetScore();
+    this.setPosition(x, y);
+
+    this.events.emit('reset');
   }
 
   onMoved(direction, oldX, oldY, x, y) {
@@ -6882,7 +6984,7 @@ class Robot {
     if (item) {
       reward += this.maze.getItemReward(item);
     }
-    this.events.emit('move', direction, this.x, this.y, x, y, reward);
+    this.events.emit('move', direction, oldX, oldY, x, y, reward);
     this.addScore(reward);
 
     if (this.maze.isExit(x, y)) {
@@ -6892,14 +6994,15 @@ class Robot {
 
   onExit(x, y) {
     this.events.emit('exited', x, y);
+    this.reset();
   }
 
   availableDirections() {
     return Object.keys(Robot.Directions)
       .filter(dir => this.canMoveTo(
         this.x + Robot.Directions[dir][0],
-        this.y + Robot.Directions[dir][1])
-      );
+        this.y + Robot.Directions[dir][1]
+      ));
   }
 
   availableDirectionsAt(x, y) {
@@ -6908,7 +7011,8 @@ class Robot {
         x,
         y,
         x + Robot.Directions[dir][0],
-        y + Robot.Directions[dir][1]));
+        y + Robot.Directions[dir][1]
+      ));
   }
 
   go(direction) {
@@ -7048,7 +7152,7 @@ const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette *
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
-  'config/robots.yml',
+  'config/robot.yml',
   'config/items.yml',
   'config/default-settings.yml',
   'settings.yml',
@@ -7065,13 +7169,8 @@ cfgLoader.load([
       backgroundColor: 0xf2f2f2,
     });
     const textures = {};
-    Object.entries(config.robots).forEach(([id, props]) => {
-      if (props.texture) {
-        const textureId = `robot-${id}`;
-        textures[textureId] = null;
-        app.loader.add(textureId, props.texture);
-      }
-    });
+    textures.robot = null;
+    app.loader.add('robot', config.robot.texture);
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
@@ -7093,12 +7192,10 @@ cfgLoader.load([
 
       const maze = Maze.fromJSON(maze1);
       maze.config = config;
-      Object.entries(config.robots).forEach(([id, props]) => {
-        const robot = new Robot(id, props);
-        maze.addRobot(robot);
-      });
-      const ai = new QLearningAI(maze.robots[0]);
-      setupKeyControls(maze.robots[0]);
+      const robot = new Robot();
+      maze.addRobot(robot);
+      const ai = new QLearningAI(maze.robot);
+      setupKeyControls(maze.robot);
 
       $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
@@ -7119,9 +7216,8 @@ cfgLoader.load([
       });
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
-      const trainingView = new AITrainingView(ai);
+      const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);
-      app.ticker.add(time => trainingView.animate(time));
     });
   });
 
@@ -7129,4 +7225,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.cb0f1441390cbf72b03b.js.map
+//# sourceMappingURL=default.d5a24ab8bcfa57f9e043.js.map

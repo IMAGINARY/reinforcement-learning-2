@@ -1,9 +1,7 @@
 const EventEmitter = require('events');
 
 class Robot {
-  constructor(id, props) {
-    this.id = id;
-    this.name = props.name || id;
+  constructor() {
     this.maze = null;
     this.x = 0;
     this.y = 0;
@@ -11,12 +9,15 @@ class Robot {
     this.canMove = true;
 
     this.events = new EventEmitter();
+    window.robot = this;
   }
 
   setPosition(x, y) {
-    this.onMoved(null, this.x, this.y, x, y);
+    const oldX = this.x;
+    const oldY = this.y;
     this.x = x;
     this.y = y;
+    this.onMoved(null, oldX, oldY, x, y);
   }
 
   canMoveTo(x, y) {
@@ -36,10 +37,20 @@ class Robot {
 
   moveTo(direction, x, y) {
     if (this.canMoveTo(x, y)) {
-      this.onMoved(direction, this.x, this.y, x, y);
+      const oldX = this.x;
+      const oldY = this.y;
       this.x = x;
       this.y = y;
+      this.onMoved(direction, oldX, oldY, x, y);
     }
+  }
+
+  reset() {
+    const [x, y] = this.maze.startPosition;
+    this.resetScore();
+    this.setPosition(x, y);
+
+    this.events.emit('reset');
   }
 
   onMoved(direction, oldX, oldY, x, y) {
@@ -49,7 +60,7 @@ class Robot {
     if (item) {
       reward += this.maze.getItemReward(item);
     }
-    this.events.emit('move', direction, this.x, this.y, x, y, reward);
+    this.events.emit('move', direction, oldX, oldY, x, y, reward);
     this.addScore(reward);
 
     if (this.maze.isExit(x, y)) {
@@ -59,14 +70,15 @@ class Robot {
 
   onExit(x, y) {
     this.events.emit('exited', x, y);
+    this.reset();
   }
 
   availableDirections() {
     return Object.keys(Robot.Directions)
       .filter(dir => this.canMoveTo(
         this.x + Robot.Directions[dir][0],
-        this.y + Robot.Directions[dir][1])
-      );
+        this.y + Robot.Directions[dir][1]
+      ));
   }
 
   availableDirectionsAt(x, y) {
@@ -75,7 +87,8 @@ class Robot {
         x,
         y,
         x + Robot.Directions[dir][0],
-        y + Robot.Directions[dir][1]));
+        y + Robot.Directions[dir][1]
+      ));
   }
 
   go(direction) {

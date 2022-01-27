@@ -23,7 +23,7 @@ const qs = new URLSearchParams(window.location.search);
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
-  'config/robots.yml',
+  'config/robot.yml',
   'config/items.yml',
   'config/i18n.yml',
   'config/default-settings.yml',
@@ -72,13 +72,8 @@ cfgLoader.load([
 
     // CHAOS
     const textures = {};
-    Object.entries(config.robots).forEach(([id, props]) => {
-      if (props.texture) {
-        const textureId = `robot-${id}`;
-        textures[textureId] = null;
-        app.loader.add(textureId, props.texture);
-      }
-    });
+    textures.robot = null;
+    app.loader.add('robot', config.robot.texture);
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
@@ -100,12 +95,10 @@ cfgLoader.load([
 
       const maze = Maze.fromJSON(maze1);
       maze.config = config;
-      Object.entries(config.robots).forEach(([id, props]) => {
-        const robot = new Robot(id, props);
-        maze.addRobot(robot);
-      });
-      const ai = new QLearningAI(maze.robots[0]);
-      setupKeyControls(maze.robots[0]);
+      const robot = new Robot();
+      maze.addRobot(robot);
+      const ai = new QLearningAI(maze.robot);
+      setupKeyControls(robot);
 
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
@@ -126,8 +119,7 @@ cfgLoader.load([
       });
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
-      const trainingView = new AITrainingView(ai);
+      const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('#training-ui').append(trainingView.$element);
-      app.ticker.add(time => trainingView.animate(time));
     });
   });

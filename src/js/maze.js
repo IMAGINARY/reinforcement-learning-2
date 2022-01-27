@@ -6,7 +6,7 @@ class Maze {
   constructor(width, height, cells = null, config) {
     this.map = new Grid(width, height, cells);
     this.config = config;
-    this.robots = [];
+    this.robot = null;
     this.items = [];
     this.lastItemId = 0;
     this.startPosition = [0, height - 1];
@@ -42,7 +42,10 @@ class Maze {
   }
 
   addRobot(robot) {
-    this.robots.push(robot);
+    if (this.robot) {
+      throw new Error('Robot already exists');
+    }
+    this.robot = robot;
     robot.maze = this;
     // Put the robot in the lower left corner
     const [startX, startY] = this.startPosition;
@@ -108,11 +111,6 @@ class Maze {
   }
 
   reset() {
-    this.robots.forEach((robot) => {
-      robot.setPosition(...this.startPosition);
-      robot.resetScore();
-    });
-
     this.items.forEach((item) => {
       item.picked = false;
       this.events.emit('itemReset', item);

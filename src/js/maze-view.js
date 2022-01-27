@@ -24,7 +24,7 @@ class MazeView {
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
 
-    this.robotViews = [];
+    this.robotView = null;
 
     const pointers = {};
 
@@ -82,26 +82,27 @@ class MazeView {
     this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
     this.handleCityUpdate(this.maze.map.allCells());
 
-    this.robotViews = this.maze.robots.map((robot) => {
-      const robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures[`robot-${robot.id}`]);
+    const { robot } = this.maze;
+    this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
 
-      robot.events.on('move', (direction, x1, y1, x2, y2) => {
-        if (direction) {
-          robotView.moveTo(x2, y2);
-        } else {
-          robotView.setPosition(x2, y2);
-        }
-      });
+    robot.events.on('move', (direction, x1, y1, x2, y2) => {
+      if (direction) {
+        this.robotView.moveTo(x2, y2);
+      } else {
+        this.robotView.teleport(x2, y2);
+      }
+    });
 
-      robot.events.on('exited', () => {
-        robot.canMove = false;
-        setTimeout(() => {
-          this.maze.reset();
-          robot.canMove = true;
-        }, 1000);
-      });
+    robot.events.on('exited', () => {
+      this.robotView.exitMaze();
+    });
 
-      return robotView;
+    robot.events.on('reset', () => {
+      this.robotView.reset();
+    });
+
+    this.robotView.events.on('resetEnd', () => {
+      this.maze.reset();
     });
 
     this.itemSprites = {};
@@ -122,7 +123,7 @@ class MazeView {
       this.handleItemReset(item);
     });
 
-    this.robotLayer.addChild(...this.robotViews.map(view => view.sprite));
+    this.robotLayer.addChild(this.robotView.sprite);
   }
 
   createItemSprite(item) {
@@ -215,7 +216,7 @@ class MazeView {
   }
 
   animate(time) {
-    this.robotViews.forEach(view => view.animate(time));
+    this.robotView.animate(time);
   }
 }
 

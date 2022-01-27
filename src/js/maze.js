@@ -115,6 +115,7 @@ class Maze {
       item.picked = false;
       this.events.emit('itemReset', item);
     });
+    this.events.emit('reset');
   }
 
   getItemReward(item) {

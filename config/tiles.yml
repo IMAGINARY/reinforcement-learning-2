@@ -36,3 +36,12 @@ tileTypes:
     walkable: true
     exit: true
     reward: -50
+  7:
+    name: Cone
+    color: '#ffffff'
+    walkable: true
+    exit: false
+    reward: -5
+    texture: 'static/icons/cone.svg'
+    textureVisited: 'static/icons/cone-down.svg'
+    editorIcon: 'static/icons/cone.svg'

@@ -23,6 +23,7 @@ class MazeView {
 
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
+    this.visited = Array2D.create(maze.map.width, maze.map.height, false);
 
     this.robotView = null;
 
@@ -79,8 +80,8 @@ class MazeView {
     this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.textureLayer.addChild(...Array2D.flatten(this.floorTextures));
 
-    this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
-    this.handleCityUpdate(this.maze.map.allCells());
+    this.maze.map.events.on('update', this.handleMazeUpdate.bind(this));
+    this.handleMazeUpdate(this.maze.map.allCells());
 
     const { robot } = this.maze;
     this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
@@ -91,6 +92,8 @@ class MazeView {
       } else {
         this.robotView.teleport(x2, y2);
       }
+      this.visited[y2][x2] = true;
+      this.renderCell(x2, y2);
     });
 
     robot.events.on('exited', () => {
@@ -121,6 +124,11 @@ class MazeView {
 
     this.maze.events.on('itemReset', (item) => {
       this.handleItemReset(item);
+    });
+
+    this.maze.events.on('reset', () => {
+      Array2D.setAll(this.visited, false);
+      this.handleMazeUpdate(this.maze.map.allCells());
     });
 
     this.robotLayer.addChild(this.robotView.sprite);
@@ -200,14 +208,15 @@ class MazeView {
       .endFill();
 
     if (tileType.texture !== undefined) {
-      this.getFloorTexture(i, j).texture = this.textures[`tile-${tileTypeId}`];
+      this.getFloorTexture(i, j).texture = this.visited[j][i] && tileType.textureVisited
+        ? this.textures[`tile-${tileTypeId}-visited`] : this.textures[`tile-${tileTypeId}`];
       this.getFloorTexture(i, j).visible = true;
     } else {
       this.getFloorTexture(i, j).visible = false;
     }
   }
 
-  handleCityUpdate(updates) {
+  handleMazeUpdate(updates) {
     updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
 

@@ -4716,6 +4716,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/sass/exhibit.scss":
+/*!*******************************!*\
+  !*** ./src/sass/exhibit.scss ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/js/ai-training-view.js":
 /*!************************************!*\
   !*** ./src/js/ai-training-view.js ***!
@@ -5274,183 +5287,6 @@ module.exports = MazeBrowser;
 
 /***/ }),
 
-/***/ "./src/js/editor/maze-editor-palette.js":
-/*!**********************************************!*\
-  !*** ./src/js/editor/maze-editor-palette.js ***!
-  \**********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
-
-class MazeEditorPalette {
-  constructor($container, config) {
-    this.$container = $container;
-    this.$element = $('<div></div>').appendTo(this.$container);
-    this.config = config;
-    this.activeButton = null;
-    this.tileId = null;
-    this.events = new EventEmitter();
-
-    this.$element.addClass('maze-editor-palette');
-    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-
-    this.$bar1.append(this.buildActionButtons());
-
-    this.$bar2.append(this.buildTileButtons(config));
-    this.$bar2.append($('<div class="separator"></div>'));
-    this.$bar2.append(this.buildToolButtons(config));
-    this.$bar2.append(this.buildItemButtons(config));
-  }
-
-  buildTileButtons(config) {
-    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: typeCfg.name,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tile',
-        `editor-palette-button-tile-${id}`,
-      ])
-      .css({
-        backgroundColor: typeCfg.color,
-        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.tileId = Number(id);
-        this.events.emit('change', 'tile', Number(id));
-      }));
-  }
-
-  buildToolButtons() {
-    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: tool.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-tool',
-        `editor-palette-button-tool-${tool.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${tool.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', (ev) => {
-        if (this.activeButton) {
-          this.activeButton.removeClass('active');
-        }
-        this.activeButton = $(ev.target);
-        this.activeButton.addClass('active');
-        this.events.emit('change', tool.id);
-      }));
-  }
-
-  buildItemButtons(config) {
-    return Object.entries(config.items)
-      .filter(([, props]) => props.inPalette !== false)
-      .map(([id, props]) => $('<button></button>')
-        .attr({
-          type: 'button',
-          title: props.name,
-        })
-        .addClass([
-          'editor-palette-button',
-          'editor-palette-button-item',
-          `editor-palette-button-item-${id}`,
-        ])
-        .css({
-          backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
-        })
-        .pointerclick()
-        .on('i.pointerclick', (ev) => {
-          if (this.activeButton) {
-            this.activeButton.removeClass('active');
-          }
-          this.activeButton = $(ev.target);
-          this.activeButton.addClass('active');
-          this.events.emit('change', 'item', id);
-        }));
-  }
-
-  buildActionButtons() {
-    return MazeEditorPalette.Actions.map(action => $('<button></button>')
-      .attr({
-        type: 'button',
-        title: action.title,
-      })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-action',
-        `editor-palette-button-action-${action.id}`,
-      ])
-      .css({
-        backgroundImage: `url(${action.icon})`,
-      })
-      .pointerclick()
-      .on('i.pointerclick', () => {
-        this.events.emit('action', action.id);
-      }));
-  }
-}
-
-MazeEditorPalette.Tools = [
-  {
-    id: 'start',
-    title: 'Set the starting point',
-    icon: 'static/fa/robot-solid-blue.svg',
-  },
-  {
-    id: 'erase',
-    title: 'Remove items',
-    icon: 'static/fa/times-solid.svg',
-  },
-];
-
-MazeEditorPalette.Actions = [
-  {
-    id: 'reset',
-    title: 'Reset',
-    icon: 'static/fa/sync-solid.svg',
-  },
-  {
-    id: 'load',
-    title: 'Load maze',
-    icon: 'static/fa/folder-open-solid.svg',
-  },
-  {
-    id: 'save',
-    title: 'Save maze',
-    icon: 'static/fa/save-solid.svg',
-  },
-  {
-    id: 'import',
-    title: 'Import maze',
-    icon: 'static/fa/file-import-solid.svg',
-  },
-  {
-    id: 'export',
-    title: 'Export maze',
-    icon: 'static/fa/file-export-solid.svg',
-  },
-];
-
-module.exports = MazeEditorPalette;
-
-
-/***/ }),
-
 /***/ "./src/js/editor/maze-editor.js":
 /*!**************************************!*\
   !*** ./src/js/editor/maze-editor.js ***!
@@ -5854,6 +5690,104 @@ module.exports = ObjectStore;
 
 /***/ }),
 
+/***/ "./src/js/exhibit/exhibit-maze-editor-palette.js":
+/*!*******************************************************!*\
+  !*** ./src/js/exhibit/exhibit-maze-editor-palette.js ***!
+  \*******************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class ExhibitMazeEditorPalette {
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass(['maze-editor-palette', 'exhibit-maze-editor-palette']);
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+
+    this.$bar1.append(this.buildTileButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: typeCfg.name,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tile',
+        `editor-palette-button-tile-${id}`,
+      ])
+      .css({
+        backgroundColor: typeCfg.color,
+        backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.tileId = Number(id);
+        this.events.emit('change', 'tile', Number(id));
+      }));
+  }
+}
+
+module.exports = ExhibitMazeEditorPalette;
+
+
+/***/ }),
+
+/***/ "./src/js/exhibit/i18n.js":
+/*!********************************!*\
+  !*** ./src/js/exhibit/i18n.js ***!
+  \********************************/
+/***/ ((module) => {
+
+/* globals IMAGINARY */
+
+function setLanguage(code) {
+  return IMAGINARY.i18n.setLang(code).then(() => {
+    $('[data-i18n-text]').each((i, element) => {
+      $(element).html(
+        IMAGINARY.i18n.t($(element).data('i18n-text'))
+      );
+    });
+  });
+}
+
+function init(config, initialLanguage) {
+  return IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      return setLanguage(initialLanguage);
+    });
+}
+
+module.exports = {
+  init,
+  setLanguage,
+};
+
+
+/***/ }),
+
 /***/ "./src/js/grid.js":
 /*!************************!*\
   !*** ./src/js/grid.js ***!
@@ -6128,6 +6062,85 @@ module.exports = setupKeyControls;
 
 /***/ }),
 
+/***/ "./src/js/lang-switcher.js":
+/*!*********************************!*\
+  !*** ./src/js/lang-switcher.js ***!
+  \*********************************/
+/***/ ((module) => {
+
+class LangSwitcher {
+  constructor(container, config, langChangeCallback) {
+    this.menuVisible = false;
+    this.container = container;
+    this.config = config;
+    this.langChangeCallback = langChangeCallback;
+
+    this.render();
+  }
+
+  render() {
+    this.element = document.createElement('div');
+    this.element.classList.add('lang-switcher');
+
+    this.trigger = document.createElement('button');
+    this.trigger.setAttribute('type', 'button');
+    this.trigger.classList.add('lang-switcher-trigger');
+    this.element.appendChild(this.trigger);
+
+    const mask = document.createElement('div');
+    mask.classList.add('lang-switcher-menu-mask');
+    this.element.appendChild(mask);
+
+    this.menu = document.createElement('ul');
+    this.menu.classList.add('lang-switcher-menu');
+    mask.appendChild(this.menu);
+
+    Object.entries(this.config.languages).forEach(([code, name]) => {
+      const item = document.createElement(('li'));
+      const link = document.createElement('button');
+      link.setAttribute('type', 'button');
+      link.innerText = name;
+      link.addEventListener('pointerdown', (ev) => {
+        this.langChangeCallback(code);
+        ev.preventDefault();
+      });
+      item.appendChild(link);
+      this.menu.appendChild(item);
+    });
+
+    this.container.appendChild(this.element);
+
+    this.menu.style.bottom = `${this.menu.clientHeight * -1 - 10}px`;
+
+    window.document.addEventListener('pointerdown', (ev) => {
+      if (this.menuVisible) {
+        this.hideMenu();
+      }
+    });
+    this.trigger.addEventListener('pointerdown', (ev) => {
+      if (!this.menuVisible) {
+        this.showMenu();
+        ev.stopPropagation();
+      }
+    });
+  }
+
+  showMenu() {
+    this.menuVisible = true;
+    this.menu.classList.add('visible');
+  }
+
+  hideMenu() {
+    this.menuVisible = false;
+    this.menu.classList.remove('visible');
+  }
+}
+
+module.exports = LangSwitcher;
+
+
+/***/ }),
+
 /***/ "./src/js/maze-view-ai-overlay.js":
 /*!****************************************!*\
   !*** ./src/js/maze-view-ai-overlay.js ***!
@@ -6270,6 +6283,7 @@ class MazeView {
 
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
+    this.visited = Array2D.create(maze.map.width, maze.map.height, false);
 
     this.robotView = null;
 
@@ -6326,8 +6340,8 @@ class MazeView {
     this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.textureLayer.addChild(...Array2D.flatten(this.floorTextures));
 
-    this.maze.map.events.on('update', this.handleCityUpdate.bind(this));
-    this.handleCityUpdate(this.maze.map.allCells());
+    this.maze.map.events.on('update', this.handleMazeUpdate.bind(this));
+    this.handleMazeUpdate(this.maze.map.allCells());
 
     const { robot } = this.maze;
     this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
@@ -6338,6 +6352,8 @@ class MazeView {
       } else {
         this.robotView.teleport(x2, y2);
       }
+      this.visited[y2][x2] = true;
+      this.renderCell(x2, y2);
     });
 
     robot.events.on('exited', () => {
@@ -6368,6 +6384,11 @@ class MazeView {
 
     this.maze.events.on('itemReset', (item) => {
       this.handleItemReset(item);
+    });
+
+    this.maze.events.on('reset', () => {
+      Array2D.setAll(this.visited, false);
+      this.handleMazeUpdate(this.maze.map.allCells());
     });
 
     this.robotLayer.addChild(this.robotView.sprite);
@@ -6447,14 +6468,15 @@ class MazeView {
       .endFill();
 
     if (tileType.texture !== undefined) {
-      this.getFloorTexture(i, j).texture = this.textures[`tile-${tileTypeId}`];
+      this.getFloorTexture(i, j).texture = this.visited[j][i] && tileType.textureVisited
+        ? this.textures[`tile-${tileTypeId}-visited`] : this.textures[`tile-${tileTypeId}`];
       this.getFloorTexture(i, j).visible = true;
     } else {
       this.getFloorTexture(i, j).visible = false;
     }
   }
 
-  handleCityUpdate(updates) {
+  handleMazeUpdate(updates) {
     updates.forEach(([i, j]) => { this.renderCell(i, j); });
   }
 
@@ -6597,6 +6619,7 @@ class Maze {
       item.picked = false;
       this.events.emit('itemReset', item);
     });
+    this.events.emit('reset');
   }
 
   getItemReward(item) {
@@ -7127,47 +7150,82 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!************************!*\
-  !*** ./src/js/main.js ***!
-  \************************/
-/* eslint-disable no-console */
-/* globals PIXI */
-
+/*!********************************!*\
+  !*** ./src/js/main-exhibit.js ***!
+  \********************************/
+/* globals IMAGINARY, PIXI */
+__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+__webpack_require__(/*! ../sass/exhibit.scss */ "./src/sass/exhibit.scss");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
 const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
+const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
 const showFatalError = __webpack_require__(/*! ./aux/show-fatal-error */ "./src/js/aux/show-fatal-error.js");
-__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
-const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
-const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
-const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
-const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay.js */ "./src/js/maze-view-ai-overlay.js");
-const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
-const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
-__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+const LangSwitcher = __webpack_require__(/*! ./lang-switcher */ "./src/js/lang-switcher.js");
+const Maze = __webpack_require__(/*! ./maze */ "./src/js/maze.js");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
-const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
+const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
+const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
+const ExhibitMazeEditorPalette = __webpack_require__(/*! ./exhibit/exhibit-maze-editor-palette */ "./src/js/exhibit/exhibit-maze-editor-palette.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
+const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
+
+const qs = new URLSearchParams(window.location.search);
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
   'config/robot.yml',
   'config/items.yml',
+  'config/i18n.yml',
   'config/default-settings.yml',
-  'settings.yml',
+  'settings-exhibit.yml',
 ])
   .catch((err) => {
     showFatalError('Error loading configuration', err);
     console.error('Error loading configuration');
     console.error(err);
   })
+  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+    .then(() => config))
+  .then(config => IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
+      return IMAGINARY.i18n.setLang(defaultLanguage);
+    })
+    .then(() => config)
+    .catch((err) => {
+      showFatalError('Error loading translations', err);
+      console.error('Error loading translations');
+      console.error(err);
+    }))
   .then((config) => {
+    const container = $('[data-component=rl2-exhibit]');
+    // eslint-disable-next-line no-unused-vars
+    const langSwitcher = new LangSwitcher(
+      container.find('#lang-switcher-container')[0],
+      { languages: config.languages },
+      code => I18n.setLanguage(code)
+    );
+
     const app = new PIXI.Application({
       width: 1920,
-      height: 1920,
-      backgroundColor: 0xf2f2f2,
+      height: 1080,
+      backgroundColor: 0xffffff,
     });
+
+    // CHAOS
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
@@ -7184,6 +7242,11 @@ cfgLoader.load([
         textures[textureId] = null;
         app.loader.add(textureId, props.texture);
       }
+      if (props.textureVisited) {
+        const textureId = `tile-${id}-visited`;
+        textures[textureId] = null;
+        app.loader.add(textureId, props.textureVisited);
+      }
     });
     app.loader.load((loader, resources) => {
       Object.keys(textures).forEach((id) => {
@@ -7195,17 +7258,17 @@ cfgLoader.load([
       const robot = new Robot();
       maze.addRobot(robot);
       const ai = new QLearningAI(maze.robot);
-      setupKeyControls(maze.robot);
+      setupKeyControls(robot);
 
-      $('[data-component="app-container"]').append(app.view);
+      $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new MazeEditorPalette($('body'), config);
-      const mazeView = new MazeEditor($('body'), maze, mazeEditorPalette, config, textures);
+      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
+      const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
-      mazeView.displayObject.width = 1920;
-      mazeView.displayObject.height = 1920;
-      mazeView.displayObject.x = 0;
-      mazeView.displayObject.y = 0;
+      mazeView.displayObject.width = 720;
+      mazeView.displayObject.height = 720;
+      mazeView.displayObject.x = 1080;
+      mazeView.displayObject.y = (1080 - 720) / 2;
 
       const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
@@ -7217,7 +7280,7 @@ cfgLoader.load([
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
-      $('.sidebar').append(trainingView.$element);
+      $('#training-ui').append(trainingView.$element);
     });
   });
 
@@ -7225,4 +7288,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.d5a24ab8bcfa57f9e043.js.map
+//# sourceMappingURL=exhibit.31b42622ff653ed470a2.js.map

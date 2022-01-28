@@ -86,11 +86,15 @@ class MazeView {
     const { robot } = this.maze;
     this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
 
-    robot.events.on('move', (direction, x1, y1, x2, y2) => {
+    robot.events.on('move', (direction, x1, y1, x2, y2, reward, tileType) => {
       if (direction) {
         this.robotView.moveTo(x2, y2);
       } else {
         this.robotView.teleport(x2, y2);
+      }
+      const reaction = this.config.tileTypes[this.maze.map.get(x2, y2)].react;
+      if (reaction === 'always' || (reaction === 'once' && this.visited[y2][x2] === false)) {
+        this.robotView.react(tileType);
       }
       this.visited[y2][x2] = true;
       this.renderCell(x2, y2);

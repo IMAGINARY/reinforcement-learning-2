@@ -9,7 +9,6 @@ class Robot {
     this.canMove = true;
 
     this.events = new EventEmitter();
-    window.robot = this;
   }
 
   setPosition(x, y) {

@@ -164,6 +164,23 @@ button.maze-browser-item-new {
 .ai-training-view-slider .slider-text .slider-limit {
   display: none; }
 
+.reaction {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  z-index: 200;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out; }
+  .reaction.fading {
+    opacity: 0 !important;
+    margin-top: -200px; }
+
+.reaction-lava {
+  opacity: 0.8; }
+
 .lang-switcher {
   display: inline-block;
   font-size: 40px; }
@@ -457,4 +474,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.7ec6fd09007b17a153f3.css.map*/
+/*# sourceMappingURL=exhibit.dd2e2cd89e688387eace.css.map*/

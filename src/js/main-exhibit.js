@@ -19,6 +19,7 @@ const MazeViewAIOverlay = require('./maze-view-ai-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 const RewardsInteractive = require('./exhibit/interactive-rewards');
+const ReactionController = require('./reaction-controller');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -137,6 +138,14 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('#training-ui').append(trainingView.$element);
+
+      const reactionController = new ReactionController($('body'), config);
+      window.reaction = reactionController;
+      window.robotView = mazeView.mazeView.robotView;
+      mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
+        const bounds = mazeView.mazeView.robotView.sprite.getBounds();
+        reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);
+      });
 
       const exploreExploitInteractive = new ExploreExploitInteractive(config, textures);
       app.stage.addChild(exploreExploitInteractive.view.displayObject);

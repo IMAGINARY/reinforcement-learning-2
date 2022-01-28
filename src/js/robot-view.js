@@ -38,12 +38,21 @@ class RobotView {
     this.animationQueue.push({ type: 'delay', time: 60 });
   }
 
+  react(reaction) {
+    this.animationQueue.push({ type: 'react', reaction });
+    // this.animationQueue.push({ type: 'delay', time: 10 });
+  }
+
   reset() {
     this.animationQueue.push({ type: 'reset' });
   }
 
   nop() {
     this.animationQueue.push({ type: 'delay', time: 20 });
+  }
+
+  animateReact(time, animation) {
+    animation.done = true;
   }
 
   animateTeleport(time, animation) {
@@ -92,6 +101,9 @@ class RobotView {
         case 'delay':
           this.animateDelay(time, this.animationQueue[0]);
           break;
+        case 'react':
+          this.animateReact(time, this.animationQueue[0]);
+          break;
         case 'reset':
           this.animateReset(time, this.animationQueue[0]);
           break;
@@ -100,7 +112,7 @@ class RobotView {
       }
 
       if (this.animationQueue[0].done) {
-        this.events.emit(`${this.animationQueue[0].type}End`);
+        this.events.emit(`${this.animationQueue[0].type}End`, this.animationQueue[0]);
         this.animationQueue.shift();
       }
 

@@ -21,12 +21,16 @@ tileTypes:
     texture: 'static/icons/exit.svg'
     editorIcon: 'static/icons/exit.svg'
     type: exit
+    react: always
+    reaction: 'static/openmoji/trophy.svg'
   4:
     name: Lava
     color: '#ff3333'
     walkable: true
     reward: -5
     type: lava
+    react: always
+    reaction: 'static/openmoji/fire.svg'
   5:
     name: Candy
     color: '#fff799'
@@ -35,6 +39,8 @@ tileTypes:
     item: candy
     editorIcon: 'static/icons/candy.svg'
     type: candy
+    react: once
+    reaction: 'static/openmoji/red-heart.svg'
   6:
     name: Pit
     color: '#000000'
@@ -42,6 +48,8 @@ tileTypes:
     exit: true
     reward: -50
     type: pit
+    react: always
+    reaction: 'static/openmoji/face-head-bandage.svg'
   7:
     name: Cone
     color: '#ffffff'
@@ -52,3 +60,5 @@ tileTypes:
     textureVisited: 'static/icons/cone-down.svg'
     editorIcon: 'static/icons/cone.svg'
     type: cone
+    react: once
+    reaction: 'static/openmoji/downcast-face-with-sweat.svg'

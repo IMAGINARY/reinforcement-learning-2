@@ -215,7 +215,7 @@ class MazeView {
     const tileType = this.config.tileTypes[tileTypeId] || null;
     this.getFloorTile(i, j)
       .clear()
-      .lineStyle(2, 0x0, 0.3)
+      .lineStyle(2, 0x0, 1)
       .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
       .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
       .endFill();

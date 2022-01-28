@@ -108,6 +108,7 @@ class RobotView {
 }
 
 RobotView.Speed = {
+  SLOW: 5,
   DEFAULT: 10,
   TURBO: 30,
 };

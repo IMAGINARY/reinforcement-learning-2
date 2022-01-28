@@ -17,6 +17,7 @@ const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette'
 const MazeEditor = require('./editor/maze-editor');
 const MazeViewAIOverlay = require('./maze-view-ai-overlay');
 const AITrainingView = require('./ai-training-view');
+const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -135,6 +136,15 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('#training-ui').append(trainingView.$element);
+
+      const exploreExploitInteractive = new ExploreExploitInteractive(config, textures);
+      app.stage.addChild(exploreExploitInteractive.view.displayObject);
+      exploreExploitInteractive.view.displayObject.width = 480;
+      exploreExploitInteractive.view.displayObject.height = (480 / 8) * 2;
+      exploreExploitInteractive.view.displayObject.x = 20.25;
+      exploreExploitInteractive.view.displayObject.y = 850.25;
+      app.ticker.add(time => exploreExploitInteractive.animate(time));
+      $('#explore-exploit-ui').append(exploreExploitInteractive.ui.$element);
 
       // Refresh language
       I18n.setLanguage(I18n.getLanguage());

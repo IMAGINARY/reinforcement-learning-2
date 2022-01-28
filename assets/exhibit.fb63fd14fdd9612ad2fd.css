@@ -244,9 +244,16 @@ button.maze-browser-item-new {
     bottom: 270px;
     left: 10px;
     top: auto; }
+  .rl2-exhibit #explore-exploit-ui {
+    position: absolute;
+    bottom: 20px; }
+
+.panel-title {
+  height: 220px;
+  width: 667.5px; }
 
 .panel-sm {
-  height: 320px;
+  height: 370px;
   width: 667.5px; }
 
 .panel-lg {
@@ -263,10 +270,10 @@ button.maze-browser-item-new {
   top: 20px; }
 
 #panel-2 {
-  top: 380px; }
+  top: 280px; }
 
 #panel-3 {
-  top: 740px; }
+  top: 690px; }
 
 #panel-4 {
   top: 20px;
@@ -397,6 +404,15 @@ button.maze-browser-item-new {
   text-align: center;
   margin-top: 1.7em; }
 
+#explore-exploit-ui {
+  pointer-events: all; }
+  #explore-exploit-ui .ai-training-view-button {
+    display: none; }
+  #explore-exploit-ui .ai-training-view-slider {
+    display: none; }
+  #explore-exploit-ui .ai-training-view-slider-exploration-rate {
+    display: block; }
+
 html, body {
   padding: 0;
   margin: 0; }
@@ -407,4 +423,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.ff8053c0ad08d1be95dd.css.map*/
+/*# sourceMappingURL=exhibit.fb63fd14fdd9612ad2fd.css.map*/

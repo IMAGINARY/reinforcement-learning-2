@@ -47,12 +47,23 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
     left: 10px;
     top: auto;
   }
+
+  #explore-exploit-ui {
+    position: absolute;
+    bottom: 20px;
+  }
 }
 
-$panel-sm-height: ($viewport-inner-height - 2 * $panel-gutter) / 3;
+$panel-title-height: 220px;
+$panel-sm-height: ($viewport-inner-height - 2 * $panel-gutter - $panel-title-height) / 2;
 $panel-sm-width: ($viewport-inner-width - $panel-gutter-lg) * 0.375;
 $panel-lg-height: $viewport-inner-height;
 $panel-lg-width: ($viewport-inner-width - $panel-gutter-lg) * 0.625;
+
+.panel-title {
+  height: $panel-title-height;
+  width: $panel-sm-width;
+}
 
 .panel-sm {
   height: $panel-sm-height;
@@ -77,11 +88,11 @@ $panel-lg-width: ($viewport-inner-width - $panel-gutter-lg) * 0.625;
 }
 
 #panel-2 {
-  top: $viewport-padding + $panel-sm-height + $panel-gutter;
+  top: $viewport-padding + $panel-title-height + $panel-gutter;
 }
 
 #panel-3 {
-  top: $viewport-padding + ($panel-sm-height + $panel-gutter) * 2;
+  top: $viewport-padding + ($panel-title-height + $panel-gutter) + ($panel-sm-height + $panel-gutter);
 }
 
 #panel-4 {

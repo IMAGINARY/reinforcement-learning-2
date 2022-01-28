@@ -15,6 +15,14 @@ The config directory has several data definitions.
 
 You can override any of them by creating a `settings.yml` file in the root directory.
 
+## Exhibit mode
+
+`exhibit.html` runs the exhibit in a fixed 1920x1080 resolution.
+
+To override settings in exhibit mode create a `settings-exhibit.yml` file in the root directory.
+
+The default language can also be set through the lang query string (e.g. `?lang=de`).
+
 ## License
 
 Copyright (c) 2020-2021 IMAGINARY gGmbH

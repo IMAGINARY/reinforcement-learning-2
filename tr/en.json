@@ -13,5 +13,6 @@
   "editor-palette-button-tile-candy": "Candy",
   "editor-palette-button-tile-cone": "Traffic cone",
   "editor-palette-button-tile-pit": "Pit",
-  "editor-palette-button-action-reset-map": "Reset maze"
+  "editor-palette-button-action-reset-map": "Reset maze",
+  "rewards-bar-label": "Rewards"
 }

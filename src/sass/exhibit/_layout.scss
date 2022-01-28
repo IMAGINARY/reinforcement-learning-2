@@ -52,6 +52,16 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
     position: absolute;
     bottom: 20px;
   }
+
+  #rewards-bar {
+    position: absolute;
+    bottom: 166px;
+  }
+
+  #rewards-ui {
+    position: absolute;
+    bottom: 20px;
+  }
 }
 
 $panel-title-height: 220px;

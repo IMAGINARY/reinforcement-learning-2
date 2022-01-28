@@ -60,7 +60,7 @@ class Robot {
     if (item) {
       reward += this.maze.getItemReward(item);
     }
-    this.events.emit('move', direction, oldX, oldY, x, y, reward);
+    this.events.emit('move', direction, oldX, oldY, x, y, reward, this.maze.getTileType(x, y));
     this.addScore(reward);
 
     if (this.maze.isExit(x, y)) {

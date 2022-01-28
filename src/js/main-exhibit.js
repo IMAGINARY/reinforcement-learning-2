@@ -18,6 +18,7 @@ const MazeEditor = require('./editor/maze-editor');
 const MazeViewAIOverlay = require('./maze-view-ai-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
+const RewardsInteractive = require('./exhibit/interactive-rewards');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -145,6 +146,16 @@ cfgLoader.load([
       exploreExploitInteractive.view.displayObject.y = 850.25;
       app.ticker.add(time => exploreExploitInteractive.animate(time));
       $('#explore-exploit-ui').append(exploreExploitInteractive.ui.$element);
+
+      const rewardsInteractive = new RewardsInteractive(config, textures);
+      app.stage.addChild(rewardsInteractive.view.displayObject);
+      rewardsInteractive.view.displayObject.width = 480;
+      rewardsInteractive.view.displayObject.height = (480 / 8);
+      rewardsInteractive.view.displayObject.x = 20.25;
+      rewardsInteractive.view.displayObject.y = 500.25;
+      app.ticker.add(time => rewardsInteractive.animate(time));
+      $('#rewards-bar').append(rewardsInteractive.$barContainer);
+      $('#rewards-ui').append(rewardsInteractive.ui.$element);
 
       // Refresh language
       I18n.setLanguage(I18n.getLanguage());

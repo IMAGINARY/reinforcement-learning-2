@@ -68,6 +68,12 @@ class Maze {
     this.events.emit('itemPlaced', newItem);
   }
 
+  getTileType(x, y) {
+    return this.config.tileTypes
+      && this.config.tileTypes[this.map.get(x, y)]
+      && this.config.tileTypes[this.map.get(x, y)].type;
+  }
+
   getItem(x, y) {
     const found = this.items.find(item => item.x === x && item.y === y);
     return found;

@@ -1,0 +1,3 @@
+{"map":{"width":8,"height":1,"cells":[[1,1,5,5,1,4,1,3]]},"items":[
+  {"type":"candy","x":2,"y":0},{"type":"candy","x":3,"y":0}
+]}

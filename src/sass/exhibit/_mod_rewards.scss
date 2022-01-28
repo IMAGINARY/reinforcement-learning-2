@@ -1,0 +1,44 @@
+#rewards-ui {
+  pointer-events: all;
+
+  .ai-training-view-button {
+    display: none;
+  }
+
+  .ai-training-view-slider {
+    display: none;
+  }
+
+  .ai-training-view-button-step {
+    display: block;
+    height: 50px;
+    width: 50px;
+  }
+}
+
+#rewards-bar {
+  .bar-container {
+    .label {
+      display: inline-block;
+      margin-right: 0.8em;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .progress {
+      display: inline-block;
+      width: 300px;
+      .progress-bar {
+        height: 100%;
+        transition: width .6s ease, background-color 1s;
+        background-color: #26df28;
+      }
+    }
+
+    &.decrease {
+      .progress-bar {
+        background-color: #f86137;
+      }
+    }
+  }
+}

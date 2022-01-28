@@ -247,6 +247,12 @@ button.maze-browser-item-new {
   .rl2-exhibit #explore-exploit-ui {
     position: absolute;
     bottom: 20px; }
+  .rl2-exhibit #rewards-bar {
+    position: absolute;
+    bottom: 166px; }
+  .rl2-exhibit #rewards-ui {
+    position: absolute;
+    bottom: 20px; }
 
 .panel-title {
   height: 220px;
@@ -413,6 +419,34 @@ button.maze-browser-item-new {
   #explore-exploit-ui .ai-training-view-slider-exploration-rate {
     display: block; }
 
+#rewards-ui {
+  pointer-events: all; }
+  #rewards-ui .ai-training-view-button {
+    display: none; }
+  #rewards-ui .ai-training-view-slider {
+    display: none; }
+  #rewards-ui .ai-training-view-button-step {
+    display: block;
+    height: 50px;
+    width: 50px; }
+
+#rewards-bar .bar-container .label {
+  display: inline-block;
+  margin-right: 0.8em;
+  font-weight: bold;
+  font-size: 0.9em; }
+
+#rewards-bar .bar-container .progress {
+  display: inline-block;
+  width: 300px; }
+  #rewards-bar .bar-container .progress .progress-bar {
+    height: 100%;
+    transition: width .6s ease, background-color 1s;
+    background-color: #26df28; }
+
+#rewards-bar .bar-container.decrease .progress-bar {
+  background-color: #f86137; }
+
 html, body {
   padding: 0;
   margin: 0; }
@@ -423,4 +457,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.fb63fd14fdd9612ad2fd.css.map*/
+/*# sourceMappingURL=exhibit.3c5f5e2570dba1f3c2c3.css.map*/

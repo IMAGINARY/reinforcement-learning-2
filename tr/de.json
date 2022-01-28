@@ -13,5 +13,6 @@
   "editor-palette-button-tile-candy": "Bonbon",
   "editor-palette-button-tile-cone": "Verkehrshütchen",
   "editor-palette-button-tile-pit": "Grube",
-  "editor-palette-button-action-reset-map": "Labyrinth zurücksetzen"
+  "editor-palette-button-action-reset-map": "Labyrinth zurücksetzen",
+  "rewards-bar-label": "Belohnung"
 }

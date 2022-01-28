@@ -94,7 +94,7 @@ class MazeView {
       }
       const reaction = this.config.tileTypes[this.maze.map.get(x2, y2)].react;
       if (reaction === 'always' || (reaction === 'once' && this.visited[y2][x2] === false)) {
-        this.robotView.react(tileType);
+        this.robotView.react(tileType, x2, y2);
       }
       this.visited[y2][x2] = true;
       this.renderCell(x2, y2);

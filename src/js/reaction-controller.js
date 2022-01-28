@@ -11,20 +11,22 @@ class ReactionController {
   }
 
   launchReaction(type, x, y) {
-    const reaction = $('<div></div>')
-      .addClass(['reaction', `reaction-${type}`])
-      .css({
-        left: x,
-        top: y,
-        backgroundImage: `url(${this.reactions[type]})`,
-      })
-      .appendTo(this.container);
-    setTimeout(() => {
-      reaction.addClass('fading');
-    }, 0);
-    setTimeout(() => {
-      reaction.remove();
-    }, 1000);
+    if (this.reactions[type]) {
+      const reaction = $('<div></div>')
+        .addClass(['reaction', `reaction-${type}`])
+        .css({
+          left: x,
+          top: y,
+          backgroundImage: `url(${this.reactions[type]})`,
+        })
+        .appendTo(this.container);
+      setTimeout(() => {
+        reaction.addClass('fading');
+      }, 0);
+      setTimeout(() => {
+        reaction.remove();
+      }, 1000);
+    }
   }
 }
 

@@ -12,6 +12,10 @@ class RobotView {
     this.sprite = RobotView.createSprite(tileSize, texture);
     this.sprite.x = this.robot.x * this.tileSize;
     this.sprite.y = this.robot.y * this.tileSize;
+    this.defaultScale = {
+      x: this.sprite.scale.x,
+      y: this.sprite.scale.y,
+    };
 
     this.animationQueue = [];
   }
@@ -38,9 +42,11 @@ class RobotView {
     this.animationQueue.push({ type: 'delay', time: 60 });
   }
 
-  react(reaction) {
-    this.animationQueue.push({ type: 'react', reaction });
-    // this.animationQueue.push({ type: 'delay', time: 10 });
+  react(reaction, x, y) {
+    this.animationQueue.push({ type: 'react', reaction, x, y });
+    if (reaction === 'pit') {
+      this.animationQueue.push({ type: 'fall', x, y, time: 30 });
+    }
   }
 
   reset() {
@@ -75,6 +81,22 @@ class RobotView {
     }
   }
 
+  animateFall(time, animation) {
+    if (animation.elapsed === undefined) {
+      animation.elapsed = 0;
+    }
+    animation.elapsed += (time) * (this.speed / RobotView.Speed.DEFAULT);
+    const progress = Math.min(animation.elapsed, animation.time) / animation.time;
+    this.sprite.scale.x = 0.8 * (1 - progress) + 0.2;
+    this.sprite.scale.y = 0.8 * (1 - progress) + 0.2;
+    this.sprite.x = animation.x * this.tileSize + (this.tileSize - this.sprite.width) / 2;
+    this.sprite.y = animation.y * this.tileSize + (this.tileSize - this.sprite.height) / 2;
+    this.sprite.alpha = 0.8 * (1 - progress) + 0.2;
+    if (animation.elapsed >= animation.time) {
+      animation.done = true;
+    }
+  }
+
   animateDelay(time, animation) {
     if (animation.elapsed === undefined) {
       animation.elapsed = 0;
@@ -86,6 +108,9 @@ class RobotView {
   }
 
   animateReset(time, animation) {
+    this.sprite.alpha = 1;
+    this.sprite.scale.x = this.defaultScale.x;
+    this.sprite.scale.y = this.defaultScale.y;
     animation.done = true;
   }
 
@@ -103,6 +128,9 @@ class RobotView {
           break;
         case 'react':
           this.animateReact(time, this.animationQueue[0]);
+          break;
+        case 'fall':
+          this.animateFall(time, this.animationQueue[0]);
           break;
         case 'reset':
           this.animateReset(time, this.animationQueue[0]);

@@ -49,7 +49,6 @@ tileTypes:
     reward: -50
     type: pit
     react: always
-    reaction: 'static/openmoji/face-head-bandage.svg'
   7:
     name: Cone
     color: '#ffffff'

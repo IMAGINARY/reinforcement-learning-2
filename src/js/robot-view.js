@@ -42,6 +42,10 @@ class RobotView {
     this.animationQueue.push({ type: 'reset' });
   }
 
+  nop() {
+    this.animationQueue.push({ type: 'delay', time: 20 });
+  }
+
   animateTeleport(time, animation) {
     this.sprite.x = animation.x * this.tileSize;
     this.sprite.y = animation.y * this.tileSize;

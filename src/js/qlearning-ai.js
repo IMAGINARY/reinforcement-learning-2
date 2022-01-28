@@ -71,6 +71,8 @@ class QLearningAI {
     const direction = this.epsilonGreedyPolicy();
     if (direction) {
       this.robot.go(direction);
+    } else {
+      this.robot.failMove();
     }
   }
 

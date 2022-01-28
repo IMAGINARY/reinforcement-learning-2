@@ -96,6 +96,10 @@ class MazeView {
       this.renderCell(x2, y2);
     });
 
+    robot.events.on('moveFailed', () => {
+      this.robotView.nop();
+    });
+
     robot.events.on('exited', () => {
       this.robotView.exitMaze();
     });

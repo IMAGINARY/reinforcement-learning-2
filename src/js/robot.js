@@ -42,7 +42,13 @@ class Robot {
       this.x = x;
       this.y = y;
       this.onMoved(direction, oldX, oldY, x, y);
+    } else {
+      this.onMoveFailed(direction, this.x, this.y, x, y);
     }
+  }
+
+  failMove() {
+    this.onMoveFailed(null, this.x, this.y, null, null);
   }
 
   reset() {
@@ -66,6 +72,10 @@ class Robot {
     if (this.maze.isExit(x, y)) {
       this.onExit(x, y);
     }
+  }
+
+  onMoveFailed(direction, oldX, oldY, x, y) {
+    this.events.emit('moveFailed', direction, oldX, oldY, x, y);
   }
 
   onExit(x, y) {

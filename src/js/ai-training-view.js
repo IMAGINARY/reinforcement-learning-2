@@ -1,4 +1,5 @@
 const RobotView = require('./robot-view');
+const createHoldButton = require('./hold-button');
 
 class AITrainingView {
   constructor(ai, robotView) {
@@ -99,14 +100,24 @@ class AITrainingView {
       },
     }).appendTo(this.$element);
 
-    this.$clearButton = this.buildButton({
+    this.$clearButton = createHoldButton({
       id: 'clear',
       title: 'Clear',
+      holdTime: 2000,
     })
-      .on('i.pointerclick', () => {
+      .addClass([
+        'ai-training-view-button',
+        'ai-training-view-button-clear',
+      ])
+      .on('hold', () => {
+        console.log("YES");
         this.ai.clear();
       })
-      .appendTo(this.$element);
+      .appendTo(this.$element)
+      .find('.text')
+      .attr({
+        'data-i18n-text': 'ai-training-view-button-clear',
+      });
   }
 
   buildButton(props) {

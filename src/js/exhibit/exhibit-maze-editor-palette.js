@@ -1,4 +1,5 @@
 const EventEmitter = require('events');
+const createHoldButton = require('../hold-button')
 
 class ExhibitMazeEditorPalette {
   constructor($container, config) {
@@ -15,26 +16,24 @@ class ExhibitMazeEditorPalette {
 
     this.$bar1.append(this.buildTileButtons(config));
 
-    $('<button></button>')
-      .attr({
-        type: 'button',
-        title: 'Reset map',
-        'data-i18n-text': 'editor-palette-button-action-reset-map',
-      })
+    createHoldButton({
+      holdTime: 2000,
+    })
       .addClass([
         'editor-palette-button',
         'editor-palette-button-action',
         'editor-palette-button-action-reset-map',
       ])
-      // .css({
-      //   backgroundImage: 'url("static/fa/sync-solid.svg")',
-      // })
-      .html('Reset map')
-      .pointerclick()
-      .on('i.pointerclick', () => {
+      .on('hold', () => {
         this.events.emit('action', 'reset-map');
       })
-      .appendTo(this.$element);
+      .appendTo(this.$element)
+      .find('.text')
+      .html('Reset map')
+      .attr({
+        title: 'Reset map',
+        'data-i18n-text': 'editor-palette-button-action-reset-map',
+      });
   }
 
   buildTileButtons(config) {

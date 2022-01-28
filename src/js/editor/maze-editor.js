@@ -29,6 +29,9 @@ class MazeEditor {
         }
       },
       tile: (tileType, x, y) => {
+        if (this.maze.startPosition[0] === x && this.maze.startPosition[1] === y) {
+          return;
+        }
         this.maze.removeItem(x, y);
         this.maze.map.set(x, y, tileType);
         if (this.config.tileTypes[tileType].item !== undefined) {

@@ -194,7 +194,20 @@ class MazeView {
   }
 
   renderCell(i, j) {
-    this.renderFloor(i, j);
+    if (this.maze.startPosition[0] === i && this.maze.startPosition[1] === j) {
+      this.renderStartCell(i, j);
+    } else {
+      this.renderFloor(i, j);
+    }
+  }
+
+  renderStartCell(i, j) {
+    this.getFloorTile(i, j)
+      .clear()
+      .lineStyle(10, 0x99ff99, 1)
+      .beginFill(0xffffff)
+      .drawRect(5, 5, MazeView.TILE_SIZE - 10, MazeView.TILE_SIZE - 10)
+      .endFill();
   }
 
   renderFloor(i, j) {

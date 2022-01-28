@@ -38,35 +38,37 @@ class ExhibitMazeEditorPalette {
   }
 
   buildTileButtons(config) {
-    return Object.entries(config.tileTypes).map(([id, typeCfg]) => $('<div></div>')
-      .addClass('item')
-      .append($('<button></button>')
-        .attr({
-          type: 'button',
-          title: typeCfg.name,
-        })
-        .addClass([
-          'editor-palette-button',
-          'editor-palette-button-tile',
-          `editor-palette-button-tile-${id}`,
-        ])
-        .css({
-          backgroundColor: typeCfg.color,
-          backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-        })
-        .pointerclick()
-        .on('i.pointerclick', (ev) => {
-          if (this.activeButton) {
-            this.activeButton.removeClass('active');
-          }
-          this.activeButton = $(ev.target);
-          this.activeButton.addClass('active');
-          this.tileId = Number(id);
-          this.events.emit('change', 'tile', Number(id));
-        }))
-      .append($('<div></div>')
-        .addClass('label')
-        .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`)));
+    return Object.entries(config.tileTypes)
+      .filter(([, tileType]) => tileType.inPalette !== false)
+      .map(([id, typeCfg]) => $('<div></div>')
+        .addClass('item')
+        .append($('<button></button>')
+          .attr({
+            type: 'button',
+            title: typeCfg.name,
+          })
+          .addClass([
+            'editor-palette-button',
+            'editor-palette-button-tile',
+            `editor-palette-button-tile-${id}`,
+          ])
+          .css({
+            backgroundColor: typeCfg.color,
+            backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+          })
+          .pointerclick()
+          .on('i.pointerclick', (ev) => {
+            if (this.activeButton) {
+              this.activeButton.removeClass('active');
+            }
+            this.activeButton = $(ev.target);
+            this.activeButton.addClass('active');
+            this.tileId = Number(id);
+            this.events.emit('change', 'tile', Number(id));
+          }))
+        .append($('<div></div>')
+          .addClass('label')
+          .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`)));
   }
 }
 

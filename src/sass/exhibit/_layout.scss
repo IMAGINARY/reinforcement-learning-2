@@ -3,6 +3,7 @@ $viewport-height: 1080px;
 $viewport-padding: 20px;
 
 $panel-gutter: 40px;
+$panel-gutter-lg: 100px;
 
 $viewport-inner-height: $viewport-height - 2 * $viewport-padding;
 $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
@@ -29,8 +30,8 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   #training-ui {
     position: absolute;
-    left: 326px;
-    bottom: 56px;
+    left: 295px;
+    bottom: 76px;
     pointer-events: auto;
   }
 
@@ -42,16 +43,16 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   .maze-editor-palette {
     pointer-events: auto;
-    bottom: 230px;
-    left: 55px;
+    bottom: 270px;
+    left: 10px;
     top: auto;
   }
 }
 
 $panel-sm-height: ($viewport-inner-height - 2 * $panel-gutter) / 3;
-$panel-sm-width: ($viewport-inner-width - $panel-gutter) * 0.375;
+$panel-sm-width: ($viewport-inner-width - $panel-gutter-lg) * 0.375;
 $panel-lg-height: $viewport-inner-height;
-$panel-lg-width: ($viewport-inner-width - $panel-gutter) * 0.625;
+$panel-lg-width: ($viewport-inner-width - $panel-gutter-lg) * 0.625;
 
 .panel-sm {
   height: $panel-sm-height;
@@ -85,5 +86,5 @@ $panel-lg-width: ($viewport-inner-width - $panel-gutter) * 0.625;
 
 #panel-4 {
   top: $viewport-padding;
-  left: $viewport-padding + $panel-sm-width + $panel-gutter;
+  left: $viewport-padding + $panel-sm-width + $panel-gutter-lg;
 }

@@ -1,3 +1,19 @@
 .panel {
 
 }
+
+#panel-1 {
+  strong {
+    margin-left: -0.25em;
+    display: inline-block;
+    font-size: 48px;
+    padding: 0.1em 0.2em;
+  }
+  font-size: 24px;
+}
+
+#panel-4 {
+  .panel-text {
+    margin-top: 0.5em;
+  }
+}

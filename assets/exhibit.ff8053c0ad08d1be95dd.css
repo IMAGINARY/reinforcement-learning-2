@@ -234,24 +234,24 @@ button.maze-browser-item-new {
     pointer-events: none; }
   .rl2-exhibit #training-ui {
     position: absolute;
-    left: 326px;
-    bottom: 56px;
+    left: 295px;
+    bottom: 76px;
     pointer-events: auto; }
   .rl2-exhibit #lang-switcher-container .lang-switcher {
     z-index: 200; }
   .rl2-exhibit .maze-editor-palette {
     pointer-events: auto;
-    bottom: 230px;
-    left: 55px;
+    bottom: 270px;
+    left: 10px;
     top: auto; }
 
 .panel-sm {
   height: 320px;
-  width: 690px; }
+  width: 667.5px; }
 
 .panel-lg {
   height: 1040px;
-  width: 1150px; }
+  width: 1112.5px; }
 
 #panel-1, #panel-2, #panel-3, #panel-4 {
   position: absolute; }
@@ -270,7 +270,7 @@ button.maze-browser-item-new {
 
 #panel-4 {
   top: 20px;
-  left: 750px; }
+  left: 787.5px; }
 
 .rl2-exhibit {
   font-family: Arial, sans-serif;
@@ -281,6 +281,17 @@ button.maze-browser-item-new {
     margin: 0 0.1em;
     background-color: #ffec02;
     padding: 0em 0.2em; }
+
+#panel-1 {
+  font-size: 24px; }
+  #panel-1 strong {
+    margin-left: -0.25em;
+    display: inline-block;
+    font-size: 48px;
+    padding: 0.1em 0.2em; }
+
+#panel-4 .panel-text {
+  margin-top: 0.5em; }
 
 .ai-training-view-slider-exploration-rate {
   display: inline-block;
@@ -396,4 +407,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.5fedd016e78b5c1688b2.css.map*/
+/*# sourceMappingURL=exhibit.ff8053c0ad08d1be95dd.css.map*/

@@ -122,7 +122,7 @@ cfgLoader.load([
       mazeView.displayObject.width = 720;
       mazeView.displayObject.height = 720;
       mazeView.displayObject.x = 1080;
-      mazeView.displayObject.y = (1080 - 720) / 2;
+      mazeView.displayObject.y = (1080 - 800) / 2;
 
       const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
@@ -143,7 +143,7 @@ cfgLoader.load([
 
 // Disable context menu on long touch
 $(window).on('contextmenu', (event) => {
-  if (event.button != 2 && !(event.clientX == event.clientY == 1)) {
+  if (event.button !== 2 && !(event.clientX === event.clientY === 1)) {
     event.preventDefault();
   }
 });

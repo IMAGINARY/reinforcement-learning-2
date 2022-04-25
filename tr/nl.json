@@ -1,0 +1,18 @@
+{
+  "panel-1": "Een AI die <strong>Reinforcement Learning</strong> gebruikt, leert met vallen en opstaan door direct te interageren met zijn omgeving. Het is gelijkaardig aan hoe mensen en dieren leren.",
+  "panel-2": "De AI ontdekt acties die een positieve <strong>beloning</strong> hebben (de uitgang bereiken) of een negatieve (in lava stappen). Het probeert een aaneenschakeling van acties te vinden die de totale beloning maximaliseren.",
+  "panel-3": "De AI moet de beste acties die het geleerd heeft <strong>uitbuiten</strong>, maar ook andere opties <strong>verkennen</strong> om zo mogelijk grotere beloningen te vinden en zich aan te passen aan een veranderende omgeving.",
+  "panel-4": "Je kan je <strong>eigen doolhof tekenen</strong> en de robot zal stilaan leren hoe de uitgang te vinden en gevaarlijke gebieden te vermijden. Experimenteer door extra beloningen achter te laten op de weg om bepaalde paden te versterken.",
+  "ai-training-view-slider-exploration-rate-limit-min": "Uitbuiten",
+  "ai-training-view-slider-exploration-rate-limit-max": "Verkennen",
+  "ai-training-view-button-clear": "Training terugzetten",
+  "editor-palette-button-tile-floor": "Vloer",
+  "editor-palette-button-tile-wall": "Muur",
+  "editor-palette-button-tile-lava": "Lava",
+  "editor-palette-button-tile-exit": "Uitgang",
+  "editor-palette-button-tile-candy": "Snoepgoed",
+  "editor-palette-button-tile-cone": "Verkeerskegel",
+  "editor-palette-button-tile-pit": "Valkuil",
+  "editor-palette-button-action-reset-map": "Doolhof terugzetten",
+  "rewards-bar-label": "Beloningen"
+}

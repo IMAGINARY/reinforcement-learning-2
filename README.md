@@ -23,6 +23,14 @@ To override settings in exhibit mode create a `settings-exhibit.yml` file in the
 
 The default language can also be set through the lang query string (e.g. `?lang=de`).
 
+## Credits
+
+Developed by Eric Londaits for IMAGINARY gGmbH adapted from the original 
+[reinforcement-learning exhibit](https://github.com/IMAGINARY/reinforcement-learning/) 
+by Sebastián Uribe and Andreas Matt.
+
+Dutch translation by [Jarne Renders](https://github.com/JarneRenders).
+
 ## License
 
 Copyright (c) 2020-2021 IMAGINARY gGmbH

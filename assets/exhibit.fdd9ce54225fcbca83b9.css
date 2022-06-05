@@ -186,14 +186,50 @@ button.maze-browser-item-new {
     border: 3px solid #000; }
 
 .ai-training-view-button {
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 1.5em;
-  background-color: white;
-  padding: 0.5em;
+  border-radius: 10px;
+  padding: 0.7em 1.4em;
+  border: 2px solid #000000;
   min-width: 3em;
   margin-right: 0.5em;
-  margin-bottom: 0.5em; }
+  margin-bottom: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 55%; }
+  .ai-training-view-button.round {
+    border-radius: 50%;
+    padding: 0; }
+  .ai-training-view-button.active {
+    background-color: #ffec02;
+    border-color: #483b10; }
+  .ai-training-view-button:focus, .ai-training-view-button:focus-visible {
+    outline: none;
+    box-shadow: none; }
+
+.ai-training-view-button-run {
+  width: 50px;
+  height: 50px;
+  margin-right: 1em;
+  background-position: calc(50% + 0.2em) center; }
+  .ai-training-view-button-run.active {
+    background-position: center center;
+    background-color: transparent; }
+
+.ai-training-view-button-turbo {
+  width: 50px;
+  height: 50px;
+  background-position: calc(50% + 0.1em) center; }
+  .ai-training-view-button-turbo.active {
+    border-color: #483b10; }
+
+.ai-training-view-button-step {
+  display: none; }
+
+.ai-training-view-button-clear {
+  width: 100%;
+  height: 2.5em;
+  border: 1px solid black;
+  font-size: 1rem;
+  margin: 1em 0; }
 
 .ai-training-view-slider .slider-text .slider-limit {
   display: none; }
@@ -511,4 +547,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.312b2e95c1e1c522953c.css.map*/
+/*# sourceMappingURL=exhibit.fdd9ce54225fcbca83b9.css.map*/

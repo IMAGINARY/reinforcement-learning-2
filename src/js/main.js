@@ -16,12 +16,16 @@ const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 const MazeEditorPalette = require('./editor/maze-editor-palette');
+const I18n = require('./exhibit/i18n');
+
+const qs = new URLSearchParams(window.location.search);
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
   'config/robot.yml',
   'config/items.yml',
+  'config/i18n.yml',
   'config/default-settings.yml',
   'settings.yml',
 ])
@@ -30,6 +34,27 @@ cfgLoader.load([
     console.error('Error loading configuration');
     console.error(err);
   })
+  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+    .then(() => config))
+  .then(config => IMAGINARY.i18n.init({
+      queryStringVariable: 'lang',
+      translationsDirectory: 'tr',
+      defaultLanguage: 'en',
+    })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
+      return IMAGINARY.i18n.setLang(defaultLanguage);
+    })
+    .then(() => config)
+    .catch((err) => {
+      showFatalError('Error loading translations', err);
+      console.error('Error loading translations');
+      console.error(err);
+    }))
   .then((config) => {
     const app = new PIXI.Application({
       width: 1920,
@@ -91,5 +116,8 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);
+
+      // Refresh language
+      I18n.setLanguage(I18n.getLanguage());
     });
   });

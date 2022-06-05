@@ -5903,6 +5903,52 @@ module.exports = ObjectStore;
 
 /***/ }),
 
+/***/ "./src/js/exhibit/i18n.js":
+/*!********************************!*\
+  !*** ./src/js/exhibit/i18n.js ***!
+  \********************************/
+/***/ ((module) => {
+
+/* globals IMAGINARY */
+
+function getLanguage() {
+  return IMAGINARY.i18n.getLang();
+}
+
+function setLanguage(code) {
+  return IMAGINARY.i18n.setLang(code).then(() => {
+    $('[data-i18n-text]').each((i, element) => {
+      $(element).html(
+        IMAGINARY.i18n.t($(element).data('i18n-text'))
+      );
+    });
+  });
+}
+
+function init(config, initialLanguage) {
+  return IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      return setLanguage(initialLanguage);
+    });
+}
+
+module.exports = {
+  init,
+  getLanguage,
+  setLanguage,
+};
+
+
+/***/ }),
+
 /***/ "./src/js/grid.js":
 /*!************************!*\
   !*** ./src/js/grid.js ***!
@@ -7383,12 +7429,16 @@ const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
+const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
+
+const qs = new URLSearchParams(window.location.search);
 
 const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
 cfgLoader.load([
   'config/tiles.yml',
   'config/robot.yml',
   'config/items.yml',
+  'config/i18n.yml',
   'config/default-settings.yml',
   'settings.yml',
 ])
@@ -7397,6 +7447,27 @@ cfgLoader.load([
     console.error('Error loading configuration');
     console.error(err);
   })
+  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+    .then(() => config))
+  .then(config => IMAGINARY.i18n.init({
+      queryStringVariable: 'lang',
+      translationsDirectory: 'tr',
+      defaultLanguage: 'en',
+    })
+    .then(() => {
+      const languages = Object.keys(config.languages);
+      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+    })
+    .then(() => {
+      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
+      return IMAGINARY.i18n.setLang(defaultLanguage);
+    })
+    .then(() => config)
+    .catch((err) => {
+      showFatalError('Error loading translations', err);
+      console.error('Error loading translations');
+      console.error(err);
+    }))
   .then((config) => {
     const app = new PIXI.Application({
       width: 1920,
@@ -7458,6 +7529,9 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);
+
+      // Refresh language
+      I18n.setLanguage(I18n.getLanguage());
     });
   });
 
@@ -7465,4 +7539,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.eb0a71e72dab575ddd3a.js.map
+//# sourceMappingURL=default.5f2067397c8b620198de.js.map

@@ -5,7 +5,7 @@ const RobotView = require('./robot-view');
 const Array2D = require('./aux/array-2d');
 
 class MazeView {
-  constructor(maze, config, textures = { }) {
+  constructor(maze, config, textures = { }, interactive = false) {
     this.displayObject = new PIXI.Container();
     this.tileLayer = new PIXI.Container();
     this.textureLayer = new PIXI.Container();
@@ -33,14 +33,17 @@ class MazeView {
       const floorTile = new PIXI.Graphics();
       floorTile.x = x * MazeView.TILE_SIZE;
       floorTile.y = y * MazeView.TILE_SIZE;
-      floorTile.interactive = true;
-      floorTile.on('pointerdown', (ev) => {
-        pointers[ev.data.pointerId] = { lastTile: { x, y } };
-        this.events.emit('action', [x, y], {
-          shiftKey: ev.data.originalEvent.shiftKey,
+
+      if (interactive) {
+        floorTile.interactive = true;
+        floorTile.on('pointerdown', (ev) => {
+          pointers[ev.data.pointerId] = { lastTile: { x, y } };
+          this.events.emit('action', [x, y], {
+            shiftKey: ev.data.originalEvent.shiftKey,
+          });
         });
-      });
-      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+        floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+      }
       this.floorTiles[y][x] = floorTile;
 
       const floorTexture = new PIXI.Sprite();
@@ -54,28 +57,30 @@ class MazeView {
       this.renderCell(x, y);
     });
 
-    this.tileLayer.interactive = true;
-    this.tileLayer.on('pointermove', (ev) => {
-      if (pointers[ev.data.pointerId] !== undefined) {
-        const tileCoords = this.getCoordsAtPosition(ev.data.global);
-        if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
-          if (tileCoords) {
-            this.events.emit('action', [tileCoords.x, tileCoords.y], {
-              shiftKey: ev.data.originalEvent.shiftKey,
-            });
+    if (interactive) {
+      this.tileLayer.interactive = true;
+      this.tileLayer.on('pointermove', (ev) => {
+        if (pointers[ev.data.pointerId] !== undefined) {
+          const tileCoords = this.getCoordsAtPosition(ev.data.global);
+          if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
+            if (tileCoords) {
+              this.events.emit('action', [tileCoords.x, tileCoords.y], {
+                shiftKey: ev.data.originalEvent.shiftKey,
+              });
+            }
+            pointers[ev.data.pointerId].lastTile = tileCoords;
           }
-          pointers[ev.data.pointerId].lastTile = tileCoords;
         }
-      }
-    });
+      });
 
-    const onEndPointer = (ev) => {
-      delete pointers[ev.data.pointerId];
-    };
+      const onEndPointer = (ev) => {
+        delete pointers[ev.data.pointerId];
+      };
 
-    this.tileLayer.on('pointerup', onEndPointer);
-    this.tileLayer.on('pointerupoutside', onEndPointer);
-    this.tileLayer.on('pointercancel', onEndPointer);
+      this.tileLayer.on('pointerup', onEndPointer);
+      this.tileLayer.on('pointerupoutside', onEndPointer);
+      this.tileLayer.on('pointercancel', onEndPointer);
+    }
 
     this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.textureLayer.addChild(...Array2D.flatten(this.floorTextures));
@@ -143,7 +148,7 @@ class MazeView {
   }
 
   createItemSprite(item) {
-    const textureScale = this.config.items[item.type].textureScale || 0.5;
+    const textureScale = 0.5;
     const sprite = new PIXI.Sprite();
     sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
     sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
@@ -250,6 +255,10 @@ class MazeView {
 
   animate(time) {
     this.robotView.animate(time);
+  }
+
+  getRobotView() {
+    return this.robotView;
   }
 }
 

@@ -110,10 +110,11 @@ class AITrainingView {
         'ai-training-view-button-clear',
       ])
       .on('hold', () => {
-        console.log("YES");
         this.ai.clear();
       })
-      .appendTo(this.$element)
+      .appendTo(this.$element);
+
+    this.$clearButton
       .find('.text')
       .attr({
         'data-i18n-text': 'ai-training-view-button-clear',

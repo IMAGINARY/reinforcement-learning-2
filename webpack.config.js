@@ -8,6 +8,7 @@ module.exports = {
   entry: {
     default: './src/js/main.js',
     exhibit: './src/js/main-exhibit.js',
+    embed: './src/js/main-embed.js',
   },
   output: {
     filename: '[name].[contenthash].js',
@@ -60,6 +61,12 @@ module.exports = {
       template: path.resolve(__dirname, 'src/html/exhibit.html'),
       filename: path.resolve(__dirname, 'exhibit.html'),
       chunks: ['exhibit'],
+      minify: true,
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'src/html/embed.html'),
+      filename: path.resolve(__dirname, 'embed.html'),
+      chunks: ['embed'],
       minify: true,
     }),
     new CleanWebpackPlugin({

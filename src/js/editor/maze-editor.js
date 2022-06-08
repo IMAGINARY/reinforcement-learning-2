@@ -13,7 +13,7 @@ class MazeEditor {
     this.palette = palette;
     this.config = config;
 
-    this.mazeView = new MazeView(maze, config, textures);
+    this.mazeView = new MazeView(maze, config, textures, true);
     this.displayObject = this.mazeView.displayObject;
 
     const tools = {
@@ -112,6 +112,14 @@ class MazeEditor {
         this.maze.reset();
       },
     };
+  }
+
+  animate(time) {
+    this.mazeView.animate(time);
+  }
+
+  getRobotView() {
+    return this.mazeView.robotView;
   }
 }
 

@@ -8,7 +8,7 @@
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,1,1],[1,1,7,1,1,1,7,3]]},"items":[]}');
+module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,1,1],[1,1,7,1,1,1,7,3]]}}');
 
 /***/ }),
 
@@ -19,7 +19,7 @@ module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]},"items":[]}');
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]}}');
 
 /***/ }),
 
@@ -4891,10 +4891,11 @@ class AITrainingView {
         'ai-training-view-button-clear',
       ])
       .on('hold', () => {
-        console.log("YES");
         this.ai.clear();
       })
-      .appendTo(this.$element)
+      .appendTo(this.$element);
+
+    this.$clearButton
       .find('.text')
       .attr({
         'data-i18n-text': 'ai-training-view-button-clear',
@@ -5389,7 +5390,7 @@ class MazeEditor {
     this.palette = palette;
     this.config = config;
 
-    this.mazeView = new MazeView(maze, config, textures);
+    this.mazeView = new MazeView(maze, config, textures, true);
     this.displayObject = this.mazeView.displayObject;
 
     const tools = {
@@ -5488,6 +5489,14 @@ class MazeEditor {
         this.maze.reset();
       },
     };
+  }
+
+  animate(time) {
+    this.mazeView.animate(time);
+  }
+
+  getRobotView() {
+    return this.mazeView.robotView;
   }
 }
 
@@ -5796,9 +5805,10 @@ class ExhibitMazeEditorPalette {
     this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
       .appendTo(this.$element);
 
-    this.$bar1.append(this.buildTileButtons(config));
+    this.tileButtons = this.buildTileButtons(config);
+    this.$bar1.append(Object.values(this.tileButtons));
 
-    createHoldButton({
+    this.resetMapButton = createHoldButton({
       holdTime: 2000,
     })
       .addClass([
@@ -5819,37 +5829,39 @@ class ExhibitMazeEditorPalette {
   }
 
   buildTileButtons(config) {
-    return Object.entries(config.tileTypes)
-      .filter(([, tileType]) => tileType.inPalette !== false)
-      .map(([id, typeCfg]) => $('<div></div>')
-        .addClass('item')
-        .append($('<button></button>')
-          .attr({
-            type: 'button',
-            title: typeCfg.name,
-          })
-          .addClass([
-            'editor-palette-button',
-            'editor-palette-button-tile',
-            `editor-palette-button-tile-${id}`,
-          ])
-          .css({
-            backgroundColor: typeCfg.color,
-            backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-          })
-          .pointerclick()
-          .on('i.pointerclick', (ev) => {
-            if (this.activeButton) {
-              this.activeButton.removeClass('active');
-            }
-            this.activeButton = $(ev.target);
-            this.activeButton.addClass('active');
-            this.tileId = Number(id);
-            this.events.emit('change', 'tile', Number(id));
-          }))
-        .append($('<div></div>')
-          .addClass('label')
-          .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`)));
+    return Object.fromEntries(
+      Object.entries(config.tileTypes)
+        .filter(([, tileType]) => tileType.inPalette !== false)
+        .map(([id, typeCfg]) => [id, $('<div></div>')
+          .addClass(['item'])
+          .attr('data-tile-id', id)
+          .append($('<button></button>')
+            .attr({
+              type: 'button',
+              title: typeCfg.name,
+            })
+            .addClass([
+              'editor-palette-button',
+              'editor-palette-button-tile',
+              `editor-palette-button-tile-${id}`,
+            ])
+            .css({
+              backgroundColor: typeCfg.color,
+              backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+            })
+            .pointerclick()
+            .on('i.pointerclick', (ev) => {
+              if (this.activeButton) {
+                this.activeButton.removeClass('active');
+              }
+              this.activeButton = $(ev.target);
+              this.activeButton.addClass('active');
+              this.tileId = Number(id);
+              this.events.emit('change', 'tile', Number(id));
+            }))
+          .append($('<div></div>')
+            .addClass('label')
+            .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))]));
   }
 }
 
@@ -6604,7 +6616,7 @@ const RobotView = __webpack_require__(/*! ./robot-view */ "./src/js/robot-view.j
 const Array2D = __webpack_require__(/*! ./aux/array-2d */ "./src/js/aux/array-2d.js");
 
 class MazeView {
-  constructor(maze, config, textures = { }) {
+  constructor(maze, config, textures = { }, interactive = false) {
     this.displayObject = new PIXI.Container();
     this.tileLayer = new PIXI.Container();
     this.textureLayer = new PIXI.Container();
@@ -6632,14 +6644,17 @@ class MazeView {
       const floorTile = new PIXI.Graphics();
       floorTile.x = x * MazeView.TILE_SIZE;
       floorTile.y = y * MazeView.TILE_SIZE;
-      floorTile.interactive = true;
-      floorTile.on('pointerdown', (ev) => {
-        pointers[ev.data.pointerId] = { lastTile: { x, y } };
-        this.events.emit('action', [x, y], {
-          shiftKey: ev.data.originalEvent.shiftKey,
+
+      if (interactive) {
+        floorTile.interactive = true;
+        floorTile.on('pointerdown', (ev) => {
+          pointers[ev.data.pointerId] = { lastTile: { x, y } };
+          this.events.emit('action', [x, y], {
+            shiftKey: ev.data.originalEvent.shiftKey,
+          });
         });
-      });
-      floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+        floorTile.cursor = `url(${PencilCursor}) 0 20, auto`;
+      }
       this.floorTiles[y][x] = floorTile;
 
       const floorTexture = new PIXI.Sprite();
@@ -6653,28 +6668,30 @@ class MazeView {
       this.renderCell(x, y);
     });
 
-    this.tileLayer.interactive = true;
-    this.tileLayer.on('pointermove', (ev) => {
-      if (pointers[ev.data.pointerId] !== undefined) {
-        const tileCoords = this.getCoordsAtPosition(ev.data.global);
-        if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
-          if (tileCoords) {
-            this.events.emit('action', [tileCoords.x, tileCoords.y], {
-              shiftKey: ev.data.originalEvent.shiftKey,
-            });
+    if (interactive) {
+      this.tileLayer.interactive = true;
+      this.tileLayer.on('pointermove', (ev) => {
+        if (pointers[ev.data.pointerId] !== undefined) {
+          const tileCoords = this.getCoordsAtPosition(ev.data.global);
+          if (pointers[ev.data.pointerId].lastTile !== tileCoords) {
+            if (tileCoords) {
+              this.events.emit('action', [tileCoords.x, tileCoords.y], {
+                shiftKey: ev.data.originalEvent.shiftKey,
+              });
+            }
+            pointers[ev.data.pointerId].lastTile = tileCoords;
           }
-          pointers[ev.data.pointerId].lastTile = tileCoords;
         }
-      }
-    });
+      });
 
-    const onEndPointer = (ev) => {
-      delete pointers[ev.data.pointerId];
-    };
+      const onEndPointer = (ev) => {
+        delete pointers[ev.data.pointerId];
+      };
 
-    this.tileLayer.on('pointerup', onEndPointer);
-    this.tileLayer.on('pointerupoutside', onEndPointer);
-    this.tileLayer.on('pointercancel', onEndPointer);
+      this.tileLayer.on('pointerup', onEndPointer);
+      this.tileLayer.on('pointerupoutside', onEndPointer);
+      this.tileLayer.on('pointercancel', onEndPointer);
+    }
 
     this.tileLayer.addChild(...Array2D.flatten(this.floorTiles));
     this.textureLayer.addChild(...Array2D.flatten(this.floorTextures));
@@ -6742,7 +6759,7 @@ class MazeView {
   }
 
   createItemSprite(item) {
-    const textureScale = this.config.items[item.type].textureScale || 0.5;
+    const textureScale = 0.5;
     const sprite = new PIXI.Sprite();
     sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
     sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
@@ -6849,6 +6866,10 @@ class MazeView {
 
   animate(time) {
     this.robotView.animate(time);
+  }
+
+  getRobotView() {
+    return this.robotView;
   }
 }
 
@@ -7806,4 +7827,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.5b5a06e52ab1965e129f.js.map
+//# sourceMappingURL=exhibit.7a1574e33cad373ee485.js.map

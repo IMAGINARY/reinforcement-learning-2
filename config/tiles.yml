@@ -37,6 +37,7 @@ tileTypes:
     walkable: true
     reward: -0.2
     item: candy
+    textureScale: 0.5
     editorIcon: 'static/icons/candy.svg'
     type: candy
     react: once

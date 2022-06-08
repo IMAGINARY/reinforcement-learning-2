@@ -1,0 +1,127 @@
+$button-spacing: 8px;
+
+body {
+  background-color: white;
+}
+
+.embed-app {
+  margin-left: 180px;
+}
+
+.no-palette {
+  .embed-app {
+    margin-left: 0;
+  }
+}
+
+.embed-palette {
+  .maze-editor-palette {
+    .maze-editor-palette-bar {
+      .editor-palette-button {
+        width: 40px;
+        height: 40px;
+        margin-bottom: $button-spacing;
+
+        &.active {
+          width: 46px;
+          height: 46px;
+          outline-width: 4px;
+          margin-top: -3px;
+          margin-left: -3px;
+          margin-bottom: -3px + $button-spacing;
+        }
+      }
+
+      .item {
+        .label {
+          width: 7.8em;
+          left: 55px;
+          top: 12px;
+        }
+      }
+    }
+
+    .editor-palette-button-action-reset-map {
+      width: 160px;
+      margin-top: 0.4em;
+    }
+  }
+}
+
+.embed-training {
+  margin-left: 190px;
+  margin-top: -1em;
+
+  .ai-training-view-button {
+    margin-right: 0.5em;
+    margin-top: 1em;
+  }
+
+  .ai-training-view-button-clear {
+    width: 160px;
+  }
+
+  .ai-training-view-button-run {
+    width: 50px;
+    height: 50px;
+  }
+
+  .ai-training-view-button-turbo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .ai-training-view-button-step {
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+  }
+
+  .ai-training-view-slider-exploration-rate {
+    margin: 1em;
+    width: 12em;
+  }
+}
+
+.no-palette {
+  .embed-training {
+    margin-left: 10px;
+  }
+}
+
+#rewards-bar {
+  margin-left: 10px;
+  .bar-container {
+    .label {
+      font-size: 1.1em;
+    }
+
+    .progress {
+      width: 400px;
+    }
+  }
+}
+
+.reaction {
+  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform-origin: center center;
+  margin: 25px 0 0 170px;
+
+
+  &.fading {
+    opacity: 0 !important;
+    margin-top: 25px;
+    transform: scale(1.5);
+  }
+}
+
+.no-palette {
+  .reaction {
+    margin-left: -10px;
+  }
+}
+
+.reaction-lava {
+  opacity: 0.8;
+}
+

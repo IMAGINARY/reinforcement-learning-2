@@ -10,7 +10,8 @@ const Maze = require('./maze.js');
 const Robot = require('./robot.js');
 const QLearningAI = require('./qlearning-ai.js');
 const AITrainingView = require('./ai-training-view.js');
-const MazeViewAIOverlay = require('./maze-view-ai-overlay.js');
+const MazeViewQvalueOverlay = require('./maze-view-qvalue-overlay.js');
+const MazeViewQarrowOverlay = require('./maze-view-qarrow-overlay.js');
 const MazeEditor = require('./editor/maze-editor.js');
 const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
@@ -105,11 +106,15 @@ cfgLoader.load([
       mazeView.displayObject.x = 0;
       mazeView.displayObject.y = 0;
 
-      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
-      mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+      // const qArrowOverlay = new MazeViewQarrowOverlay(mazeView.mazeView, ai);
+      // mazeView.mazeView.addOverlay(qArrowOverlay.displayObject);
+      // qArrowOverlay.show();
+
+      const qValueOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
+      mazeView.mazeView.addOverlay(qValueOverlay.displayObject);
       window.addEventListener('keydown', (ev) => {
         if (ev.code === 'KeyD') {
-          aiOverlay.toggle();
+          qValueOverlay.toggle();
         }
       });
       app.ticker.add(time => mazeView.mazeView.animate(time));

@@ -6492,16 +6492,16 @@ module.exports = LangSwitcher;
 
 /***/ }),
 
-/***/ "./src/js/maze-view-ai-overlay.js":
-/*!****************************************!*\
-  !*** ./src/js/maze-view-ai-overlay.js ***!
-  \****************************************/
+/***/ "./src/js/maze-view-qvalue-overlay.js":
+/*!********************************************!*\
+  !*** ./src/js/maze-view-qvalue-overlay.js ***!
+  \********************************************/
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 /* globals PIXI */
 const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
 
-class MazeViewAIOverlay {
+class MazeViewQvalueOverlay {
   constructor(mazeView, ai) {
     this.view = mazeView;
     this.ai = ai;
@@ -6590,7 +6590,7 @@ class MazeViewAIOverlay {
       for (let i = 0; i < this.texts[j].length; i += 1) {
         Object.keys(this.texts[j][i]).forEach((direction) => {
           const textObject = this.texts[j][i][direction];
-          textObject.text = this.ai.q[j][i][direction].toFixed(3);
+          textObject.text = this.ai.q[j][i][direction].toFixed(2);
           this.positionText(textObject, i, j, direction);
         });
       }
@@ -6598,7 +6598,7 @@ class MazeViewAIOverlay {
   }
 }
 
-module.exports = MazeViewAIOverlay;
+module.exports = MazeViewQvalueOverlay;
 
 
 /***/ }),
@@ -7194,6 +7194,35 @@ class QLearningAI {
       : 0;
   }
 
+  minQ(x, y) {
+    const directions = this.robot.availableDirectionsAt(x, y);
+    return directions.length > 0
+      ? Math.min(...Object.entries(this.q[y][x])
+        .filter(([direction]) => directions.includes(direction))
+        .map(([, value]) => value))
+      : 0;
+  }
+
+  qUpperBound() {
+    let bound = 0;
+    for (let y = 0; y !== this.q.length; y += 1) {
+      for (let x = 0; x !== this.q[y].length; x += 1) {
+        bound = Math.max(bound, this.maxQ(x, y));
+      }
+    }
+    return bound;
+  }
+
+  qLowerBound() {
+    let bound = 0;
+    for (let y = 0; y !== this.q.length; y += 1) {
+      for (let x = 0; x !== this.q[y].length; x += 1) {
+        bound = Math.min(bound, this.minQ(x, y));
+      }
+    }
+    return bound;
+  }
+
   update(direction, x1, y1, x2, y2, reward) {
     this.q[y1][x1][direction] += this.learningRate
       * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);
@@ -7660,7 +7689,7 @@ const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearnin
 const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
 const ExhibitMazeEditorPalette = __webpack_require__(/*! ./exhibit/exhibit-maze-editor-palette */ "./src/js/exhibit/exhibit-maze-editor-palette.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
-const MazeViewAIOverlay = __webpack_require__(/*! ./maze-view-ai-overlay */ "./src/js/maze-view-ai-overlay.js");
+const mazeViewQvalueOverlay = __webpack_require__(/*! ./maze-view-qvalue-overlay */ "./src/js/maze-view-qvalue-overlay.js");
 const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
 const ExploreExploitInteractive = __webpack_require__(/*! ./exhibit/interactive-explore-exploit */ "./src/js/exhibit/interactive-explore-exploit.js");
 const RewardsInteractive = __webpack_require__(/*! ./exhibit/interactive-rewards */ "./src/js/exhibit/interactive-rewards.js");
@@ -7772,7 +7801,7 @@ cfgLoader.load([
       mazeView.displayObject.x = 1080;
       mazeView.displayObject.y = (1080 - 800) / 2;
 
-      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+      const aiOverlay = new mazeViewQvalueOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
       window.addEventListener('keydown', (ev) => {
         if (ev.code === 'KeyD') {
@@ -7827,4 +7856,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.7a1574e33cad373ee485.js.map
+//# sourceMappingURL=exhibit.20f74516966813b914ba.js.map

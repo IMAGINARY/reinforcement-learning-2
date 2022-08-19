@@ -1,7 +1,7 @@
 /* globals PIXI */
 const MazeView = require('./maze-view.js');
 
-class MazeViewAIOverlay {
+class MazeViewQvalueOverlay {
   constructor(mazeView, ai) {
     this.view = mazeView;
     this.ai = ai;
@@ -90,7 +90,7 @@ class MazeViewAIOverlay {
       for (let i = 0; i < this.texts[j].length; i += 1) {
         Object.keys(this.texts[j][i]).forEach((direction) => {
           const textObject = this.texts[j][i][direction];
-          textObject.text = this.ai.q[j][i][direction].toFixed(3);
+          textObject.text = this.ai.q[j][i][direction].toFixed(2);
           this.positionText(textObject, i, j, direction);
         });
       }
@@ -98,4 +98,4 @@ class MazeViewAIOverlay {
   }
 }
 
-module.exports = MazeViewAIOverlay;
+module.exports = MazeViewQvalueOverlay;

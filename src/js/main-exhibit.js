@@ -15,7 +15,7 @@ const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
 const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette');
 const MazeEditor = require('./editor/maze-editor');
-const MazeViewAIOverlay = require('./maze-view-ai-overlay');
+const mazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 const RewardsInteractive = require('./exhibit/interactive-rewards');
@@ -127,7 +127,7 @@ cfgLoader.load([
       mazeView.displayObject.x = 1080;
       mazeView.displayObject.y = (1080 - 800) / 2;
 
-      const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+      const aiOverlay = new mazeViewQvalueOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
       window.addEventListener('keydown', (ev) => {
         if (ev.code === 'KeyD') {

@@ -14,7 +14,7 @@ const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
 const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette');
 const MazeEditor = require('./editor/maze-editor');
-const MazeViewAIOverlay = require('./maze-view-ai-overlay');
+const mazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 const RewardsInteractive = require('./exhibit/interactive-rewards');
@@ -194,7 +194,7 @@ cfgLoader.load(configFiles)
       mazeView.displayObject.y = appMargin;
 
       if (embedConfig.showQValues) {
-        const aiOverlay = new MazeViewAIOverlay(mazeView.mazeView, ai);
+        const aiOverlay = new mazeViewQvalueOverlay(mazeView.mazeView, ai);
         mazeView.mazeView.addOverlay(aiOverlay.displayObject);
         aiOverlay.toggle();
       }

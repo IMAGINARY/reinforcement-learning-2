@@ -85,6 +85,35 @@ class QLearningAI {
       : 0;
   }
 
+  minQ(x, y) {
+    const directions = this.robot.availableDirectionsAt(x, y);
+    return directions.length > 0
+      ? Math.min(...Object.entries(this.q[y][x])
+        .filter(([direction]) => directions.includes(direction))
+        .map(([, value]) => value))
+      : 0;
+  }
+
+  qUpperBound() {
+    let bound = 0;
+    for (let y = 0; y !== this.q.length; y += 1) {
+      for (let x = 0; x !== this.q[y].length; x += 1) {
+        bound = Math.max(bound, this.maxQ(x, y));
+      }
+    }
+    return bound;
+  }
+
+  qLowerBound() {
+    let bound = 0;
+    for (let y = 0; y !== this.q.length; y += 1) {
+      for (let x = 0; x !== this.q[y].length; x += 1) {
+        bound = Math.min(bound, this.minQ(x, y));
+      }
+    }
+    return bound;
+  }
+
   update(direction, x1, y1, x2, y2, reward) {
     this.q[y1][x1][direction] += this.learningRate
       * (reward + this.discountFactor * this.maxQ(x2, y2) - this.q[y1][x1][direction]);

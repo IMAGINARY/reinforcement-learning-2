@@ -203,10 +203,12 @@ cfgLoader.load(configFiles)
         aiOverlay.toggle();
       }
 
+      const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
+      mazeView.mazeView.addOverlay(policyOverlay.displayObject);
+      policyOverlay.hide();
+
       if (embedConfig.showPolicy) {
-        const aiOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
-        mazeView.mazeView.addOverlay(aiOverlay.displayObject);
-        aiOverlay.toggle();
+        policyOverlay.show();
       }
 
       app.ticker.add(time => mazeView.animate(time));
@@ -217,6 +219,14 @@ cfgLoader.load(configFiles)
         .appendTo($body)
         .append(trainingView.$element);
 
+      trainingView.events
+        .on('policy-show', () => {
+          policyOverlay.show();
+        })
+        .on('policy-hide', () => {
+          policyOverlay.hide();
+        });
+
       // run,turbo,clear,reset-map,xr,showqv
       const commandButtonMap = {
         run: trainingView.$runButton,
@@ -224,6 +234,7 @@ cfgLoader.load(configFiles)
         clear: trainingView.$clearButton,
         step: trainingView.$stepButton,
         xr: trainingView.$explorationRateSlider,
+        policy: trainingView.$viewPolicyButton,
         "reset-map": null,
         showqv: null,
       };

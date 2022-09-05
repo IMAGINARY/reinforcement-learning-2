@@ -348,8 +348,6 @@ button.maze-browser-item-new {
   .rl2-exhibit #rewards-ui {
     position: absolute;
     bottom: 20px; }
-  .rl2-exhibit .ai-training-view {
-    margin-left: -26px; }
 
 .panel-title {
   height: 220px;
@@ -381,6 +379,8 @@ button.maze-browser-item-new {
 #panel-4 {
   top: 20px;
   left: 787.5px; }
+  #panel-4 .ai-training-view {
+    margin-left: -26px; }
 
 .rl2-exhibit {
   font-family: Arial, sans-serif;
@@ -563,82 +563,5 @@ html, body {
   right: 10px;
   bottom: 10px; }
 
-body {
-  background-color: white; }
 
-.embed-app {
-  margin-left: 180px; }
-
-.no-palette .embed-app {
-  margin-left: 0; }
-
-.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 8px; }
-  .embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button.active {
-    width: 46px;
-    height: 46px;
-    outline-width: 4px;
-    margin-top: -3px;
-    margin-left: -3px;
-    margin-bottom: 5px; }
-
-.embed-palette .maze-editor-palette .maze-editor-palette-bar .item .label {
-  width: 7.8em;
-  left: 55px;
-  top: 12px; }
-
-.embed-palette .maze-editor-palette .editor-palette-button-action-reset-map {
-  width: 160px;
-  margin-top: 0.4em; }
-
-.embed-training {
-  margin-left: 190px;
-  margin-top: -1em; }
-  .embed-training .ai-training-view-button {
-    margin-right: 0.5em;
-    margin-top: 1em; }
-  .embed-training .ai-training-view-button-clear {
-    width: 160px; }
-  .embed-training .ai-training-view-button-run {
-    width: 50px;
-    height: 50px; }
-  .embed-training .ai-training-view-button-turbo {
-    width: 50px;
-    height: 50px; }
-  .embed-training .ai-training-view-button-step {
-    display: inline-block;
-    width: 50px;
-    height: 50px; }
-  .embed-training .ai-training-view-slider-exploration-rate {
-    margin: 1em;
-    width: 12em; }
-
-.no-palette .embed-training {
-  margin-left: 10px; }
-
-#rewards-bar {
-  margin-left: 10px; }
-  #rewards-bar .bar-container .label {
-    font-size: 1.1em; }
-  #rewards-bar .bar-container .progress {
-    width: 400px; }
-
-.reaction {
-  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out, transform 0.8s ease-in-out;
-  transform-origin: center center;
-  margin: 25px 0 0 170px; }
-  .reaction.fading {
-    opacity: 0 !important;
-    margin-top: 25px;
-    transform: scale(1.5); }
-
-.no-palette .reaction {
-  margin-left: -10px; }
-
-.reaction-lava {
-  opacity: 0.8; }
-
-
-/*# sourceMappingURL=embed.57c422f5de3ba7ea9d0d.css.map*/
+/*# sourceMappingURL=exhibit.3d10e3ba456e6beae6b0.css.map*/

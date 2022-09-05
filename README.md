@@ -41,6 +41,7 @@ You can customize the functionality of the embeded app through query strings arg
   - clear: The button to clear the training
   - xr: The exploration rate slider (Explore / Exploit)
   - reset-map: The button to reset the map
+  - policy: The button to show the policy and value function
 - **xr** (default: `0.2`) The starting exploration rate.
 - **lr** (default: `1`) The learning rate.
 - **speed** (default: `10`): The speed of the robot.

@@ -19,6 +19,10 @@ class MazeViewQvalueOverlay {
     this.ai.events.on('update', (x, y, direction) => {
       this.update();
     });
+
+    this.ai.robot.maze.map.events.on('update', () => {
+      this.update();
+    });
   }
 
   toggle() {
@@ -86,13 +90,30 @@ class MazeViewQvalueOverlay {
   }
 
   update() {
-    for (let j = 0; j < this.texts.length; j += 1) {
-      for (let i = 0; i < this.texts[j].length; i += 1) {
-        Object.keys(this.texts[j][i]).forEach((direction) => {
-          const textObject = this.texts[j][i][direction];
-          textObject.text = this.ai.q[j][i][direction].toFixed(2);
-          this.positionText(textObject, i, j, direction);
-        });
+    const { robot } = this.ai;
+    const { maze } = robot;
+
+    for (let y = 0; y < this.texts.length; y += 1) {
+      for (let x = 0; x < this.texts[y].length; x += 1) {
+        const texts = this.texts[y][x];
+        if (maze.isWalkable(x, y)) {
+          const validActions = robot.availableDirectionsAt(x, y);
+
+          Object.keys(texts).forEach((direction) => {
+            if (validActions.includes(direction)) {
+              const textObject = texts[direction];
+              textObject.visible = true;
+              textObject.text = this.ai.q[y][x][direction].toFixed(2);
+              this.positionText(textObject, x, y, direction);
+            } else {
+              texts[direction].visible = false;
+            }
+          });
+        } else {
+          Object.keys(texts).forEach((direction) => {
+            texts[direction].visible = false;
+          });
+        }
       }
     }
   }

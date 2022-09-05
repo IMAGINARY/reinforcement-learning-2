@@ -155,8 +155,6 @@ cfgLoader.load([
         });
 
       const reactionController = new ReactionController($('body'), config);
-      window.reaction = reactionController;
-      window.robotView = mazeView.mazeView.robotView;
       mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
         const bounds = mazeView.mazeView.robotView.sprite.getBounds();
         reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);

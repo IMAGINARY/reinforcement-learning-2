@@ -17,7 +17,6 @@ class RewardsInteractive {
     this.ai.learningRate = 0;
     this.ai.exploreRate = 0;
     this.ai.q = training.q;
-    window.ri = this;
 
     this.view = new MazeView(maze, config, textures);
     this.ui = new AITrainingView(this.ai, this.view.robotView);

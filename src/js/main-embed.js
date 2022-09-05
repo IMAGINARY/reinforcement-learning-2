@@ -254,8 +254,6 @@ cfgLoader.load(configFiles)
       }
 
       const reactionController = new ReactionController($body, config);
-      window.reaction = reactionController;
-      window.robotView = topView.getRobotView();
       topView.getRobotView().events.on('reactEnd', (animation) => {
         const bounds = topView.getRobotView().sprite.getBounds();
         reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);

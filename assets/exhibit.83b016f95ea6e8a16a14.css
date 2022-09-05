@@ -18,6 +18,67 @@ h2 {
   font-size: 1.5rem;
   margin-bottom: 0.75em; }
 
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+  padding-top: 0.25rem; }
+
+/* Removes default focus */
+input[type="range"]:focus {
+  outline: none; }
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+input[type="range"]::-webkit-slider-runnable-track {
+  background-color: #000000;
+  border-radius: 0.5rem;
+  height: 0.5rem; }
+
+/* slider thumb */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  /* Override default look */
+  appearance: none;
+  margin-top: -12px;
+  /* Centers thumb on the track */
+  /*custom styles*/
+  background-color: #3feffb;
+  height: 1.75rem;
+  width: 1rem; }
+
+input[type="range"]:focus::-webkit-slider-thumb {
+  border: 1px solid #000000;
+  outline: 3px solid #fff576;
+  outline-offset: 0; }
+
+/******** Firefox styles ********/
+/* slider track */
+input[type="range"]::-moz-range-track {
+  background-color: #000000;
+  border-radius: 0.5rem;
+  height: 0.5rem; }
+
+/* slider thumb */
+input[type="range"]::-moz-range-thumb {
+  border: none;
+  /*Removes extra border that FF applies*/
+  border-radius: 0;
+  /*Removes default border-radius that FF applies*/
+  /*custom styles*/
+  background-color: #3feffb;
+  height: 1.75rem;
+  width: 1rem; }
+
+input[type="range"]:focus::-moz-range-thumb {
+  border: 1px solid #000000;
+  outline: 3px solid #fff576;
+  outline-offset: 0; }
+
 .fatal-error {
   position: absolute;
   width: 100%;
@@ -575,4 +636,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.13c3f23cf783377a0b22.css.map*/
+/*# sourceMappingURL=exhibit.83b016f95ea6e8a16a14.css.map*/

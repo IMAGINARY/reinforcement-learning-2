@@ -4716,6 +4716,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./src/sass/desktop.scss":
+/*!*******************************!*\
+  !*** ./src/sass/desktop.scss ***!
+  \*******************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+// extracted by mini-css-extract-plugin
+
+
+/***/ }),
+
 /***/ "./src/js/ai-training-view.js":
 /*!************************************!*\
   !*** ./src/js/ai-training-view.js ***!
@@ -8003,6 +8016,8 @@ var __webpack_exports__ = {};
   \************************/
 /* eslint-disable no-console */
 /* globals PIXI */
+__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
+__webpack_require__(/*! ../sass/desktop.scss */ "./src/sass/desktop.scss");
 
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
@@ -8018,7 +8033,6 @@ const MazeViewQarrowOverlay = __webpack_require__(/*! ./maze-view-qarrow-overlay
 const MazeViewPolicyOverlay = __webpack_require__(/*! ./maze-view-policy-overlay */ "./src/js/maze-view-policy-overlay.js");
 const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
 const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
-__webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
 const ReactionController = __webpack_require__(/*! ./reaction-controller */ "./src/js/reaction-controller.js");
@@ -8166,4 +8180,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.7c57f9e2a0f8d2203825.js.map
+//# sourceMappingURL=default.eaa2545b0436e9bf9db8.js.map

@@ -1,5 +1,7 @@
 /* eslint-disable no-console */
 /* globals PIXI */
+require('../sass/default.scss');
+require('../sass/desktop.scss');
 
 const yaml = require('js-yaml');
 const CfgLoader = require('./cfg-loader/cfg-loader');
@@ -15,7 +17,6 @@ const MazeViewQarrowOverlay = require('./maze-view-qarrow-overlay.js');
 const MazeViewPolicyOverlay = require('./maze-view-policy-overlay');
 const MazeEditor = require('./editor/maze-editor.js');
 const setupKeyControls = require('./keyboard-controller');
-require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 const MazeEditorPalette = require('./editor/maze-editor-palette');
 const ReactionController = require('./reaction-controller');

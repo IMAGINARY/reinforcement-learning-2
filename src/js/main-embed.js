@@ -157,6 +157,7 @@ cfgLoader.load(configFiles)
           .append(app.view)
         );
 
+      let topView;
       let mazeView;
       if (embedConfig.mapEditable) {
         const mazeEditorPalette = new ExhibitMazeEditorPalette(
@@ -182,38 +183,40 @@ cfgLoader.load(configFiles)
           mazeEditorPalette.resetMapButton.css({ display: 'none' });
         }
 
-        mazeView = new MazeEditor(
+        topView = new MazeEditor(
           $('<div></div>').addClass('embed-maze').appendTo($body),
           maze, mazeEditorPalette, config, textures
         );
+        mazeView = topView.mazeView;
       } else {
-        mazeView = new MazeView(maze, config, textures);
+        topView = new MazeView(maze, config, textures);
+        mazeView = topView;
         $body.addClass('no-palette');
       }
 
-      app.stage.addChild(mazeView.displayObject);
-      mazeView.displayObject.width = mazeWidth;
-      mazeView.displayObject.height = mazeHeight;
-      mazeView.displayObject.x = appMargin;
-      mazeView.displayObject.y = appMargin;
+      app.stage.addChild(topView.displayObject);
+      topView.displayObject.width = mazeWidth;
+      topView.displayObject.height = mazeHeight;
+      topView.displayObject.x = appMargin;
+      topView.displayObject.y = appMargin;
 
       if (embedConfig.showQValues) {
-        const aiOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
-        mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+        const aiOverlay = new MazeViewQvalueOverlay(mazeView, ai);
+        mazeView.addOverlay(aiOverlay.displayObject);
         aiOverlay.toggle();
       }
 
-      const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
-      mazeView.mazeView.addOverlay(policyOverlay.displayObject);
+      const policyOverlay = new MazeViewPolicyOverlay(mazeView, ai, textures.arrow);
+      mazeView.addOverlay(policyOverlay.displayObject);
       policyOverlay.hide();
 
       if (embedConfig.showPolicy) {
         policyOverlay.show();
       }
 
-      app.ticker.add(time => mazeView.animate(time));
+      app.ticker.add(time => topView.animate(time));
 
-      trainingView = new AITrainingView(ai, mazeView.getRobotView());
+      trainingView = new AITrainingView(ai, topView.getRobotView());
       $('<div></div>')
         .addClass('embed-training')
         .appendTo($body)
@@ -246,15 +249,15 @@ cfgLoader.load(configFiles)
       });
 
       if (embedConfig.rewardBar) {
-        const rewardBar = new RewardBar(mazeView.getRobotView());
+        const rewardBar = new RewardBar(topView.getRobotView());
         $rewardBarContainer.append(rewardBar.$element);
       }
 
       const reactionController = new ReactionController($body, config);
       window.reaction = reactionController;
-      window.robotView = mazeView.getRobotView();
-      mazeView.getRobotView().events.on('reactEnd', (animation) => {
-        const bounds = mazeView.getRobotView().sprite.getBounds();
+      window.robotView = topView.getRobotView();
+      topView.getRobotView().events.on('reactEnd', (animation) => {
+        const bounds = topView.getRobotView().sprite.getBounds();
         reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);
       });
 
@@ -267,7 +270,7 @@ cfgLoader.load(configFiles)
         ai.step();
       }
 
-      mazeView.getRobotView().speed = RobotView.Speed.SLOW;
+      topView.getRobotView().speed = RobotView.Speed.SLOW;
     });
   });
 

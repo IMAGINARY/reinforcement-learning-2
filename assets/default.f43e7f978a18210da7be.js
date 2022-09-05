@@ -5101,9 +5101,9 @@ class MazeEditorPalette {
     this.$bar1.append(this.buildActionButtons());
 
     this.$bar2.append(this.buildTileButtons(config));
-    this.$bar2.append($('<div class="separator"></div>'));
-    this.$bar2.append(this.buildToolButtons(config));
-    this.$bar2.append(this.buildItemButtons(config));
+    // this.$bar2.append($('<div class="separator"></div>'));
+    // this.$bar2.append(this.buildToolButtons(config));
+    // this.$bar2.append(this.buildItemButtons(config));
   }
 
   buildTileButtons(config) {
@@ -5229,11 +5229,11 @@ MazeEditorPalette.Tools = [
 ];
 
 MazeEditorPalette.Actions = [
-  {
-    id: 'reset',
-    title: 'Reset',
-    icon: 'static/fa/sync-solid.svg',
-  },
+  // {
+  //   id: 'reset',
+  //   title: 'Reset',
+  //   icon: 'static/fa/sync-solid.svg',
+  // },
   {
     id: 'load',
     title: 'Load maze',
@@ -8042,4 +8042,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.3a641e9792bcfcd30b89.js.map
+//# sourceMappingURL=default.f43e7f978a18210da7be.js.map

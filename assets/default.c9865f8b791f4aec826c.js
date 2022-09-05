@@ -4731,10 +4731,11 @@ class AITrainingView {
     this.ai = ai;
     this.robotView = robotView;
     this.running = false;
+    this.turboDown = false;
     this.timer = 0;
     this.robotIdle = true;
     this.robotView.events.on('idle', () => {
-      if (this.running) {
+      if (this.running || this.turboDown) {
         this.ai.step();
       } else {
         this.robotIdle = true;
@@ -4746,10 +4747,10 @@ class AITrainingView {
       .addClass('ai-training-view');
 
     this.$runButton = this.buildButton({
-      id: 'run',
-      icon: 'static/fa/play-solid.svg',
-      title: 'Run / Pause',
-    })
+        id: 'run',
+        icon: 'static/fa/play-solid.svg',
+        title: 'Run / Pause',
+      })
       .on('i.pointerclick', () => {
         if (this.running) {
           this.$runButton.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
@@ -4766,27 +4767,30 @@ class AITrainingView {
       .appendTo(this.$element);
 
     this.$turboButton = this.buildButton({
-      id: 'turbo',
-      icon: 'static/fa/forward-solid.svg',
-      title: 'Hold to speed up',
-    })
+        id: 'turbo',
+        icon: 'static/fa/forward-solid.svg',
+        title: 'Hold to speed up',
+      })
       .on('i.pointerdown', () => {
-        if (this.running) {
-          this.$turboButton.addClass('active');
-          this.robotView.speed = RobotView.Speed.TURBO;
+        this.$turboButton.addClass('active');
+        this.robotView.speed = RobotView.Speed.TURBO;
+        this.turboDown = true;
+        if (this.robotIdle) {
+          this.ai.step();
         }
       })
       .on('i.pointerup', () => {
         this.$turboButton.removeClass('active');
         this.robotView.speed = RobotView.Speed.DEFAULT;
+        this.turboDown = false;
       })
       .appendTo(this.$element);
 
     this.$stepButton = this.buildButton({
-      id: 'step',
-      icon: 'static/fa/step-forward-solid.svg',
-      title: 'Step',
-    })
+        id: 'step',
+        icon: 'static/fa/step-forward-solid.svg',
+        title: 'Step',
+      })
       .on('i.pointerclick', () => {
         if (this.robotIdle) {
           this.robotIdle = false;
@@ -8038,4 +8042,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.23531b39ef9b21fec6d8.js.map
+//# sourceMappingURL=default.c9865f8b791f4aec826c.js.map

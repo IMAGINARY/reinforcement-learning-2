@@ -2,7 +2,7 @@
 const EventEmitter = require('events');
 const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
 const RobotView = require('./robot-view');
-const Array2D = require('./aux/array-2d');
+const Array2D = require('./lib/array-2d');
 
 class MazeView {
   constructor(maze, config, textures = { }, interactive = false) {

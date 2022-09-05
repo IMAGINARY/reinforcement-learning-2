@@ -4,7 +4,7 @@
 const yaml = require('js-yaml');
 const CfgLoader = require('./cfg-loader/cfg-loader');
 const CfgReaderFetch = require('./cfg-loader/cfg-reader-fetch');
-const showFatalError = require('./aux/show-fatal-error');
+const showFatalError = require('./lib/show-fatal-error');
 require('./jquery-plugins/jquery.pointerclick');
 const Maze = require('./maze.js');
 const Robot = require('./robot.js');

@@ -62,10 +62,6 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
     position: absolute;
     bottom: 20px;
   }
-
-  .ai-training-view {
-    margin-left: -26px;
-  }
 }
 
 $panel-title-height: 220px;
@@ -112,4 +108,8 @@ $panel-lg-width: ($viewport-inner-width - $panel-gutter-lg) * 0.625;
 #panel-4 {
   top: $viewport-padding;
   left: $viewport-padding + $panel-sm-width + $panel-gutter-lg;
+
+  .ai-training-view {
+    margin-left: -26px;
+  }
 }

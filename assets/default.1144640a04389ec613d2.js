@@ -6299,6 +6299,36 @@ module.exports = Array2D;
 
 /***/ }),
 
+/***/ "./src/js/lib/pixi-helpers.js":
+/*!************************************!*\
+  !*** ./src/js/lib/pixi-helpers.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "screenCoordinates": () => (/* binding */ screenCoordinates)
+/* harmony export */ });
+/**
+ * Converts PIXI coordinates to screen coordinates.
+ *
+ * @param { HTMLCanvasElement } view
+ *  The canvas element.
+ * @param { number } pixiX
+ * @param { number } pixiY
+ * @returns {[number, number]}
+ */
+function screenCoordinates(view, pixiX, pixiY) {
+  const rect = view.getBoundingClientRect();
+  const x = pixiX * (rect.width / view.width) + rect.left;
+  const y = pixiY * (rect.height / view.height) + rect.top;
+  return [x, y];
+}
+
+
+/***/ }),
+
 /***/ "./src/js/lib/show-fatal-error.js":
 /*!****************************************!*\
   !*** ./src/js/lib/show-fatal-error.js ***!
@@ -7497,6 +7527,49 @@ module.exports = QLearningAI;
 
 /***/ }),
 
+/***/ "./src/js/reaction-controller.js":
+/*!***************************************!*\
+  !*** ./src/js/reaction-controller.js ***!
+  \***************************************/
+/***/ ((module) => {
+
+class ReactionController {
+  constructor(container, config) {
+    this.container = container;
+    this.config = config;
+
+    this.reactions = Object.fromEntries(
+      Object.entries(this.config.tileTypes)
+        .filter(([, props]) => props.reaction)
+        .map(([, props]) => [props.type, props.reaction])
+    );
+  }
+
+  launchReaction(type, x, y) {
+    if (this.reactions[type]) {
+      const reaction = $('<div></div>')
+        .addClass(['reaction', `reaction-${type}`])
+        .css({
+          left: x,
+          top: y,
+          backgroundImage: `url(${this.reactions[type]})`,
+        })
+        .appendTo(this.container);
+      setTimeout(() => {
+        reaction.addClass('fading');
+      }, 0);
+      setTimeout(() => {
+        reaction.remove();
+      }, 1000);
+    }
+  }
+}
+
+module.exports = ReactionController;
+
+
+/***/ }),
+
 /***/ "./src/js/robot-view.js":
 /*!******************************!*\
   !*** ./src/js/robot-view.js ***!
@@ -7840,6 +7913,18 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
@@ -7850,6 +7935,11 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 				if (typeof window === 'object') return window;
 /******/ 			}
 /******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -7910,7 +8000,9 @@ const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
 const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
 const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
+const ReactionController = __webpack_require__(/*! ./reaction-controller */ "./src/js/reaction-controller.js");
 const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
+const { screenCoordinates } = __webpack_require__(/*! ./lib/pixi-helpers */ "./src/js/lib/pixi-helpers.js");
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -8018,6 +8110,17 @@ cfgLoader.load([
       });
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
+      const reactionContainer = $('<div></div>')
+        .addClass('reaction-container')
+        .appendTo($('body'));
+      const reactionController = new ReactionController(reactionContainer, config);
+      mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
+        const bounds = mazeView.mazeView.robotView.sprite.getBounds();
+        const [x, y] = screenCoordinates(app.view, bounds.x - bounds.width / 4, bounds.y - bounds.height / 2);
+        reactionController.launchReaction(animation.reaction, x, y);
+      });
+      window.pixiApp = app;
+
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);
       trainingView.events
@@ -8042,4 +8145,4 @@ cfgLoader.load([
 
 /******/ })()
 ;
-//# sourceMappingURL=default.f43e7f978a18210da7be.js.map
+//# sourceMappingURL=default.1144640a04389ec613d2.js.map

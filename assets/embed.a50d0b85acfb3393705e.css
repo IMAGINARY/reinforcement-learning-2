@@ -259,6 +259,17 @@ button.maze-browser-item-new {
 .reaction-lava {
   opacity: 0.8; }
 
+.reaction-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  pointer-events: none; }
+
 .lang-switcher {
   display: inline-block;
   font-size: 40px; }
@@ -646,4 +657,4 @@ body {
   opacity: 0.8; }
 
 
-/*# sourceMappingURL=embed.2899caf5d67408f2678d.css.map*/
+/*# sourceMappingURL=embed.a50d0b85acfb3393705e.css.map*/

@@ -18,7 +18,9 @@ const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
 const maze1 = require('../../data/mazes/maze1.json');
 const MazeEditorPalette = require('./editor/maze-editor-palette');
+const ReactionController = require('./reaction-controller');
 const I18n = require('./exhibit/i18n');
+const { screenCoordinates } = require('./lib/pixi-helpers');
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -125,6 +127,17 @@ cfgLoader.load([
         }
       });
       app.ticker.add(time => mazeView.mazeView.animate(time));
+
+      const reactionContainer = $('<div></div>')
+        .addClass('reaction-container')
+        .appendTo($('body'));
+      const reactionController = new ReactionController(reactionContainer, config);
+      mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
+        const bounds = mazeView.mazeView.robotView.sprite.getBounds();
+        const [x, y] = screenCoordinates(app.view, bounds.x - bounds.width / 4, bounds.y - bounds.height / 2);
+        reactionController.launchReaction(animation.reaction, x, y);
+      });
+      window.pixiApp = app;
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);

@@ -14,7 +14,8 @@ const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
 const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette');
 const MazeEditor = require('./editor/maze-editor');
-const mazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
+const MazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
+const MazeViewPolicyOverlay = require('./maze-view-policy-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 const RewardsInteractive = require('./exhibit/interactive-rewards');
@@ -36,6 +37,7 @@ const embedConfig = {
   speed: qs.has('speed') ? Number(qs.get('speed')) : RobotView.Speed.DEFAULT,
   mapEditable: qs.get('editmap') === 'true',
   showQValues: qs.get('showqv') === 'true',
+  showPolicy: qs.get('showpolicy') === 'true',
   autoRun: qs.get('autorun') === 'true',
   rewardBar: qs.get('showrewardbar') === 'true',
 };
@@ -96,6 +98,8 @@ cfgLoader.load(configFiles)
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
+    textures.arrow = null;
+    app.loader.add('arrow', 'static/icons/arrow.svg');
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
@@ -194,7 +198,13 @@ cfgLoader.load(configFiles)
       mazeView.displayObject.y = appMargin;
 
       if (embedConfig.showQValues) {
-        const aiOverlay = new mazeViewQvalueOverlay(mazeView.mazeView, ai);
+        const aiOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
+        mazeView.mazeView.addOverlay(aiOverlay.displayObject);
+        aiOverlay.toggle();
+      }
+
+      if (embedConfig.showPolicy) {
+        const aiOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
         mazeView.mazeView.addOverlay(aiOverlay.displayObject);
         aiOverlay.toggle();
       }

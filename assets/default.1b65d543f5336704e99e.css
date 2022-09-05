@@ -221,6 +221,14 @@ button.maze-browser-item-new {
   .ai-training-view-button-turbo.active {
     border-color: #483b10; }
 
+.ai-training-view-button-view-policy {
+  width: 50px;
+  height: 50px;
+  background-size: 78%;
+  float: right; }
+  .ai-training-view-button-view-policy.active {
+    border-color: #483b10; }
+
 .ai-training-view-button-step {
   display: none; }
 
@@ -252,4 +260,4 @@ button.maze-browser-item-new {
   opacity: 0.8; }
 
 
-/*# sourceMappingURL=default.c3627a94d302416fdd24.css.map*/
+/*# sourceMappingURL=default.1b65d543f5336704e99e.css.map*/

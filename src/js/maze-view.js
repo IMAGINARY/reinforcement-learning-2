@@ -10,10 +10,12 @@ class MazeView {
     this.tileLayer = new PIXI.Container();
     this.textureLayer = new PIXI.Container();
     this.itemLayer = new PIXI.Container();
+    this.overlayLayer = new PIXI.Container();
     this.robotLayer = new PIXI.Container();
     this.displayObject.addChild(this.tileLayer);
     this.displayObject.addChild(this.textureLayer);
     this.displayObject.addChild(this.itemLayer);
+    this.displayObject.addChild(this.overlayLayer);
     this.displayObject.addChild(this.robotLayer);
 
     this.maze = maze;
@@ -250,7 +252,8 @@ class MazeView {
   }
 
   addOverlay(displayObject) {
-    this.displayObject.addChild(displayObject);
+    this.overlayLayer.addChild(displayObject);
+    this.overlayLayer.sortChildren();
   }
 
   animate(time) {

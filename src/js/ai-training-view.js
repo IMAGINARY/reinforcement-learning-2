@@ -1,3 +1,4 @@
+const EventEmitter = require('events');
 const RobotView = require('./robot-view');
 const createHoldButton = require('./hold-button');
 
@@ -15,6 +16,7 @@ class AITrainingView {
         this.robotIdle = true;
       }
     });
+    this.events = new EventEmitter();
 
     this.$element = $('<div></div>')
       .addClass('ai-training-view');
@@ -66,6 +68,21 @@ class AITrainingView {
           this.robotIdle = false;
           this.ai.step();
         }
+      })
+      .appendTo(this.$element);
+
+    this.$viewPolicyButton = this.buildButton({
+        id: 'view-policy',
+        icon: 'static/icons/eye-regular.svg',
+        title: 'View Policy',
+      })
+      .on('i.pointerdown', () => {
+        this.$viewPolicyButton.addClass('active');
+        this.events.emit('policy-show');
+      })
+      .on('i.pointerup', () => {
+        this.$viewPolicyButton.removeClass('active');
+        this.events.emit('policy-hide');
       })
       .appendTo(this.$element);
 

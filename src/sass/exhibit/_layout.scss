@@ -62,6 +62,10 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
     position: absolute;
     bottom: 20px;
   }
+
+  .ai-training-view {
+    margin-left: -26px;
+  }
 }
 
 $panel-title-height: 220px;

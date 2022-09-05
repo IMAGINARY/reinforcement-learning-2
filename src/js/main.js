@@ -12,6 +12,7 @@ const QLearningAI = require('./qlearning-ai.js');
 const AITrainingView = require('./ai-training-view.js');
 const MazeViewQvalueOverlay = require('./maze-view-qvalue-overlay.js');
 const MazeViewQarrowOverlay = require('./maze-view-qarrow-overlay.js');
+const MazeViewPolicyOverlay = require('./maze-view-policy-overlay');
 const MazeEditor = require('./editor/maze-editor.js');
 const setupKeyControls = require('./keyboard-controller');
 require('../sass/default.scss');
@@ -65,6 +66,8 @@ cfgLoader.load([
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
+    textures.arrow = null;
+    app.loader.add('arrow', 'static/icons/arrow.svg');
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
@@ -110,6 +113,10 @@ cfgLoader.load([
       // mazeView.mazeView.addOverlay(qArrowOverlay.displayObject);
       // qArrowOverlay.show();
 
+      const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
+      mazeView.mazeView.addOverlay(policyOverlay.displayObject);
+      policyOverlay.hide();
+
       const qValueOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(qValueOverlay.displayObject);
       window.addEventListener('keydown', (ev) => {
@@ -121,6 +128,18 @@ cfgLoader.load([
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('.sidebar').append(trainingView.$element);
+      trainingView.events
+        .on('policy-show', () => {
+          policyOverlay.show();
+        })
+        .on('policy-hide', () => {
+          policyOverlay.hide();
+        });
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyQ') {
+          policyOverlay.toggle();
+        }
+      });
 
       // Refresh language
       I18n.setLanguage(I18n.getLanguage());

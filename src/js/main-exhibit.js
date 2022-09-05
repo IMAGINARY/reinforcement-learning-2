@@ -15,7 +15,8 @@ const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
 const ExhibitMazeEditorPalette = require('./exhibit/exhibit-maze-editor-palette');
 const MazeEditor = require('./editor/maze-editor');
-const mazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
+const MazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
+const MazeViewPolicyOverlay = require('./maze-view-policy-overlay');
 const AITrainingView = require('./ai-training-view');
 const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
 const RewardsInteractive = require('./exhibit/interactive-rewards');
@@ -77,6 +78,8 @@ cfgLoader.load([
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
+    textures.arrow = null;
+    app.loader.add('arrow', 'static/icons/arrow.svg');
     Object.entries(config.items).forEach(([id, props]) => {
       if (props.texture) {
         const textureId = `item-${id}`;
@@ -127,17 +130,29 @@ cfgLoader.load([
       mazeView.displayObject.x = 1080;
       mazeView.displayObject.y = (1080 - 800) / 2;
 
-      const aiOverlay = new mazeViewQvalueOverlay(mazeView.mazeView, ai);
+      const aiOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
       mazeView.mazeView.addOverlay(aiOverlay.displayObject);
       window.addEventListener('keydown', (ev) => {
         if (ev.code === 'KeyD') {
           aiOverlay.toggle();
         }
       });
+
+      const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
+      mazeView.mazeView.addOverlay(policyOverlay.displayObject);
+      policyOverlay.hide();
+
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
       $('#training-ui').append(trainingView.$element);
+      trainingView.events
+        .on('policy-show', () => {
+          policyOverlay.show();
+        })
+        .on('policy-hide', () => {
+          policyOverlay.hide();
+        });
 
       const reactionController = new ReactionController($('body'), config);
       window.reaction = reactionController;

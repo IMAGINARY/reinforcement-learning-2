@@ -32,21 +32,22 @@ You can customize the functionality of the embeded app through query strings arg
 - **lang** (default: `en`): Language.
 - **map** (default: `maze1`): Map to show. Maps have to be stored in `data/mazes`.
 - **training**: Name of the q-value table to initialize the robot with. Q-values are stored in `data/training`.
-- **mapEditable** (default: `false`): If true, the map can be edited.
+- **editmap** (default: `false`): If true, the map can be edited.
 - **tiles**: Comma separated list of the ids (numerical) of the tiles to show in the left side palette. Ids can be viewed in `config/tiles.yml`.
-- **commands**: Comma separated list of UI elements to show, from:
+- **cmds**: Comma separated list of UI elements to show, from:
   - run: The run button
   - step: The step button
   - turbo: The turbo button
   - clear: The button to clear the training
   - xr: The exploration rate slider (Explore / Exploit)
   - reset-map: The button to reset the map
-- **exploreRate** (default: `0.2`) The starting exploration rate.
-- **learningRate** (default: `1`) The learning rate.
+- **xr** (default: `0.2`) The starting exploration rate.
+- **lr** (default: `1`) The learning rate.
 - **speed** (default: `10`): The speed of the robot.
-- **showQValues** (default: `false`): If true, the q-values are shown on the map.
-- **autoRun** (default: `false`): If true, the robot starts in the running state.
-- **rewardBar** (default: `false`): If true, the reward bar is shown over the map (currently very specific to a particular 
+- **showpolicy** (default: `false`): If true, the policy and value function are shown.
+- **showqv** (default: `false`): If true, the q-values are shown on the map.
+- **autorun** (default: `false`): If true, the robot starts in the running state.
+- **showrewardbar** (default: `false`): If true, the reward bar is shown over the map (currently very specific to a particular 
   experiment, so probably not practical).
 
 ## Credits

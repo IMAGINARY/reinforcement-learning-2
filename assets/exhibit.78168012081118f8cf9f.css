@@ -221,6 +221,14 @@ button.maze-browser-item-new {
   .ai-training-view-button-turbo.active {
     border-color: #483b10; }
 
+.ai-training-view-button-view-policy {
+  width: 50px;
+  height: 50px;
+  background-size: 78%;
+  float: right; }
+  .ai-training-view-button-view-policy.active {
+    border-color: #483b10; }
+
 .ai-training-view-button-step {
   display: none; }
 
@@ -340,6 +348,8 @@ button.maze-browser-item-new {
   .rl2-exhibit #rewards-ui {
     position: absolute;
     bottom: 20px; }
+  .rl2-exhibit .ai-training-view {
+    margin-left: -26px; }
 
 .panel-title {
   height: 220px;
@@ -460,6 +470,13 @@ button.maze-browser-item-new {
   border: 1px solid black;
   font-size: 1rem; }
 
+.ai-training-view-button-view-policy {
+  width: 60px;
+  height: 60px;
+  float: none; }
+  .ai-training-view-button-view-policy.active {
+    border-color: #483b10; }
+
 .maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
   width: 60px;
   height: 60px;
@@ -547,4 +564,4 @@ html, body {
   bottom: 10px; }
 
 
-/*# sourceMappingURL=exhibit.fdd9ce54225fcbca83b9.css.map*/
+/*# sourceMappingURL=exhibit.78168012081118f8cf9f.css.map*/

@@ -127,7 +127,9 @@ html.with-fatal-error {
 
 .hold-button {
   position: relative;
-  overflow: hidden; }
+  overflow: hidden;
+  background-color: white;
+  color: #000000; }
   .hold-button .progress {
     content: " ";
     display: block;
@@ -718,4 +720,4 @@ body {
   opacity: 0.8; }
 
 
-/*# sourceMappingURL=embed.ac6b03c2ddeabe3fe6d3.css.map*/
+/*# sourceMappingURL=embed.e945ba8600a20f7ba901.css.map*/

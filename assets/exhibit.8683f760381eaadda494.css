@@ -127,7 +127,9 @@ html.with-fatal-error {
 
 .hold-button {
   position: relative;
-  overflow: hidden; }
+  overflow: hidden;
+  background-color: white;
+  color: #000000; }
   .hold-button .progress {
     content: " ";
     display: block;
@@ -331,10 +333,309 @@ button.maze-browser-item-new {
   z-index: 10000;
   pointer-events: none; }
 
-.slider {
-  margin-bottom: 1.4em; }
-  .slider .slider-text {
-    margin-bottom: 0.1em; }
+.lang-switcher {
+  display: inline-block;
+  font-size: 40px; }
+  .lang-switcher .lang-switcher-trigger {
+    width: 2em;
+    height: 2em;
+    display: block;
+    font-size: 1em;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(2dff18b73da77a245541.svg);
+    pointer-events: all; }
+    .lang-switcher .lang-switcher-trigger:focus {
+      outline: none; }
+  .lang-switcher .lang-switcher-menu-mask {
+    position: absolute;
+    bottom: 80px;
+    right: -1em;
+    height: calc(100vh - 80px);
+    width: 100vw;
+    overflow: hidden;
+    pointer-events: none; }
+  .lang-switcher .lang-switcher-menu {
+    display: block;
+    position: absolute;
+    right: -100%;
+    bottom: 0 !important;
+    padding: 0.1em 0 0.2em 0;
+    margin: 0;
+    background-color: white;
+    border: 3px solid black;
+    transition: right 0.3s; }
+    .lang-switcher .lang-switcher-menu.visible {
+      right: 50px !important; }
+    .lang-switcher .lang-switcher-menu li {
+      display: block;
+      padding: 0;
+      margin: 0; }
+      .lang-switcher .lang-switcher-menu li button {
+        display: block;
+        width: 100%;
+        border: 0;
+        background-color: transparent;
+        font-size: 2.2rem;
+        text-align: left;
+        padding: 0.4em 1.5em;
+        min-width: 4.5em;
+        cursor: pointer;
+        pointer-events: all; }
+
+.rl2-exhibit {
+  width: 1920px;
+  height: 1080px;
+  position: relative;
+  overflow: hidden; }
+  .rl2-exhibit #pixi-app-container {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 100; }
+  .rl2-exhibit .panel {
+    z-index: 200;
+    pointer-events: none; }
+  .rl2-exhibit #training-ui {
+    position: absolute;
+    left: 295px;
+    bottom: 76px;
+    pointer-events: auto; }
+  .rl2-exhibit #lang-switcher-container .lang-switcher {
+    z-index: 200; }
+  .rl2-exhibit .maze-editor-palette {
+    pointer-events: auto;
+    bottom: 270px;
+    left: 10px;
+    top: auto; }
+  .rl2-exhibit #explore-exploit-ui {
+    position: absolute;
+    bottom: 20px; }
+  .rl2-exhibit #rewards-bar {
+    position: absolute;
+    bottom: 166px; }
+  .rl2-exhibit #rewards-ui {
+    position: absolute;
+    bottom: 20px; }
+
+.panel-title {
+  height: 220px;
+  width: 667.5px; }
+
+.panel-sm {
+  height: 370px;
+  width: 667.5px; }
+
+.panel-lg {
+  height: 1040px;
+  width: 1112.5px; }
+
+#panel-1, #panel-2, #panel-3, #panel-4 {
+  position: absolute; }
+
+#panel-1, #panel-2, #panel-3 {
+  left: 20px; }
+
+#panel-1 {
+  top: 20px; }
+
+#panel-2 {
+  top: 280px; }
+
+#panel-3 {
+  top: 690px; }
+
+#panel-4 {
+  top: 20px;
+  left: 787.5px; }
+  #panel-4 .ai-training-view {
+    margin-left: -26px; }
+
+.rl2-exhibit {
+  font-family: Arial, sans-serif;
+  font-size: 20px;
+  line-height: 33px; }
+  .rl2-exhibit strong {
+    font-size: 32px;
+    margin: 0 0.1em;
+    background-color: #fff576;
+    padding: 0 0.2em; }
+
+#panel-1 {
+  font-size: 24px; }
+  #panel-1 strong {
+    margin-left: -0.25em;
+    display: inline-block;
+    font-size: 48px;
+    padding: 0.1em 0.2em; }
+
+#panel-4 .panel-text {
+  margin-top: 0.5em; }
+
+.ai-training-view-slider-exploration-rate {
+  display: inline-block;
+  position: relative;
+  width: 13em;
+  height: 2.6em;
+  margin: 0 1.5em; }
+  .ai-training-view-slider-exploration-rate .slider-text label {
+    display: none; }
+  .ai-training-view-slider-exploration-rate .slider-text .slider-limit {
+    display: block;
+    position: absolute; }
+  .ai-training-view-slider-exploration-rate .slider-text .slider-limit-min {
+    left: 0;
+    bottom: 0; }
+  .ai-training-view-slider-exploration-rate .slider-text .slider-limit-max {
+    right: 0;
+    bottom: 0; }
+  .ai-training-view-slider-exploration-rate .slider-input input {
+    display: block;
+    width: calc(100% - 2.5em);
+    margin-left: 1.25em; }
+
+.ai-training-view-slider-learning-rate {
+  display: none; }
+
+.ai-training-view-slider-discount-factor {
+  display: none; }
+
+.ai-training-view-button {
+  border-radius: 10px;
+  padding: 0.7em 1.4em;
+  border: 2px solid #000000; }
+  .ai-training-view-button.round {
+    border-radius: 50%;
+    padding: 0; }
+  .ai-training-view-button.active {
+    background-color: #ffec02;
+    border-color: #483b10; }
+  .ai-training-view-button:focus, .ai-training-view-button:focus-visible {
+    outline: none;
+    box-shadow: none; }
+
+.ai-training-view-button-run {
+  width: 80px;
+  height: 80px;
+  margin-right: 1em;
+  background-position: calc(50% + 0.2em) center; }
+  .ai-training-view-button-run.active {
+    background-position: center center;
+    background-color: transparent; }
+
+.ai-training-view-button-turbo {
+  width: 60px;
+  height: 60px;
+  background-position: calc(50% + 0.1em) center; }
+  .ai-training-view-button-turbo.active {
+    border-color: #483b10; }
+
+.ai-training-view-button-step {
+  display: none; }
+
+.ai-training-view-button-clear {
+  width: 14em;
+  height: 50px;
+  border: 1px solid black;
+  font-size: 1rem; }
+
+.ai-training-view-button-view-policy {
+  width: 60px;
+  height: 60px;
+  float: none; }
+  .ai-training-view-button-view-policy.active {
+    border-color: #483b10; }
+
+.maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
+  width: 60px;
+  height: 60px;
+  background-size: 100%;
+  border: 2px solid black;
+  margin-bottom: 8px; }
+  .maze-editor-palette .maze-editor-palette-bar .editor-palette-button.active {
+    border: 2px solid black;
+    outline: 8px solid #ffec02;
+    margin: 0;
+    width: 70px;
+    height: 70px;
+    margin-top: -5px;
+    margin-bottom: 3px;
+    margin-left: -5px;
+    z-index: 100;
+    position: relative; }
+
+.maze-editor-palette .maze-editor-palette-bar .item {
+  position: relative; }
+  .maze-editor-palette .maze-editor-palette-bar .item .label {
+    display: block;
+    position: absolute;
+    width: 9.5em;
+    left: 80px;
+    top: 19px;
+    line-height: 1.2; }
+
+.maze-editor-palette .editor-palette-button-action-reset-map {
+  font-size: 1rem;
+  border: 1px solid black;
+  width: 14em;
+  background-color: white;
+  background-size: contain;
+  background-position: center center;
+  padding: 0.1em 0.1em;
+  border-radius: 10px;
+  text-align: center;
+  margin-top: 1.7em; }
+
+#explore-exploit-ui {
+  pointer-events: all; }
+  #explore-exploit-ui .ai-training-view-button {
+    display: none; }
+  #explore-exploit-ui .ai-training-view-slider {
+    display: none; }
+  #explore-exploit-ui .ai-training-view-slider-exploration-rate {
+    display: block; }
+
+#rewards-ui {
+  pointer-events: all; }
+  #rewards-ui .ai-training-view-button {
+    display: none; }
+  #rewards-ui .ai-training-view-slider {
+    display: none; }
+  #rewards-ui .ai-training-view-button-step {
+    display: block;
+    height: 50px;
+    width: 50px; }
+
+#rewards-bar .bar-container .label {
+  display: inline-block;
+  margin-right: 0.8em;
+  font-weight: bold;
+  font-size: 0.9em; }
+
+#rewards-bar .bar-container .progress {
+  display: inline-block;
+  width: 300px; }
+  #rewards-bar .bar-container .progress .progress-bar {
+    height: 100%;
+    transition: width .6s ease, background-color 1s;
+    background-color: #26df28; }
+
+#rewards-bar .bar-container.decrease .progress-bar {
+  background-color: #f86137; }
+
+html, body {
+  padding: 0;
+  margin: 0; }
+
+.rl2-exhibit #lang-switcher-container .lang-switcher {
+  position: absolute;
+  right: 10px;
+  bottom: 10px; }
 
 
-/*# sourceMappingURL=default.5bf86665338df005abbc.css.map*/
+/*# sourceMappingURL=exhibit.8683f760381eaadda494.css.map*/

@@ -10,6 +10,8 @@
 .hold-button {
   position: relative;
   overflow: hidden;
+  background-color: white;
+  color: $c-black;
 
   .progress {
     content: " ";

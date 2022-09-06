@@ -1,7 +1,7 @@
 /* globals PIXI */
 const MazeView = require('./maze-view.js');
 
-const ARROW_TEXTURE_SCALE = 0.2;
+const ARROW_TEXTURE_SCALE = 0.25;
 
 class MazeViewPolicyOverlay {
   constructor(mazeView, ai, arrowTexture) {
@@ -83,12 +83,12 @@ class MazeViewPolicyOverlay {
     const sprite = new PIXI.Sprite();
     sprite.texture = this.arrowTexture;
     sprite.roundPixels = true;
-    sprite.width = this.arrowTexture.width * ARROW_TEXTURE_SCALE;
-    sprite.height = this.arrowTexture.height * ARROW_TEXTURE_SCALE;
-    sprite.anchor.set(0.5, 0.975);
+    sprite.width = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
+    sprite.height = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
+    sprite.anchor.set(0.5, 1);
 
-    sprite.x = MazeView.TILE_SIZE * (x + 0.5);
-    sprite.y = MazeView.TILE_SIZE * (y + 0.35);
+    sprite.x = Math.round(MazeView.TILE_SIZE * (x + 0.5));
+    sprite.y = Math.round(MazeView.TILE_SIZE * (y + 0.35));
     sprite.rotation = rotation;
 
     this.displayObject.addChild(sprite);

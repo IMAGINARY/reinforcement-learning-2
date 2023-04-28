@@ -5505,14 +5505,22 @@ class ObjectStore {
   }
 
   loadUserObjects() {
-    const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
-    if (userObjects) {
-      this.userObjects = userObjects;
+    try {
+      const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
+      if (userObjects) {
+        this.userObjects = userObjects;
+      }
+    } catch(err) {
+      console.error(`Unable to access local storage ${err}`);
     }
   }
 
   saveLocal() {
-    localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+    try {
+      localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+    } catch (err) {
+      console.error(`Unable to access local storage ${err}`);
+    }
   }
 
   getAllObjects() {
@@ -8240,4 +8248,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=embed.8f764a1f7632d6c30586.js.map
+//# sourceMappingURL=embed.c82eff712ba7ca0051e6.js.map

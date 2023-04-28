@@ -18,14 +18,22 @@ class ObjectStore {
   }
 
   loadUserObjects() {
-    const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
-    if (userObjects) {
-      this.userObjects = userObjects;
+    try {
+      const userObjects = JSON.parse(localStorage.getItem('reinforcementLearning2.mazeStore.mazes'));
+      if (userObjects) {
+        this.userObjects = userObjects;
+      }
+    } catch(err) {
+      console.error(`Unable to access local storage ${err}`);
     }
   }
 
   saveLocal() {
-    localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+    try {
+      localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
+    } catch (err) {
+      console.error(`Unable to access local storage ${err}`);
+    }
   }
 
   getAllObjects() {

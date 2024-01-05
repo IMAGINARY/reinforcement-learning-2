@@ -1,4 +1,5 @@
 # reinforcement-learning-2
+
 Reinforcement Learning exhibit for the I AM A.I. exhibition (v2)
 
 ## Compilation
@@ -48,16 +49,17 @@ You can customize the functionality of the embeded app through query strings arg
 - **showpolicy** (default: `false`): If true, the policy and value function are shown.
 - **showqv** (default: `false`): If true, the q-values are shown on the map.
 - **autorun** (default: `false`): If true, the robot starts in the running state.
-- **showrewardbar** (default: `false`): If true, the reward bar is shown over the map (currently very specific to a particular 
+- **showrewardbar** (default: `false`): If true, the reward bar is shown over the map (currently very specific to a particular
   experiment, so probably not practical).
 
 ## Credits
 
-Developed by Eric Londaits for IMAGINARY gGmbH adapted from the original 
-[reinforcement-learning exhibit](https://github.com/IMAGINARY/reinforcement-learning/) 
+Developed by Eric Londaits for IMAGINARY gGmbH adapted from the original
+[reinforcement-learning exhibit](https://github.com/IMAGINARY/reinforcement-learning/)
 by Sebastián Uribe and Andreas Matt.
 
 Dutch translation by [Jarne Renders](https://github.com/JarneRenders).
+Spanish translation by Daniel Ramos.
 
 ## License
 

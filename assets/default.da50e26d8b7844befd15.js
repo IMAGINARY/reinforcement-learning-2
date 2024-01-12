@@ -1,61 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./data/mazes/explore-exploit.json":
-/*!*****************************************!*\
-  !*** ./data/mazes/explore-exploit.json ***!
-  \*****************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,1,1],[1,1,7,1,1,1,7,3]]}}');
-
-/***/ }),
-
-/***/ "./data/mazes/maze1.json":
-/*!*******************************!*\
-  !*** ./data/mazes/maze1.json ***!
-  \*******************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]}}');
-
-/***/ }),
-
-/***/ "./data/mazes/rewards.json":
-/*!*********************************!*\
-  !*** ./data/mazes/rewards.json ***!
-  \*********************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":1,"cells":[[1,1,5,5,1,4,1,3]]},"items":[{"type":"candy","x":2,"y":0},{"type":"candy","x":3,"y":0}]}');
-
-/***/ }),
-
-/***/ "./data/training/explore-exploit.json":
-/*!********************************************!*\
-  !*** ./data/training/explore-exploit.json ***!
-  \********************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"q":[[{"n":0,"s":-9,"e":41,"w":0},{"n":0,"s":-9,"e":42,"w":38},{"n":0,"s":-11,"e":43,"w":-9},{"n":0,"s":44,"e":42,"w":42},{"n":0,"s":45,"e":47,"w":-1},{"n":0,"s":46,"e":48,"w":42},{"n":0,"s":45,"e":49,"w":47},{"n":0,"s":50,"e":0,"w":-1}],[{"n":-10,"s":0,"e":40,"w":0},{"n":41,"s":0,"e":-11,"w":39},{"n":-7,"s":0,"e":-6,"w":-10},{"n":-6,"s":0,"e":45,"w":-8},{"n":42,"s":0,"e":46,"w":44},{"n":47,"s":0,"e":-5,"w":-4},{"n":-1,"s":0,"e":50,"w":-3},{"n":0,"s":0,"e":0,"w":0}]]}');
-
-/***/ }),
-
-/***/ "./data/training/rewards.json":
-/*!************************************!*\
-  !*** ./data/training/rewards.json ***!
-  \************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"q":[[{"n":0,"s":0,"e":41.599999999999994,"w":0},{"n":0,"s":0,"e":42.599999999999994,"w":40.599999999999994},{"n":0,"s":0,"e":42.8,"w":-8.2},{"n":0,"s":0,"e":43,"w":42.599999999999994},{"n":0,"s":0,"e":44,"w":42.8},{"n":0,"s":0,"e":49,"w":-1},{"n":0,"s":0,"e":50,"w":-6},{"n":0,"s":0,"e":0,"w":0}]]}');
-
-/***/ }),
-
 /***/ "./node_modules/events/events.js":
 /*!***************************************!*\
   !*** ./node_modules/events/events.js ***!
@@ -3643,7 +3588,7 @@ module.exports = __webpack_require__(/*! ./json */ "./node_modules/js-yaml/lib/s
 
 
 
-module.exports = __webpack_require__(/*! ./core */ "./node_modules/js-yaml/lib/schema/core.js").extend({
+module.exports = (__webpack_require__(/*! ./core */ "./node_modules/js-yaml/lib/schema/core.js").extend)({
   implicit: [
     __webpack_require__(/*! ../type/timestamp */ "./node_modules/js-yaml/lib/type/timestamp.js"),
     __webpack_require__(/*! ../type/merge */ "./node_modules/js-yaml/lib/type/merge.js")
@@ -3705,7 +3650,7 @@ module.exports = new Schema({
 
 
 
-module.exports = __webpack_require__(/*! ./failsafe */ "./node_modules/js-yaml/lib/schema/failsafe.js").extend({
+module.exports = (__webpack_require__(/*! ./failsafe */ "./node_modules/js-yaml/lib/schema/failsafe.js").extend)({
   implicit: [
     __webpack_require__(/*! ../type/null */ "./node_modules/js-yaml/lib/type/null.js"),
     __webpack_require__(/*! ../type/bool */ "./node_modules/js-yaml/lib/type/bool.js"),
@@ -4760,9 +4705,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./src/sass/exhibit.scss":
+/***/ "./src/sass/desktop.scss":
 /*!*******************************!*\
-  !*** ./src/sass/exhibit.scss ***!
+  !*** ./src/sass/desktop.scss ***!
   \*******************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -5128,6 +5073,192 @@ class MazeBrowser {
 }
 
 module.exports = MazeBrowser;
+
+
+/***/ }),
+
+/***/ "./src/js/editor/maze-editor-palette.js":
+/*!**********************************************!*\
+  !*** ./src/js/editor/maze-editor-palette.js ***!
+  \**********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
+
+class MazeEditorPalette {
+  constructor($container, config) {
+    this.$container = $container;
+    this.$element = $('<div></div>').appendTo(this.$container);
+    this.config = config;
+    this.activeButton = null;
+    this.tileId = null;
+    this.events = new EventEmitter();
+
+    this.$element.addClass('maze-editor-palette');
+    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+    this.$bar2 = $('<div class="maze-editor-palette-bar"></div>')
+      .appendTo(this.$element);
+
+    this.$bar1.append(this.buildActionButtons());
+
+    this.$bar2.append(this.buildTileButtons(config));
+    // this.$bar2.append($('<div class="separator"></div>'));
+    // this.$bar2.append(this.buildToolButtons(config));
+    // this.$bar2.append(this.buildItemButtons(config));
+  }
+
+  buildTileButtons(config) {
+    return Object.entries(config.tileTypes)
+      .filter(([, tileType]) => tileType.inPalette !== false)
+      .map(([id, typeCfg]) => $('<div></div>')
+        .addClass('item')
+        .append(
+          $('<button></button>')
+            .attr({
+              type: 'button',
+              title: typeCfg.name,
+            })
+            .addClass([
+              'editor-palette-button',
+              'editor-palette-button-tile',
+              `editor-palette-button-tile-${id}`,
+            ])
+            .css({
+              backgroundColor: typeCfg.color,
+              backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+            })
+            .pointerclick()
+            .on('i.pointerclick', (ev) => {
+              if (this.activeButton) {
+                this.activeButton.removeClass('active');
+              }
+              this.activeButton = $(ev.target);
+              this.activeButton.addClass('active');
+              this.tileId = Number(id);
+              this.events.emit('change', 'tile', Number(id));
+            })
+        )
+        .append($('<div></div>')
+          .addClass('label')
+          .attr('data-i18n-text', `editor-palette-button-tile-${id}`)));
+  }
+
+  buildToolButtons() {
+    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: tool.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-tool',
+        `editor-palette-button-tool-${tool.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${tool.icon})`,
+      })
+      .pointerclick()
+      .on('i.pointerclick', (ev) => {
+        if (this.activeButton) {
+          this.activeButton.removeClass('active');
+        }
+        this.activeButton = $(ev.target);
+        this.activeButton.addClass('active');
+        this.events.emit('change', tool.id);
+      }));
+  }
+
+  buildItemButtons(config) {
+    return Object.entries(config.items)
+      .filter(([, props]) => props.inPalette !== false)
+      .map(([id, props]) => $('<button></button>')
+        .attr({
+          type: 'button',
+          title: props.name,
+        })
+        .addClass([
+          'editor-palette-button',
+          'editor-palette-button-item',
+          `editor-palette-button-item-${id}`,
+        ])
+        .css({
+          backgroundImage: props.editorIcon ? `url(${props.editorIcon})` : 'none',
+        })
+        .pointerclick()
+        .on('i.pointerclick', (ev) => {
+          if (this.activeButton) {
+            this.activeButton.removeClass('active');
+          }
+          this.activeButton = $(ev.target);
+          this.activeButton.addClass('active');
+          this.events.emit('change', 'item', id);
+        }));
+  }
+
+  buildActionButtons() {
+    return MazeEditorPalette.Actions.map(action => $('<button></button>')
+      .attr({
+        type: 'button',
+        title: action.title,
+      })
+      .addClass([
+        'editor-palette-button',
+        'editor-palette-button-action',
+        `editor-palette-button-action-${action.id}`,
+      ])
+      .css({
+        backgroundImage: `url(${action.icon})`,
+      })
+      .pointerclick()
+      .on('i.pointerclick', () => {
+        this.events.emit('action', action.id);
+      }));
+  }
+}
+
+MazeEditorPalette.Tools = [
+  {
+    id: 'start',
+    title: 'Set the starting point',
+    icon: 'static/fa/robot-solid-blue.svg',
+  },
+  {
+    id: 'erase',
+    title: 'Remove items',
+    icon: 'static/fa/times-solid.svg',
+  },
+];
+
+MazeEditorPalette.Actions = [
+  // {
+  //   id: 'reset',
+  //   title: 'Reset',
+  //   icon: 'static/fa/sync-solid.svg',
+  // },
+  {
+    id: 'load',
+    title: 'Load maze',
+    icon: 'static/fa/folder-open-solid.svg',
+  },
+  {
+    id: 'save',
+    title: 'Save maze',
+    icon: 'static/fa/save-solid.svg',
+  },
+  {
+    id: 'import',
+    title: 'Import maze',
+    icon: 'static/fa/file-import-solid.svg',
+  },
+  {
+    id: 'export',
+    title: 'Export maze',
+    icon: 'static/fa/file-export-solid.svg',
+  },
+];
+
+module.exports = MazeEditorPalette;
 
 
 /***/ }),
@@ -5554,93 +5685,6 @@ module.exports = ObjectStore;
 
 /***/ }),
 
-/***/ "./src/js/exhibit/exhibit-maze-editor-palette.js":
-/*!*******************************************************!*\
-  !*** ./src/js/exhibit/exhibit-maze-editor-palette.js ***!
-  \*******************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const EventEmitter = __webpack_require__(/*! events */ "./node_modules/events/events.js");
-const createHoldButton = __webpack_require__(/*! ../hold-button */ "./src/js/hold-button.js")
-
-class ExhibitMazeEditorPalette {
-  constructor($container, config) {
-    this.$container = $container;
-    this.$element = $('<div></div>').appendTo(this.$container);
-    this.config = config;
-    this.activeButton = null;
-    this.tileId = null;
-    this.events = new EventEmitter();
-
-    this.$element.addClass(['maze-editor-palette', 'exhibit-maze-editor-palette']);
-    this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
-      .appendTo(this.$element);
-
-    this.tileButtons = this.buildTileButtons(config);
-    this.$bar1.append(Object.values(this.tileButtons));
-
-    this.resetMapButton = createHoldButton({
-      holdTime: 2000,
-    })
-      .addClass([
-        'editor-palette-button',
-        'editor-palette-button-action',
-        'editor-palette-button-action-reset-map',
-      ])
-      .on('hold', () => {
-        this.events.emit('action', 'reset-map');
-      })
-      .appendTo(this.$element)
-      .find('.text')
-      .html('Reset map')
-      .attr({
-        title: 'Reset map',
-        'data-i18n-text': 'editor-palette-button-action-reset-map',
-      });
-  }
-
-  buildTileButtons(config) {
-    return Object.fromEntries(
-      Object.entries(config.tileTypes)
-        .filter(([, tileType]) => tileType.inPalette !== false)
-        .map(([id, typeCfg]) => [id, $('<div></div>')
-          .addClass(['item'])
-          .attr('data-tile-id', id)
-          .append($('<button></button>')
-            .attr({
-              type: 'button',
-              title: typeCfg.name,
-            })
-            .addClass([
-              'editor-palette-button',
-              'editor-palette-button-tile',
-              `editor-palette-button-tile-${id}`,
-            ])
-            .css({
-              backgroundColor: typeCfg.color,
-              backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-            })
-            .pointerclick()
-            .on('i.pointerclick', (ev) => {
-              if (this.activeButton) {
-                this.activeButton.removeClass('active');
-              }
-              this.activeButton = $(ev.target);
-              this.activeButton.addClass('active');
-              this.tileId = Number(id);
-              this.events.emit('change', 'tile', Number(id));
-            }))
-          .append($('<div></div>')
-            .addClass('label')
-            .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))]));
-  }
-}
-
-module.exports = ExhibitMazeEditorPalette;
-
-
-/***/ }),
-
 /***/ "./src/js/exhibit/i18n.js":
 /*!********************************!*\
   !*** ./src/js/exhibit/i18n.js ***!
@@ -5683,139 +5727,6 @@ module.exports = {
   getLanguage,
   setLanguage,
 };
-
-
-/***/ }),
-
-/***/ "./src/js/exhibit/interactive-explore-exploit.js":
-/*!*******************************************************!*\
-  !*** ./src/js/exhibit/interactive-explore-exploit.js ***!
-  \*******************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const Maze = __webpack_require__(/*! ../maze */ "./src/js/maze.js");
-const maze1 = __webpack_require__(/*! ../../../data/mazes/explore-exploit.json */ "./data/mazes/explore-exploit.json");
-const training = __webpack_require__(/*! ../../../data/training/explore-exploit.json */ "./data/training/explore-exploit.json");
-const Robot = __webpack_require__(/*! ../robot */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ../qlearning-ai */ "./src/js/qlearning-ai.js");
-const MazeView = __webpack_require__(/*! ../maze-view */ "./src/js/maze-view.js");
-const AITrainingView = __webpack_require__(/*! ../ai-training-view */ "./src/js/ai-training-view.js");
-const RobotView = __webpack_require__(/*! ../robot-view */ "./src/js/robot-view.js");
-
-class ExploreExploitInteractive {
-  constructor(config, textures) {
-    const maze = Maze.fromJSON(maze1);
-    maze.config = config;
-    this.robot = new Robot();
-    maze.addRobot(this.robot);
-    this.ai = new QLearningAI(maze.robot);
-    this.ai.learningRate = 0;
-    this.ai.exploreRate = 0;
-    this.ai.q = training.q;
-
-    this.view = new MazeView(maze, config, textures);
-    this.ui = new AITrainingView(this.ai, this.view.robotView);
-    this.view.robotView.speed = RobotView.Speed.SLOW;
-    this.ui.running = true;
-    this.ui.robotIdle = false;
-    this.ai.step();
-  }
-
-  animate(time) {
-    this.view.animate(time);
-  }
-}
-
-module.exports = ExploreExploitInteractive;
-
-
-/***/ }),
-
-/***/ "./src/js/exhibit/interactive-rewards.js":
-/*!***********************************************!*\
-  !*** ./src/js/exhibit/interactive-rewards.js ***!
-  \***********************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-const Maze = __webpack_require__(/*! ../maze */ "./src/js/maze.js");
-const maze1 = __webpack_require__(/*! ../../../data/mazes/rewards.json */ "./data/mazes/rewards.json");
-const training = __webpack_require__(/*! ../../../data/training/rewards.json */ "./data/training/rewards.json");
-const Robot = __webpack_require__(/*! ../robot */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ../qlearning-ai */ "./src/js/qlearning-ai.js");
-const MazeView = __webpack_require__(/*! ../maze-view */ "./src/js/maze-view.js");
-const AITrainingView = __webpack_require__(/*! ../ai-training-view */ "./src/js/ai-training-view.js");
-const RobotView = __webpack_require__(/*! ../robot-view */ "./src/js/robot-view.js");
-
-class RewardsInteractive {
-  constructor(config, textures) {
-    const maze = Maze.fromJSON(maze1);
-    maze.config = config;
-    this.robot = new Robot();
-    maze.addRobot(this.robot);
-    this.ai = new QLearningAI(maze.robot);
-    this.ai.learningRate = 0;
-    this.ai.exploreRate = 0;
-    this.ai.q = training.q;
-
-    this.view = new MazeView(maze, config, textures);
-    this.ui = new AITrainingView(this.ai, this.view.robotView);
-    this.view.robotView.speed = RobotView.Speed.SLOW;
-
-    this.progress = 0;
-    this.$bar = $('<div></div>')
-      .addClass('progress-bar')
-      .attr({
-        role: 'progressbar',
-      });
-    this.$barContainer = $('<div></div>')
-      .addClass('bar-container')
-      .append($('<div></div>')
-        .addClass('label')
-        .attr({
-          'data-i18n-text': 'rewards-bar-label',
-        }))
-      .append($('<div></div>')
-        .addClass('progress')
-        .append(this.$bar));
-
-    this.view.robotView.events.on('resetEnd', () => {
-      this.setProgress(0, true);
-    });
-    this.setProgress(0);
-
-    this.robot.events.on('move', (direction, oldX, oldY, x, y, reward, tileType) => {
-      if (tileType === 'candy') {
-        this.setProgress(Math.min(this.getProgress() + 20, 100));
-      } else if (tileType === 'lava') {
-        this.setProgress(Math.max(this.getProgress() - 15, 0));
-      } else if (tileType === 'exit') {
-        this.setProgress(100);
-      }
-    });
-  }
-
-  animate(time) {
-    this.view.animate(time);
-  }
-
-  getProgress() {
-    return this.progress;
-  }
-
-  setProgress(percentage, isReset = false) {
-    if (percentage > this.progress || isReset) {
-      this.$barContainer.removeClass('decrease');
-    }
-    if (percentage < this.progress && !isReset) {
-      this.$barContainer.addClass('decrease');
-    }
-
-    this.progress = percentage;
-    this.$bar.css('width', `${percentage}%`);
-  }
-}
-
-module.exports = RewardsInteractive;
 
 
 /***/ }),
@@ -6183,85 +6094,6 @@ module.exports = setupKeyControls;
 
 /***/ }),
 
-/***/ "./src/js/lang-switcher.js":
-/*!*********************************!*\
-  !*** ./src/js/lang-switcher.js ***!
-  \*********************************/
-/***/ ((module) => {
-
-class LangSwitcher {
-  constructor(container, config, langChangeCallback) {
-    this.menuVisible = false;
-    this.container = container;
-    this.config = config;
-    this.langChangeCallback = langChangeCallback;
-
-    this.render();
-  }
-
-  render() {
-    this.element = document.createElement('div');
-    this.element.classList.add('lang-switcher');
-
-    this.trigger = document.createElement('button');
-    this.trigger.setAttribute('type', 'button');
-    this.trigger.classList.add('lang-switcher-trigger');
-    this.element.appendChild(this.trigger);
-
-    const mask = document.createElement('div');
-    mask.classList.add('lang-switcher-menu-mask');
-    this.element.appendChild(mask);
-
-    this.menu = document.createElement('ul');
-    this.menu.classList.add('lang-switcher-menu');
-    mask.appendChild(this.menu);
-
-    Object.entries(this.config.languages).forEach(([code, name]) => {
-      const item = document.createElement(('li'));
-      const link = document.createElement('button');
-      link.setAttribute('type', 'button');
-      link.innerText = name;
-      link.addEventListener('pointerdown', (ev) => {
-        this.langChangeCallback(code);
-        ev.preventDefault();
-      });
-      item.appendChild(link);
-      this.menu.appendChild(item);
-    });
-
-    this.container.appendChild(this.element);
-
-    this.menu.style.bottom = `${this.menu.clientHeight * -1 - 10}px`;
-
-    window.document.addEventListener('pointerdown', (ev) => {
-      if (this.menuVisible) {
-        this.hideMenu();
-      }
-    });
-    this.trigger.addEventListener('pointerdown', (ev) => {
-      if (!this.menuVisible) {
-        this.showMenu();
-        ev.stopPropagation();
-      }
-    });
-  }
-
-  showMenu() {
-    this.menuVisible = true;
-    this.menu.classList.add('visible');
-  }
-
-  hideMenu() {
-    this.menuVisible = false;
-    this.menu.classList.remove('visible');
-  }
-}
-
-module.exports = LangSwitcher;
-
-
-/***/ }),
-
 /***/ "./src/js/lib/array-2d.js":
 /*!********************************!*\
   !*** ./src/js/lib/array-2d.js ***!
@@ -6473,6 +6305,36 @@ class Array2D {
 }
 
 module.exports = Array2D;
+
+
+/***/ }),
+
+/***/ "./src/js/lib/pixi-helpers.js":
+/*!************************************!*\
+  !*** ./src/js/lib/pixi-helpers.js ***!
+  \************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   screenCoordinates: () => (/* binding */ screenCoordinates)
+/* harmony export */ });
+/**
+ * Converts PIXI coordinates to screen coordinates.
+ *
+ * @param { HTMLCanvasElement } view
+ *  The canvas element.
+ * @param { number } pixiX
+ * @param { number } pixiY
+ * @returns {[number, number]}
+ */
+function screenCoordinates(view, pixiX, pixiY) {
+  const rect = view.getBoundingClientRect();
+  const x = pixiX * (rect.width / view.width) + rect.left;
+  const y = pixiY * (rect.height / view.height) + rect.top;
+  return [x, y];
+}
 
 
 /***/ }),
@@ -6707,6 +6569,182 @@ MazeViewPolicyOverlay.Angles = {
 };
 
 module.exports = MazeViewPolicyOverlay;
+
+
+/***/ }),
+
+/***/ "./src/js/maze-view-qarrow-overlay.js":
+/*!********************************************!*\
+  !*** ./src/js/maze-view-qarrow-overlay.js ***!
+  \********************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+/* globals PIXI */
+const MazeView = __webpack_require__(/*! ./maze-view.js */ "./src/js/maze-view.js");
+
+class MazeViewQarrowOverlay {
+  constructor(mazeView, ai) {
+    this.view = mazeView;
+    this.ai = ai;
+    this.visible = false;
+    this.displayObject = new PIXI.Container();
+    this.displayObject.visible = this.visible;
+    this.green = 0x78df65;
+    this.red = 0xfc6159;
+
+    this.height = 20;
+    this.padding = 5;
+    this.width = 40;
+    this.baseTriangle = new PIXI.Polygon([
+      // x, y,
+      0, 0,
+      -1 * this.width / 2, this.height,
+      this.width / 2, this.height,
+    ]);
+
+    this.qUpperBound = this.ai.qUpperBound();
+    this.qLowerBound = this.ai.qLowerBound();
+
+    this.arrows = [];
+    this.createArrows();
+    this.update();
+
+    this.ai.events.on('update', () => {
+      this.update();
+    });
+
+    this.ai.robot.maze.map.events.on('update', () => {
+      this.update();
+    });
+  }
+
+  toggle() {
+    if (this.visible) {
+      this.hide();
+    } else {
+      this.show();
+    }
+  }
+
+  show() {
+    this.visible = true;
+    this.displayObject.visible = true;
+  }
+
+  hide() {
+    this.visible = false;
+    this.displayObject.visible = false;
+  }
+
+  static directionColor(direction) {
+    switch (direction) {
+      case 'n':
+        return 0xff0000;
+      case 'e':
+        return 0x00ff00;
+      case 's':
+        return 0x0000ff;
+      case 'w':
+        return 0xff00ff;
+    }
+  }
+
+  static directionRotation(direction) {
+    switch (direction) {
+      case 'n':
+        return 0;
+      case 'e':
+        return Math.PI * 0.5;
+      case 's':
+        return Math.PI;
+      case 'w':
+        return Math.PI * 1.5;
+    }
+  }
+
+  coordinates(direction, x, y) {
+    switch (direction) {
+      case 'n':
+        return [MazeView.TILE_SIZE * (x + 0.5),
+                MazeView.TILE_SIZE * y + this.padding];
+      case 's':
+        return [MazeView.TILE_SIZE * (x + 0.5),
+                MazeView.TILE_SIZE * (y + 1) - (this.padding)];
+      case 'e':
+        return [MazeView.TILE_SIZE * (x + 1) - (this.padding),
+                MazeView.TILE_SIZE * (y + 0.5)];
+      case 'w':
+        return [MazeView.TILE_SIZE * x + this.padding,
+                MazeView.TILE_SIZE * (y + 0.5)];
+      default:
+        break;
+    }
+  }
+
+  createArrow(direction, x, y) {
+    const [arrowX, arrowY] = this.coordinates(direction, x, y);
+    const arrow = new PIXI.Graphics();
+    this.drawArrow(arrow, this.arrowColor(x, y, direction), this.arrowOpacity(x, y, direction));
+    arrow.x = arrowX;
+    arrow.y = arrowY;
+    arrow.rotation = MazeViewQarrowOverlay.directionRotation(direction);
+    this.displayObject.addChild(arrow);
+    return arrow;
+  }
+
+  drawArrow(arrow, color, opacity = 1.0) {
+    arrow
+      .clear()
+      .beginFill(color, opacity)
+      .drawPolygon(this.baseTriangle)
+      .endFill();
+  }
+
+  createArrows() {
+    const { height, width } = this.view.maze.map;
+    const directions = ['n', 'e', 's', 'w'];
+
+    for (let j = 0; j < height; j += 1) {
+      this.arrows[j] = new Array(width);
+      for (let i = 0; i < width; i += 1) {
+        this.arrows[j][i] = Object.fromEntries(directions.map(d => [d, this.createArrow(d, i, j)]));
+      }
+    }
+  }
+
+  arrowColor(x, y, direction) {
+    return this.ai.q[y][x][direction] > 0 ? this.green : this.red;
+  }
+
+   arrowOpacity(x, y, direction) {
+    const bound = this.ai.q[y][x][direction] > 0 ? this.qUpperBound : this.qLowerBound;
+    return bound === 0 ? 0 : 1 - Math.pow(1 - this.ai.q[y][x][direction] / bound, 0.3);
+  }
+
+  update() {
+    const { robot } = this.ai;
+    const { maze } = robot;
+
+    this.qUpperBound = this.ai.qUpperBound();
+    this.qLowerBound = this.ai.qLowerBound();
+
+    for (let j = 0; j < this.arrows.length; j += 1) {
+      for (let i = 0; i < this.arrows[j].length; i += 1) {
+        Object.keys(this.arrows[j][i]).forEach((direction) => {
+          const arrow = this.arrows[j][i][direction];
+          if (maze.isWalkable(i, j) && robot.availableDirectionsAt(i, j).includes(direction)) {
+            arrow.visible = true;
+            this.drawArrow(arrow, this.arrowColor(i, j, direction), this.arrowOpacity(i, j, direction));
+          } else {
+            arrow.visible = false;
+          }
+        });
+      }
+    }
+  }
+}
+
+module.exports = MazeViewQarrowOverlay;
 
 
 /***/ }),
@@ -7877,6 +7915,17 @@ module.exports = Robot;
 "use strict";
 module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 
+/***/ }),
+
+/***/ "./data/mazes/maze1.json":
+/*!*******************************!*\
+  !*** ./data/mazes/maze1.json ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]}}');
+
 /***/ })
 
 /******/ 	});
@@ -7906,6 +7955,18 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			for(var key in definition) {
+/******/ 				if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 					Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
@@ -7916,6 +7977,11 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 				if (typeof window === 'object') return window;
 /******/ 			}
 /******/ 		})();
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -7936,10 +8002,13 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 		var document = __webpack_require__.g.document;
 /******/ 		if (!scriptUrl && document) {
 /******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src
+/******/ 				scriptUrl = document.currentScript.src;
 /******/ 			if (!scriptUrl) {
 /******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
+/******/ 				}
 /******/ 			}
 /******/ 		}
 /******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
@@ -7953,32 +8022,33 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-/*!********************************!*\
-  !*** ./src/js/main-exhibit.js ***!
-  \********************************/
-/* globals IMAGINARY, PIXI */
+/*!************************!*\
+  !*** ./src/js/main.js ***!
+  \************************/
+/* eslint-disable no-console */
+/* globals PIXI */
 __webpack_require__(/*! ../sass/default.scss */ "./src/sass/default.scss");
-__webpack_require__(/*! ../sass/exhibit.scss */ "./src/sass/exhibit.scss");
-__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
+__webpack_require__(/*! ../sass/desktop.scss */ "./src/sass/desktop.scss");
+
 const yaml = __webpack_require__(/*! js-yaml */ "./node_modules/js-yaml/index.js");
 const CfgLoader = __webpack_require__(/*! ./cfg-loader/cfg-loader */ "./src/js/cfg-loader/cfg-loader.js");
 const CfgReaderFetch = __webpack_require__(/*! ./cfg-loader/cfg-reader-fetch */ "./src/js/cfg-loader/cfg-reader-fetch.js");
-const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
 const showFatalError = __webpack_require__(/*! ./lib/show-fatal-error */ "./src/js/lib/show-fatal-error.js");
-const LangSwitcher = __webpack_require__(/*! ./lang-switcher */ "./src/js/lang-switcher.js");
-const Maze = __webpack_require__(/*! ./maze */ "./src/js/maze.js");
-const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
-const Robot = __webpack_require__(/*! ./robot */ "./src/js/robot.js");
-const QLearningAI = __webpack_require__(/*! ./qlearning-ai */ "./src/js/qlearning-ai.js");
-const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
-const ExhibitMazeEditorPalette = __webpack_require__(/*! ./exhibit/exhibit-maze-editor-palette */ "./src/js/exhibit/exhibit-maze-editor-palette.js");
-const MazeEditor = __webpack_require__(/*! ./editor/maze-editor */ "./src/js/editor/maze-editor.js");
-const MazeViewQvalueOverlay = __webpack_require__(/*! ./maze-view-qvalue-overlay */ "./src/js/maze-view-qvalue-overlay.js");
+__webpack_require__(/*! ./jquery-plugins/jquery.pointerclick */ "./src/js/jquery-plugins/jquery.pointerclick.js");
+const Maze = __webpack_require__(/*! ./maze.js */ "./src/js/maze.js");
+const Robot = __webpack_require__(/*! ./robot.js */ "./src/js/robot.js");
+const QLearningAI = __webpack_require__(/*! ./qlearning-ai.js */ "./src/js/qlearning-ai.js");
+const AITrainingView = __webpack_require__(/*! ./ai-training-view.js */ "./src/js/ai-training-view.js");
+const MazeViewQvalueOverlay = __webpack_require__(/*! ./maze-view-qvalue-overlay.js */ "./src/js/maze-view-qvalue-overlay.js");
+const MazeViewQarrowOverlay = __webpack_require__(/*! ./maze-view-qarrow-overlay.js */ "./src/js/maze-view-qarrow-overlay.js");
 const MazeViewPolicyOverlay = __webpack_require__(/*! ./maze-view-policy-overlay */ "./src/js/maze-view-policy-overlay.js");
-const AITrainingView = __webpack_require__(/*! ./ai-training-view */ "./src/js/ai-training-view.js");
-const ExploreExploitInteractive = __webpack_require__(/*! ./exhibit/interactive-explore-exploit */ "./src/js/exhibit/interactive-explore-exploit.js");
-const RewardsInteractive = __webpack_require__(/*! ./exhibit/interactive-rewards */ "./src/js/exhibit/interactive-rewards.js");
+const MazeEditor = __webpack_require__(/*! ./editor/maze-editor.js */ "./src/js/editor/maze-editor.js");
+const setupKeyControls = __webpack_require__(/*! ./keyboard-controller */ "./src/js/keyboard-controller.js");
+const maze1 = __webpack_require__(/*! ../../data/mazes/maze1.json */ "./data/mazes/maze1.json");
+const MazeEditorPalette = __webpack_require__(/*! ./editor/maze-editor-palette */ "./src/js/editor/maze-editor-palette.js");
 const ReactionController = __webpack_require__(/*! ./reaction-controller */ "./src/js/reaction-controller.js");
+const I18n = __webpack_require__(/*! ./exhibit/i18n */ "./src/js/exhibit/i18n.js");
+const { screenCoordinates } = __webpack_require__(/*! ./lib/pixi-helpers */ "./src/js/lib/pixi-helpers.js");
 
 const qs = new URLSearchParams(window.location.search);
 
@@ -7989,7 +8059,7 @@ cfgLoader.load([
   'config/items.yml',
   'config/i18n.yml',
   'config/default-settings.yml',
-  'settings-exhibit.yml',
+  'settings.yml',
 ])
   .catch((err) => {
     showFatalError('Error loading configuration', err);
@@ -7999,10 +8069,10 @@ cfgLoader.load([
   .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
     .then(() => config))
   .then(config => IMAGINARY.i18n.init({
-    queryStringVariable: 'lang',
-    translationsDirectory: 'tr',
-    defaultLanguage: 'en',
-  })
+      queryStringVariable: 'lang',
+      translationsDirectory: 'tr',
+      defaultLanguage: 'en',
+    })
     .then(() => {
       const languages = Object.keys(config.languages);
       return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
@@ -8018,21 +8088,11 @@ cfgLoader.load([
       console.error(err);
     }))
   .then((config) => {
-    const container = $('[data-component=rl2-exhibit]');
-    // eslint-disable-next-line no-unused-vars
-    const langSwitcher = new LangSwitcher(
-      container.find('#lang-switcher-container')[0],
-      { languages: config.languages },
-      code => I18n.setLanguage(code)
-    );
-
     const app = new PIXI.Application({
       width: 1920,
-      height: 1080,
-      backgroundColor: 0xffffff,
+      height: 1920,
+      backgroundColor: 0xf2f2f2,
     });
-
-    // CHAOS
     const textures = {};
     textures.robot = null;
     app.loader.add('robot', config.robot.texture);
@@ -8067,43 +8127,48 @@ cfgLoader.load([
       const robot = new Robot();
       maze.addRobot(robot);
       const ai = new QLearningAI(maze.robot);
-      setupKeyControls(robot);
+      setupKeyControls(maze.robot);
 
-      $('#pixi-app-container').append(app.view);
+      $('[data-component="app-container"]').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
-      mazeEditorPalette.events.on('action', (type) => {
-        if (type === 'reset-map') {
-          maze.copy(Maze.fromJSON(maze1));
-          maze.reset();
-          robot.reset();
-          ai.clear();
-        }
-      });
-
-      const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
+      const mazeEditorPalette = new MazeEditorPalette($('body'), config);
+      const mazeView = new MazeEditor($('body'), maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
-      mazeView.displayObject.width = 720;
-      mazeView.displayObject.height = 720;
-      mazeView.displayObject.x = 1080;
-      mazeView.displayObject.y = (1080 - 800) / 2;
+      mazeView.displayObject.width = 1920;
+      mazeView.displayObject.height = 1920;
+      mazeView.displayObject.x = 0;
+      mazeView.displayObject.y = 0;
 
-      const aiOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
-      mazeView.mazeView.addOverlay(aiOverlay.displayObject);
-      window.addEventListener('keydown', (ev) => {
-        if (ev.code === 'KeyD') {
-          aiOverlay.toggle();
-        }
-      });
+      // const qArrowOverlay = new MazeViewQarrowOverlay(mazeView.mazeView, ai);
+      // mazeView.mazeView.addOverlay(qArrowOverlay.displayObject);
+      // qArrowOverlay.show();
 
       const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
       mazeView.mazeView.addOverlay(policyOverlay.displayObject);
       policyOverlay.hide();
 
+      const qValueOverlay = new MazeViewQvalueOverlay(mazeView.mazeView, ai);
+      mazeView.mazeView.addOverlay(qValueOverlay.displayObject);
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyD') {
+          qValueOverlay.toggle();
+        }
+      });
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
+      const reactionContainer = $('<div></div>')
+        .addClass('reaction-container')
+        .appendTo($('body'));
+      const reactionController = new ReactionController(reactionContainer, config);
+      mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
+        const bounds = mazeView.mazeView.robotView.sprite.getBounds();
+        const [x, y] = screenCoordinates(app.view, bounds.x - bounds.width / 4, bounds.y - bounds.height / 2);
+        reactionController.launchReaction(animation.reaction, x, y);
+      });
+      window.pixiApp = app;
+
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
-      $('#training-ui').append(trainingView.$element);
+      $('.sidebar').append(trainingView.$element);
       trainingView.events
         .on('policy-show', () => {
           policyOverlay.show();
@@ -8111,46 +8176,19 @@ cfgLoader.load([
         .on('policy-hide', () => {
           policyOverlay.hide();
         });
-
-      const reactionController = new ReactionController($('body'), config);
-      mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
-        const bounds = mazeView.mazeView.robotView.sprite.getBounds();
-        reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);
+      window.addEventListener('keydown', (ev) => {
+        if (ev.code === 'KeyQ') {
+          policyOverlay.toggle();
+        }
       });
-
-      const exploreExploitInteractive = new ExploreExploitInteractive(config, textures);
-      app.stage.addChild(exploreExploitInteractive.view.displayObject);
-      exploreExploitInteractive.view.displayObject.width = 480;
-      exploreExploitInteractive.view.displayObject.height = (480 / 8) * 2;
-      exploreExploitInteractive.view.displayObject.x = 20.25;
-      exploreExploitInteractive.view.displayObject.y = 850.25;
-      app.ticker.add(time => exploreExploitInteractive.animate(time));
-      $('#explore-exploit-ui').append(exploreExploitInteractive.ui.$element);
-
-      const rewardsInteractive = new RewardsInteractive(config, textures);
-      app.stage.addChild(rewardsInteractive.view.displayObject);
-      rewardsInteractive.view.displayObject.width = 480;
-      rewardsInteractive.view.displayObject.height = (480 / 8);
-      rewardsInteractive.view.displayObject.x = 20.25;
-      rewardsInteractive.view.displayObject.y = 500.25;
-      app.ticker.add(time => rewardsInteractive.animate(time));
-      $('#rewards-bar').append(rewardsInteractive.$barContainer);
-      $('#rewards-ui').append(rewardsInteractive.ui.$element);
 
       // Refresh language
       I18n.setLanguage(I18n.getLanguage());
     });
   });
 
-// Disable context menu on long touch
-$(window).on('contextmenu', (event) => {
-  if (event.button !== 2 && !(event.clientX === event.clientY === 1)) {
-    event.preventDefault();
-  }
-});
-
 })();
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.ec581504059f678e9fbc.js.map
+//# sourceMappingURL=default.da50e26d8b7844befd15.js.map

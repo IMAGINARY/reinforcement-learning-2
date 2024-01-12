@@ -1,61 +1,6 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./data/mazes/explore-exploit.json":
-/*!*****************************************!*\
-  !*** ./data/mazes/explore-exploit.json ***!
-  \*****************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,1,1],[1,1,7,1,1,1,7,3]]}}');
-
-/***/ }),
-
-/***/ "./data/mazes/maze1.json":
-/*!*******************************!*\
-  !*** ./data/mazes/maze1.json ***!
-  \*******************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]}}');
-
-/***/ }),
-
-/***/ "./data/mazes/rewards.json":
-/*!*********************************!*\
-  !*** ./data/mazes/rewards.json ***!
-  \*********************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"map":{"width":8,"height":1,"cells":[[1,1,5,5,1,4,1,3]]},"items":[{"type":"candy","x":2,"y":0},{"type":"candy","x":3,"y":0}]}');
-
-/***/ }),
-
-/***/ "./data/training/explore-exploit.json":
-/*!********************************************!*\
-  !*** ./data/training/explore-exploit.json ***!
-  \********************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"q":[[{"n":0,"s":-9,"e":41,"w":0},{"n":0,"s":-9,"e":42,"w":38},{"n":0,"s":-11,"e":43,"w":-9},{"n":0,"s":44,"e":42,"w":42},{"n":0,"s":45,"e":47,"w":-1},{"n":0,"s":46,"e":48,"w":42},{"n":0,"s":45,"e":49,"w":47},{"n":0,"s":50,"e":0,"w":-1}],[{"n":-10,"s":0,"e":40,"w":0},{"n":41,"s":0,"e":-11,"w":39},{"n":-7,"s":0,"e":-6,"w":-10},{"n":-6,"s":0,"e":45,"w":-8},{"n":42,"s":0,"e":46,"w":44},{"n":47,"s":0,"e":-5,"w":-4},{"n":-1,"s":0,"e":50,"w":-3},{"n":0,"s":0,"e":0,"w":0}]]}');
-
-/***/ }),
-
-/***/ "./data/training/rewards.json":
-/*!************************************!*\
-  !*** ./data/training/rewards.json ***!
-  \************************************/
-/***/ ((module) => {
-
-"use strict";
-module.exports = JSON.parse('{"q":[[{"n":0,"s":0,"e":41.599999999999994,"w":0},{"n":0,"s":0,"e":42.599999999999994,"w":40.599999999999994},{"n":0,"s":0,"e":42.8,"w":-8.2},{"n":0,"s":0,"e":43,"w":42.599999999999994},{"n":0,"s":0,"e":44,"w":42.8},{"n":0,"s":0,"e":49,"w":-1},{"n":0,"s":0,"e":50,"w":-6},{"n":0,"s":0,"e":0,"w":0}]]}');
-
-/***/ }),
-
 /***/ "./node_modules/events/events.js":
 /*!***************************************!*\
   !*** ./node_modules/events/events.js ***!
@@ -3643,7 +3588,7 @@ module.exports = __webpack_require__(/*! ./json */ "./node_modules/js-yaml/lib/s
 
 
 
-module.exports = __webpack_require__(/*! ./core */ "./node_modules/js-yaml/lib/schema/core.js").extend({
+module.exports = (__webpack_require__(/*! ./core */ "./node_modules/js-yaml/lib/schema/core.js").extend)({
   implicit: [
     __webpack_require__(/*! ../type/timestamp */ "./node_modules/js-yaml/lib/type/timestamp.js"),
     __webpack_require__(/*! ../type/merge */ "./node_modules/js-yaml/lib/type/merge.js")
@@ -3705,7 +3650,7 @@ module.exports = new Schema({
 
 
 
-module.exports = __webpack_require__(/*! ./failsafe */ "./node_modules/js-yaml/lib/schema/failsafe.js").extend({
+module.exports = (__webpack_require__(/*! ./failsafe */ "./node_modules/js-yaml/lib/schema/failsafe.js").extend)({
   implicit: [
     __webpack_require__(/*! ../type/null */ "./node_modules/js-yaml/lib/type/null.js"),
     __webpack_require__(/*! ../type/bool */ "./node_modules/js-yaml/lib/type/bool.js"),
@@ -7882,6 +7827,61 @@ module.exports = Robot;
 "use strict";
 module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 
+/***/ }),
+
+/***/ "./data/mazes/explore-exploit.json":
+/*!*****************************************!*\
+  !*** ./data/mazes/explore-exploit.json ***!
+  \*****************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"map":{"width":8,"height":2,"cells":[[1,1,1,1,7,1,1,1],[1,1,7,1,1,1,7,3]]}}');
+
+/***/ }),
+
+/***/ "./data/mazes/maze1.json":
+/*!*******************************!*\
+  !*** ./data/mazes/maze1.json ***!
+  \*******************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"map":{"width":8,"height":8,"cells":[[1,1,1,1,1,1,1,3],[2,2,2,1,2,2,2,2],[1,1,1,1,1,1,1,1],[2,2,1,2,2,2,2,1],[1,1,1,2,1,2,1,1],[1,2,1,2,1,1,1,2],[1,2,2,2,2,2,1,2],[1,1,1,1,1,1,1,1]]}}');
+
+/***/ }),
+
+/***/ "./data/mazes/rewards.json":
+/*!*********************************!*\
+  !*** ./data/mazes/rewards.json ***!
+  \*********************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"map":{"width":8,"height":1,"cells":[[1,1,5,5,1,4,1,3]]},"items":[{"type":"candy","x":2,"y":0},{"type":"candy","x":3,"y":0}]}');
+
+/***/ }),
+
+/***/ "./data/training/explore-exploit.json":
+/*!********************************************!*\
+  !*** ./data/training/explore-exploit.json ***!
+  \********************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"q":[[{"n":0,"s":-9,"e":41,"w":0},{"n":0,"s":-9,"e":42,"w":38},{"n":0,"s":-11,"e":43,"w":-9},{"n":0,"s":44,"e":42,"w":42},{"n":0,"s":45,"e":47,"w":-1},{"n":0,"s":46,"e":48,"w":42},{"n":0,"s":45,"e":49,"w":47},{"n":0,"s":50,"e":0,"w":-1}],[{"n":-10,"s":0,"e":40,"w":0},{"n":41,"s":0,"e":-11,"w":39},{"n":-7,"s":0,"e":-6,"w":-10},{"n":-6,"s":0,"e":45,"w":-8},{"n":42,"s":0,"e":46,"w":44},{"n":47,"s":0,"e":-5,"w":-4},{"n":-1,"s":0,"e":50,"w":-3},{"n":0,"s":0,"e":0,"w":0}]]}');
+
+/***/ }),
+
+/***/ "./data/training/rewards.json":
+/*!************************************!*\
+  !*** ./data/training/rewards.json ***!
+  \************************************/
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"q":[[{"n":0,"s":0,"e":41.599999999999994,"w":0},{"n":0,"s":0,"e":42.599999999999994,"w":40.599999999999994},{"n":0,"s":0,"e":42.8,"w":-8.2},{"n":0,"s":0,"e":43,"w":42.599999999999994},{"n":0,"s":0,"e":44,"w":42.8},{"n":0,"s":0,"e":49,"w":-1},{"n":0,"s":0,"e":50,"w":-6},{"n":0,"s":0,"e":0,"w":0}]]}');
+
 /***/ })
 
 /******/ 	});
@@ -7941,10 +7941,13 @@ module.exports = __webpack_require__.p + "2174451d87ee3f5a3181.svg";
 /******/ 		var document = __webpack_require__.g.document;
 /******/ 		if (!scriptUrl && document) {
 /******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src
+/******/ 				scriptUrl = document.currentScript.src;
 /******/ 			if (!scriptUrl) {
 /******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
+/******/ 				}
 /******/ 			}
 /******/ 		}
 /******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
@@ -8248,4 +8251,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=embed.c82eff712ba7ca0051e6.js.map
+//# sourceMappingURL=embed.991258fd8968ed8f2677.js.map

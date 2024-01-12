@@ -1,0 +1,397 @@
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 400;
+  background-color: #f2f2f2;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Roboto Condensed", sans-serif;
+  font-weight: 700;
+  color: #4a4a4a;
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.75em;
+}
+
+/********** Range Input Styles **********/
+/*Range Reset*/
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  width: 15rem;
+  padding-top: 0.25rem;
+}
+
+/* Removes default focus */
+input[type=range]:focus {
+  outline: none;
+}
+
+/***** Chrome, Safari, Opera and Edge Chromium styles *****/
+/* slider track */
+input[type=range]::-webkit-slider-runnable-track {
+  background-color: #000000;
+  border-radius: 0.5rem;
+  height: 0.5rem;
+}
+
+/* slider thumb */
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; /* Override default look */
+  appearance: none;
+  margin-top: -12px; /* Centers thumb on the track */
+  /*custom styles*/
+  background-color: #3feffb;
+  height: 1.75rem;
+  width: 1rem;
+}
+
+input[type=range]:focus::-webkit-slider-thumb {
+  border: 1px solid #000000;
+  outline: 3px solid #fff576;
+  outline-offset: 0;
+}
+
+/******** Firefox styles ********/
+/* slider track */
+input[type=range]::-moz-range-track {
+  background-color: #000000;
+  border-radius: 0.5rem;
+  height: 0.5rem;
+}
+
+/* slider thumb */
+input[type=range]::-moz-range-thumb {
+  border: none; /*Removes extra border that FF applies*/
+  border-radius: 0; /*Removes default border-radius that FF applies*/
+  /*custom styles*/
+  background-color: #3feffb;
+  height: 1.75rem;
+  width: 1rem;
+}
+
+input[type=range]:focus::-moz-range-thumb {
+  border: 1px solid #000000;
+  outline: 3px solid #fff576;
+  outline-offset: 0;
+}
+
+.fatal-error {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(92, 6, 6, 0.85);
+  background-image: url(790c86d2b123a19c0a4a.svg);
+  background-size: 100px 100px;
+  background-repeat: no-repeat;
+  background-position: center 50px;
+  padding-top: 160px;
+}
+.fatal-error .fatal-error-text {
+  color: white;
+  font-size: 20px;
+  text-align: center;
+  top: 100px;
+  left: 50%;
+  width: 600px;
+  margin: auto;
+  margin-bottom: 0.5em;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+.fatal-error .fatal-error-details {
+  color: white;
+  font-size: 16px;
+  text-align: center;
+  width: 600px;
+  margin: auto;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+html.with-fatal-error {
+  width: 100%;
+  height: 100%;
+}
+html.with-fatal-error body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+@keyframes fill-progress {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 100%;
+  }
+}
+.hold-button {
+  position: relative;
+  overflow: hidden;
+  background-color: white;
+  color: #000000;
+}
+.hold-button .progress {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  height: 100%;
+  background-color: #ffec02;
+}
+.hold-button .text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.hold-button.held .progress {
+  animation-name: fill-progress;
+  animation-play-state: running;
+}
+
+[data-component=app-container] canvas {
+  width: 100%;
+  height: auto;
+}
+
+.maze-view, .maze-editor {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.maze-editor-palette {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+.maze-editor-palette .maze-editor-palette-bar {
+  display: inline-block;
+  vertical-align: top;
+  padding: 4px;
+  margin-right: 5px;
+  background-color: white;
+}
+.maze-editor-palette .maze-editor-palette-bar .item .label {
+  display: none;
+}
+.maze-editor-palette .editor-palette-button {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  background-position: center center;
+  background-size: 60%;
+  background-repeat: no-repeat;
+  margin-bottom: 4px;
+  box-sizing: content-box;
+}
+.maze-editor-palette .editor-palette-button:last-child {
+  margin-bottom: 0;
+}
+.maze-editor-palette .editor-palette-button.active {
+  border: 2px solid black;
+  margin-top: -2px;
+  margin-left: -2px;
+  margin-right: -2px;
+  margin-bottom: 2px;
+}
+.maze-editor-palette .editor-palette-button.active:last-child {
+  margin-bottom: -2px;
+}
+.maze-editor-palette .editor-palette-button.editor-palette-button-tile {
+  background-size: 100%;
+}
+.maze-editor-palette .separator {
+  height: 6px;
+  border-bottom: 6px solid #f2f2f2;
+  margin-bottom: 4px;
+  margin-left: -4px;
+  margin-right: -4px;
+}
+.maze-editor-palette .editor-palette-button-tile-0 {
+  background-size: 60% 60%;
+}
+
+.btn-copy {
+  background-image: url(0ec8ada5826b33769714.svg);
+  background-repeat: no-repeat;
+  background-position: 6px 8px;
+  background-size: 1.2em 1.2em;
+  padding-left: 2em;
+}
+
+button.maze-browser-item {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: none;
+  padding: 0;
+}
+button.maze-browser-item canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: 3px solid #989898;
+}
+button.maze-browser-item.selected canvas {
+  border: 3px solid #000;
+}
+
+button.maze-browser-item-new {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background-color: #989898;
+}
+button.maze-browser-item-new:after {
+  content: "+";
+  display: block;
+  font-size: 4em;
+  line-height: 100%;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  color: white;
+}
+button.maze-browser-item-new.selected {
+  border: 3px solid #000;
+}
+
+.ai-training-view-button {
+  border-radius: 10px;
+  padding: 0.7em 1.4em;
+  border: 2px solid #000000;
+  min-width: 3em;
+  margin-right: 0.5em;
+  margin-bottom: 0.5em;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 55%;
+}
+.ai-training-view-button.round {
+  border-radius: 50%;
+  padding: 0;
+}
+.ai-training-view-button.active {
+  background-color: #ffec02;
+  border-color: #483b10;
+}
+.ai-training-view-button:focus, .ai-training-view-button:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+.ai-training-view-button-run {
+  width: 50px;
+  height: 50px;
+  margin-right: 1em;
+  background-position: calc(50% + 0.2em) center;
+}
+.ai-training-view-button-run.active {
+  background-position: center center;
+  background-color: transparent;
+}
+
+.ai-training-view-button-turbo {
+  width: 50px;
+  height: 50px;
+  background-position: calc(50% + 0.1em) center;
+}
+.ai-training-view-button-turbo.active {
+  border-color: #483b10;
+}
+
+.ai-training-view-button-view-policy {
+  width: 50px;
+  height: 50px;
+  background-size: 78%;
+  float: right;
+}
+.ai-training-view-button-view-policy.active {
+  border-color: #483b10;
+}
+
+.ai-training-view-button-step {
+  display: none;
+}
+
+.ai-training-view-button-clear {
+  width: 100%;
+  height: 2.5em;
+  border: 1px solid black;
+  font-size: 1rem;
+  margin: 1em 0;
+}
+
+.ai-training-view-slider .slider-text .slider-limit {
+  display: none;
+}
+
+.reaction {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  z-index: 200;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  pointer-events: none;
+  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out;
+}
+.reaction.fading {
+  opacity: 0 !important;
+  margin-top: -200px;
+}
+
+.reaction-lava {
+  opacity: 0.8;
+}
+
+.reaction-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10000;
+  pointer-events: none;
+}
+.slider {
+  margin-bottom: 1.4em;
+}
+.slider .slider-text {
+  margin-bottom: 0.1em;
+}
+
+/*# sourceMappingURL=default.ed8df91b6c8300ad8232.css.map*/

@@ -62,11 +62,13 @@ cfgLoader.load([
   .then((config) => {
     const container = $('[data-component=rl2-exhibit]');
     // eslint-disable-next-line no-unused-vars
-    const langSwitcher = new LangSwitcher(
-      container.find('#lang-switcher-container')[0],
-      { languages: config.languages },
-      code => I18n.setLanguage(code)
-    );
+    if (config.showLanguageSwitcher !== false) {
+      const langSwitcher = new LangSwitcher(
+        container.find('#lang-switcher-container')[0],
+        { languages: config.languages },
+        code => I18n.setLanguage(code)
+      );
+    }
 
     const app = new PIXI.Application({
       width: 1920,

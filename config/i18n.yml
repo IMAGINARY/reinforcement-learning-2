@@ -1,5 +1,7 @@
 # The default language to use.
 defaultLanguage: en
+# Whether to show the language switcher in the exhibit.
+showLanguageSwitcher: true
 # Languages that will be offered to the user in <iso code>: <language name> format.
 # Each of these should have a translation file in the tr directory.
 languages:

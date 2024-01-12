@@ -8023,11 +8023,13 @@ cfgLoader.load([
   .then((config) => {
     const container = $('[data-component=rl2-exhibit]');
     // eslint-disable-next-line no-unused-vars
-    const langSwitcher = new LangSwitcher(
-      container.find('#lang-switcher-container')[0],
-      { languages: config.languages },
-      code => I18n.setLanguage(code)
-    );
+    if (config.showLanguageSwitcher !== false) {
+      const langSwitcher = new LangSwitcher(
+        container.find('#lang-switcher-container')[0],
+        { languages: config.languages },
+        code => I18n.setLanguage(code)
+      );
+    }
 
     const app = new PIXI.Application({
       width: 1920,
@@ -8156,4 +8158,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.6e1dee9a0a1ef2c02b00.js.map
+//# sourceMappingURL=exhibit.a6eb1b50dca925a54eae.js.map

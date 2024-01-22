@@ -6,4 +6,8 @@ languages:
   en: English
   de: Deutsch
   nl: Nederlands
+<<<<<<< Updated upstream
   fr: Français
+=======
+  es: Español
+>>>>>>> Stashed changes

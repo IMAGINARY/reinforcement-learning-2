@@ -59,7 +59,7 @@ Developed by Eric Londaits for IMAGINARY gGmbH adapted from the original
 by Sebastián Uribe and Andreas Matt.
 
 Dutch translation by [Jarne Renders](https://github.com/JarneRenders).
-Spanish translation by Daniel Ramos.
+Spanish and French translations by Daniel Ramos.
 
 ## License
 

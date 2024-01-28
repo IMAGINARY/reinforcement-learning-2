@@ -1,0 +1,18 @@
+{
+  "panel-1": "Una IA que usa <strong>aprendizaje por refuerzo</strong> aprende por ensayo y error interactuando directamente con su entorno. Es parecido a como los humanos y animales aprenden.",
+  "panel-2": "La IA descubre acciones que tienen una <strong>recompensa</strong> positiva (alcanzando la salida) o negativa (pisando la lava), e intenta encontrar una sucesión de acciones que maximiza la recompensa total.",
+  "panel-3": "La IA tiene que <strong>explotar</strong> las mejores acciones que ha aprendido, pero también necesita <strong>explorar</strong> otras opciones para encontrar quizá mayores recompensas y adaptarse así a un entorno que cambia.",
+  "panel-4": "Puedes <strong>dibujar tu propio laberinto</strong> y el robot aprederá poco a poco a encontrar la salida y evitar las zonas peligrosas. Experimenta con dejar recompensas adicionales en el camino para reforzar ciertas rutas.",
+  "ai-training-view-slider-exploration-rate-limit-min": "Explotar",
+  "ai-training-view-slider-exploration-rate-limit-max": "Explorar",
+  "ai-training-view-button-clear": "Reiniciar entrenamiento",
+  "editor-palette-button-tile-floor": "Suelo",
+  "editor-palette-button-tile-wall": "Muro",
+  "editor-palette-button-tile-lava": "Lava",
+  "editor-palette-button-tile-exit": "Salida",
+  "editor-palette-button-tile-candy": "Caramelo",
+  "editor-palette-button-tile-cone": "Cono de tráfico",
+  "editor-palette-button-tile-pit": "Agujero",
+  "editor-palette-button-action-reset-map": "Reiniciar laberinto",
+  "rewards-bar-label": "Recompensas"
+}

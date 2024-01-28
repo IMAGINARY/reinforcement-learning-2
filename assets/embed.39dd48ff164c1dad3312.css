@@ -556,6 +556,7 @@ button.maze-browser-item-new.selected {
   margin-left: -0.25em;
   display: inline-block;
   font-size: 48px;
+  line-height: 1;
   padding: 0.1em 0.2em;
 }
 
@@ -861,4 +862,4 @@ body {
   opacity: 0.8;
 }
 
-/*# sourceMappingURL=embed.3211878c37e91dc99599.css.map*/
+/*# sourceMappingURL=embed.39dd48ff164c1dad3312.css.map*/

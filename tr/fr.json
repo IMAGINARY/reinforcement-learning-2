@@ -1,5 +1,5 @@
 {
-  "panel-1": "Une IA qui utilise l'<strong>apprentissage par renforcement</strong> apprend par essai et erreur en interagissant directement avec son environnement. Cette stratégie est similaire à la façon dont les humains et les animaux apprennent.",
+  "panel-1": "Une IA qui utilise l'<br><strong>Apprentissage par<br>Renforcement</strong><br>apprend par essai et erreur en interagissant directement avec son environnement. Cette stratégie est similaire à la façon dont les humains et les animaux apprennent.",
   "panel-2": "L'IA découvre les actions qui lui procurent une <strong>récompense</strong> positive (p.ex. atteindre la sortie) ou négative (p.ex. marcher sur de la lave). Elle essaie de trouver une suite d'actions qui maximise la récompense totale.",
   "panel-3": "L'IA doit <strong>exploiter</strong> les meilleures actions qu'elle a apprises mais elle doit également <strong>explorer</strong> d'autres options pour trouver des récompenses éventuellement plus élevées et s'adapter à un environnement changeant.",
   "panel-4": "<strong>Dessinez votre propre labyrinthe</strong> et le robot apprendra petit à petit à trouver la sortie et à éviter les zones dangereuses. Essayez de laisser des récompenses supplémentaires sur son chemin pour renforcer certains itinéraires.",

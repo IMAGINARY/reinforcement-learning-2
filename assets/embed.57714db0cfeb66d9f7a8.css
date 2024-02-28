@@ -483,7 +483,7 @@ button.maze-browser-item-new.selected {
 }
 .rl2-exhibit #explore-exploit-ui {
   position: absolute;
-  bottom: 20px;
+  bottom: -15px;
 }
 .rl2-exhibit #rewards-bar {
   position: absolute;
@@ -526,7 +526,7 @@ button.maze-browser-item-new.selected {
 }
 
 #panel-3 {
-  top: 690px;
+  top: 668px;
 }
 
 #panel-4 {
@@ -563,13 +563,17 @@ button.maze-browser-item-new.selected {
 #panel-4 .panel-text {
   margin-top: 0.5em;
 }
+#panel-4 .ai-training-view-slider-exploration-rate {
+  margin-top: 28px;
+}
 
 .ai-training-view-slider-exploration-rate {
   display: inline-block;
   position: relative;
   width: 13em;
-  height: 2.6em;
+  height: 4.4em;
   margin: 0 1.5em;
+  vertical-align: top;
 }
 .ai-training-view-slider-exploration-rate .slider-text label {
   display: none;
@@ -577,6 +581,17 @@ button.maze-browser-item-new.selected {
 .ai-training-view-slider-exploration-rate .slider-text .slider-limit {
   display: block;
   position: absolute;
+  background-repeat: no-repeat;
+  background-size: 1.6em;
+  background-position: center bottom;
+  padding-bottom: 1.8em;
+}
+.ai-training-view-slider-exploration-rate .slider-text .slider-limit.slider-limit-min {
+  background-image: url(3b7c50e3e5653e7ee161.svg);
+  background-position: center 1.7em;
+}
+.ai-training-view-slider-exploration-rate .slider-text .slider-limit.slider-limit-max {
+  background-image: url(900e4c99f95e4f75882a.svg);
 }
 .ai-training-view-slider-exploration-rate .slider-text .slider-limit-min {
   left: 0;
@@ -759,5 +774,107 @@ html, body {
   right: 10px;
   bottom: 10px;
 }
+body {
+  background-color: white;
+}
 
-/*# sourceMappingURL=exhibit.c89d3e67bde154a938e4.css.map*/
+.embed-app {
+  margin-left: 180px;
+}
+
+.no-palette .embed-app {
+  margin-left: 0;
+}
+
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+}
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button.active {
+  width: 46px;
+  height: 46px;
+  outline-width: 4px;
+  margin-top: -3px;
+  margin-left: -3px;
+  margin-bottom: 5px;
+}
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .item .label {
+  width: 7.8em;
+  left: 55px;
+  top: 12px;
+}
+.embed-palette .maze-editor-palette .editor-palette-button-action-reset-map {
+  width: 160px;
+  margin-top: 0.4em;
+}
+
+.embed-training {
+  margin-left: 190px;
+  margin-top: -1em;
+}
+.embed-training .ai-training-view-button {
+  margin-right: 0.5em;
+  margin-top: 1em;
+}
+.embed-training .ai-training-view-button-clear {
+  width: 160px;
+}
+.embed-training .ai-training-view-button-run {
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-turbo {
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-step {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-view-policy {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  float: none;
+}
+.embed-training .ai-training-view-slider-exploration-rate {
+  margin: 1em;
+  width: 12em;
+}
+
+.no-palette .embed-training {
+  margin-left: 10px;
+}
+
+#rewards-bar {
+  margin-left: 10px;
+}
+#rewards-bar .bar-container .label {
+  font-size: 1.1em;
+}
+#rewards-bar .bar-container .progress {
+  width: 400px;
+}
+
+.reaction {
+  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform-origin: center center;
+  margin: 25px 0 0 170px;
+}
+.reaction.fading {
+  opacity: 0 !important;
+  margin-top: 25px;
+  transform: scale(1.5);
+}
+
+.no-palette .reaction {
+  margin-left: -10px;
+}
+
+.reaction-lava {
+  opacity: 0.8;
+}
+
+/*# sourceMappingURL=embed.57714db0cfeb66d9f7a8.css.map*/

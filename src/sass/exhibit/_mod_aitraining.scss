@@ -2,8 +2,11 @@
   display: inline-block;
   position: relative;
   width: 13em;
-  height: 2.6em;
+  height: 4.4em;
   margin: 0 1.5em;
+  vertical-align: top;
+
+
   .slider-text {
     label {
       display: none;
@@ -12,6 +15,19 @@
     .slider-limit {
       display: block;
       position: absolute;
+      background-repeat: no-repeat;
+      background-size: 1.6em;
+      background-position: center bottom;
+      padding-bottom: 1.8em;
+
+      &.slider-limit-min {
+        background-image: url('../../static/icons/exploit-arrow.svg');
+        background-position: center 1.7em;
+      }
+
+      &.slider-limit-max {
+        background-image: url('../../static/icons/explore-dice.svg');
+      }
     }
 
     .slider-limit-min {

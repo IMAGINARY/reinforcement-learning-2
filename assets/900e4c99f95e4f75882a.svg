@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="b" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 36.344">
+  <g id="c" data-name="Layer 1">
+    <g>
+      <g>
+        <polygon points="16 18.172 1 9.586 16 1 31 9.586 16 18.172" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <g>
+          <ellipse cx="16.776" cy="4.949" rx="2.139" ry="1.224" stroke-width="0"/>
+          <ellipse cx="12.523" cy="7.383" rx="2.139" ry="1.224" stroke-width="0"/>
+          <ellipse cx="8.27" cy="9.817" rx="2.139" ry="1.224" stroke-width="0"/>
+          <ellipse cx="24.101" cy="9.142" rx="2.139" ry="1.224" stroke-width="0"/>
+          <ellipse cx="19.848" cy="11.576" rx="2.139" ry="1.224" stroke-width="0"/>
+          <ellipse cx="15.596" cy="14.01" rx="2.139" ry="1.224" stroke-width="0"/>
+        </g>
+      </g>
+      <g>
+        <polygon points="16 35.344 1 26.758 1 9.586 16 18.172 16 35.344" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <g>
+          <ellipse cx="4.837" cy="15.287" rx="1.232" ry="2.125" transform="translate(-7.077 4.556) rotate(-30.431)" stroke-width="0"/>
+          <ellipse cx="12.163" cy="29.217" rx="1.232" ry="2.125" transform="translate(-13.123 10.185) rotate(-30.431)" stroke-width="0"/>
+        </g>
+      </g>
+      <g>
+        <polygon points="31 26.758 16 35.344 16 18.172 31 9.586 31 26.758" fill="#fff" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <g>
+          <ellipse cx="19.837" cy="19.48" rx="2.125" ry="1.232" transform="translate(-7.007 26.718) rotate(-59.569)" stroke-width="0"/>
+          <ellipse cx="19.837" cy="29.217" rx="2.125" ry="1.232" transform="translate(-15.402 31.523) rotate(-59.569)" stroke-width="0"/>
+          <ellipse cx="27.163" cy="15.287" rx="2.125" ry="1.232" transform="translate(.224 30.965) rotate(-59.569)" stroke-width="0"/>
+          <ellipse cx="27.163" cy="25.024" rx="2.125" ry="1.232" transform="translate(-8.172 35.77) rotate(-59.569)" stroke-width="0"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

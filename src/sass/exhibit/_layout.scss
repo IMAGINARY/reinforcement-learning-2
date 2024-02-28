@@ -50,7 +50,7 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   #explore-exploit-ui {
     position: absolute;
-    bottom: 20px;
+    bottom: -15px;
   }
 
   #rewards-bar {
@@ -102,7 +102,7 @@ $panel-lg-width: ($viewport-inner-width - $panel-gutter-lg) * 0.625;
 }
 
 #panel-3 {
-  top: $viewport-padding + ($panel-title-height + $panel-gutter) + ($panel-sm-height + $panel-gutter);
+  top: $viewport-padding + ($panel-title-height + $panel-gutter) + ($panel-sm-height + $panel-gutter) - 22px;
 }
 
 #panel-4 {

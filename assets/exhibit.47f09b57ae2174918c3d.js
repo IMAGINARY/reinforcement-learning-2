@@ -8128,7 +8128,7 @@ cfgLoader.load([
       exploreExploitInteractive.view.displayObject.width = 480;
       exploreExploitInteractive.view.displayObject.height = (480 / 8) * 2;
       exploreExploitInteractive.view.displayObject.x = 20.25;
-      exploreExploitInteractive.view.displayObject.y = 850.25;
+      exploreExploitInteractive.view.displayObject.y = 820.25;
       app.ticker.add(time => exploreExploitInteractive.animate(time));
       $('#explore-exploit-ui').append(exploreExploitInteractive.ui.$element);
 
@@ -8158,4 +8158,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.a6eb1b50dca925a54eae.js.map
+//# sourceMappingURL=exhibit.47f09b57ae2174918c3d.js.map

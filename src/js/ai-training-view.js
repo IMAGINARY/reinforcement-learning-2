@@ -3,9 +3,10 @@ const RobotView = require('./robot-view');
 const createHoldButton = require('./hold-button');
 
 class AITrainingView {
-  constructor(ai, robotView) {
+  constructor(ai, robotView, options = {}) {
     this.ai = ai;
     this.robotView = robotView;
+    this.options = { ...AITrainingView.defaultOptions, ...options };
     this.running = false;
     this.turboDown = false;
     this.timer = 0;
@@ -23,10 +24,10 @@ class AITrainingView {
       .addClass('ai-training-view');
 
     this.$runButton = this.buildButton({
-        id: 'run',
-        icon: 'static/fa/play-solid.svg',
-        title: 'Run / Pause',
-      })
+      id: 'run',
+      icon: 'static/fa/play-solid.svg',
+      title: 'Run / Pause',
+    })
       .on('i.pointerclick', () => {
         if (this.running) {
           this.$runButton.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
@@ -43,10 +44,10 @@ class AITrainingView {
       .appendTo(this.$element);
 
     this.$turboButton = this.buildButton({
-        id: 'turbo',
-        icon: 'static/fa/forward-solid.svg',
-        title: 'Hold to speed up',
-      })
+      id: 'turbo',
+      icon: 'static/fa/forward-solid.svg',
+      title: 'Hold to speed up',
+    })
       .on('i.pointerdown', () => {
         this.$turboButton.addClass('active');
         this.robotView.speed = RobotView.Speed.TURBO;
@@ -63,10 +64,10 @@ class AITrainingView {
       .appendTo(this.$element);
 
     this.$stepButton = this.buildButton({
-        id: 'step',
-        icon: 'static/fa/step-forward-solid.svg',
-        title: 'Step',
-      })
+      id: 'step',
+      icon: 'static/fa/step-forward-solid.svg',
+      title: 'Step',
+    })
       .on('i.pointerclick', () => {
         if (this.robotIdle) {
           this.robotIdle = false;
@@ -75,20 +76,22 @@ class AITrainingView {
       })
       .appendTo(this.$element);
 
-    this.$viewPolicyButton = this.buildButton({
+    if (this.options.showViewPolicyButton) {
+      this.$viewPolicyButton = this.buildButton({
         id: 'view-policy',
         icon: 'static/icons/eye-regular.svg',
         title: 'View Policy',
       })
-      .on('i.pointerdown', () => {
-        this.$viewPolicyButton.addClass('active');
-        this.events.emit('policy-show');
-      })
-      .on('i.pointerup', () => {
-        this.$viewPolicyButton.removeClass('active');
-        this.events.emit('policy-hide');
-      })
-      .appendTo(this.$element);
+        .on('i.pointerdown', () => {
+          this.$viewPolicyButton.addClass('active');
+          this.events.emit('policy-show');
+        })
+        .on('i.pointerup', () => {
+          this.$viewPolicyButton.removeClass('active');
+          this.events.emit('policy-hide');
+        })
+        .appendTo(this.$element);
+    }
 
     this.$explorationRateSlider = this.buildSlider({
       id: 'exploration-rate',
@@ -142,6 +145,7 @@ class AITrainingView {
       });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildButton(props) {
     const button = $('<button></button>')
       .attr({
@@ -167,6 +171,7 @@ class AITrainingView {
     return button;
   }
 
+  // eslint-disable-next-line class-methods-use-this
   buildSlider(props) {
     const {
       id, title, options, initialValue, changeCallback,
@@ -204,7 +209,7 @@ class AITrainingView {
         .appendTo($text);
     }
 
-    const $exploreSlider = $('<input type="range"></input>')
+    const $exploreSlider = $('<input type="range">')
       .addClass('form-control-range')
       .attr(options)
       .on('change', () => {
@@ -217,5 +222,9 @@ class AITrainingView {
     return $element;
   }
 }
+
+AITrainingView.defaultOptions = {
+  showViewPolicyButton: true,
+};
 
 module.exports = AITrainingView;

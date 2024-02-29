@@ -4,9 +4,10 @@ const MazeView = require('./maze-view.js');
 const ARROW_TEXTURE_SCALE = 0.25;
 
 class MazeViewPolicyOverlay {
-  constructor(mazeView, ai, arrowTexture) {
+  constructor(mazeView, ai, arrowTexture, options = {}) {
     this.view = mazeView;
     this.ai = ai;
+    this.options = { ...MazeViewPolicyOverlay.defaultOptions, ...options };
     this.arrowTexture = arrowTexture;
     this.fontSize = 22;
     this.padding = 18;
@@ -19,9 +20,16 @@ class MazeViewPolicyOverlay {
     this.arrows = [];
     this.texts = [];
 
-    this.createBackgrounds();
-    this.createArrows();
-    this.createTexts();
+    if (this.options.showBackgrounds) {
+      this.createBackgrounds();
+    }
+
+    if (this.options.showArrows) {
+      this.createArrows();
+    }
+    if (this.options.showText) {
+      this.createTexts();
+    }
 
     this.update();
 
@@ -86,9 +94,10 @@ class MazeViewPolicyOverlay {
     sprite.width = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
     sprite.height = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
     sprite.anchor.set(0.5, 1);
+    const yOffset = this.options.showText ? 0.35 : 0.5;
 
     sprite.x = Math.round(MazeView.TILE_SIZE * (x + 0.5));
-    sprite.y = Math.round(MazeView.TILE_SIZE * (y + 0.35));
+    sprite.y = Math.round(MazeView.TILE_SIZE * (y + yOffset));
     sprite.rotation = rotation;
 
     this.displayObject.addChild(sprite);
@@ -115,56 +124,103 @@ class MazeViewPolicyOverlay {
   createTexts() {
     const { height, width } = this.view.maze.map;
     const options = { fontFamily: 'Arial', fontSize: this.fontSize, align: 'center' };
+    const yOffset = this.options.showArrows
+      ? MazeView.TILE_SIZE - 1 * (this.fontSize + this.padding)
+      : 0.5 * (MazeView.TILE_SIZE - 1 * (this.fontSize));
 
     for (let y = 0; y < height; y += 1) {
       this.texts[y] = new Array(width);
       for (let x = 0; x < width; x += 1) {
         const text = new PIXI.Text('', options);
         text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
-        text.y = MazeView.TILE_SIZE * (y + 1) - (this.fontSize + this.padding);
+        text.y = MazeView.TILE_SIZE * y + yOffset;
         this.texts[y][x] = text;
         this.displayObject.addChild(text);
       }
     }
   }
 
+  showText(x, y, aString) {
+    if (!this.texts.length) {
+      return;
+    }
+    const text = this.texts[y][x];
+    text.text = aString;
+    text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+    text.visible = true;
+  }
+
+  clearText(x, y) {
+    if (!this.texts.length) {
+      return;
+    }
+    const text = this.texts[y][x];
+    text.visible = false;
+  }
+
+  showArrows(x, y, actions) {
+    if (!this.arrows.length) {
+      return;
+    }
+    const arrows = this.arrows[y][x];
+    // Get all the actions with the highest Q value
+    const maxQ = Math.max(...actions.map((([d, q]) => q)));
+    const bestActions = actions.filter(([, v]) => v === maxQ);
+    const bestActionDirections = bestActions.map(([d]) => d);
+    Object.keys(arrows).forEach((d) => {
+      arrows[d].visible = bestActionDirections.includes(d);
+    });
+  }
+
+  clearArrows(x, y) {
+    if (!this.arrows.length) {
+      return;
+    }
+    const arrows = this.arrows[y][x];
+    Object.keys(arrows).forEach((d) => {
+      arrows[d].visible = false;
+    });
+  }
+
+  showBackground(x, y) {
+    if (!this.backgrounds.length) {
+      return;
+    }
+    const background = this.backgrounds[y][x];
+    background.visible = true;
+  }
+
+  clearBackground(x, y) {
+    if (!this.backgrounds.length) {
+      return;
+    }
+    const background = this.backgrounds[y][x];
+    background.visible = false;
+  }
+
   update() {
     const { robot } = this.ai;
     const { maze } = robot;
+    const { height, width } = this.view.maze.map;
 
-    for (let y = 0; y < this.arrows.length; y += 1) {
-      for (let x = 0; x < this.arrows[y].length; x += 1) {
-        const background = this.backgrounds[y][x];
-        const arrows = this.arrows[y][x];
-        const text = this.texts[y][x];
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
         if (maze.isWalkable(x, y)) {
           const validActions = Object.entries(this.ai.q[y][x])
             .filter((([d]) => robot.availableDirectionsAt(x, y).includes(d)));
           if (validActions.length) {
-            // Get all the actions with the highest Q value
-            const maxQ = Math.max(...validActions.map((([d, q]) => q)));
-            const bestActions = validActions.filter(([, v]) => v === maxQ);
-            const bestActionDirections = bestActions.map(([d]) => d);
-            Object.keys(arrows).forEach((d) => {
-              arrows[d].visible = bestActionDirections.includes(d);
-            });
-            text.text = this.ai.v[y][x].toFixed(2);
-            text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
-            background.visible = true;
-            text.visible = true;
+            this.showBackground(x, y);
+            this.showArrows(x, y, validActions);
+            this.showText(x, y, this.ai.v[y][x].toFixed(2));
           } else {
-            background.visible = false;
-            text.visible = false;
-            Object.keys(arrows).forEach((d) => {
-              arrows[d].visible = false;
-            });
+            this.clearBackground(x, y);
+            this.clearArrows(x, y);
+            this.clearText(x, y);
           }
         } else {
-          background.visible = false;
-          text.visible = false;
-          Object.keys(arrows).forEach((d) => {
-            arrows[d].visible = false;
-          });
+          this.clearBackground(x, y);
+          this.clearText(x, y);
+          this.clearArrows(x, y);
         }
       }
     }
@@ -176,6 +232,12 @@ MazeViewPolicyOverlay.Angles = {
   e: Math.PI * 0.5,
   s: Math.PI,
   w: Math.PI * 1.5,
+};
+
+MazeViewPolicyOverlay.defaultOptions = {
+  showArrows: true,
+  showText: true,
+  showBackgrounds: true,
 };
 
 module.exports = MazeViewPolicyOverlay;

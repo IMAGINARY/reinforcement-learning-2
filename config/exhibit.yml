@@ -1,0 +1,12 @@
+panels:
+  editor:
+    # If true, the policy overlay will be visible all the time. This also hides the "View policy"
+    # button in the AI training panel.
+    policyOverlayAlwaysVisible: false
+    # If true, the policy overlay will show arrows to indicate the direction of the policy.
+    policyOverlayShowArrows: true
+    # If true, the policy overlay will show the value at the cell.
+    policyOverlayShowText: true
+    # If true, the policy overlay will show a background that partially obscures the tile
+    # underneath to make the text more readable.
+    policyOverlayShowBackground: true

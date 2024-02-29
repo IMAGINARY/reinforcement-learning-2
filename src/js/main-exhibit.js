@@ -30,6 +30,7 @@ cfgLoader.load([
   'config/robot.yml',
   'config/items.yml',
   'config/i18n.yml',
+  'config/exhibit.yml',
   'config/default-settings.yml',
   'settings-exhibit.yml',
 ])
@@ -140,13 +141,29 @@ cfgLoader.load([
         }
       });
 
-      const policyOverlay = new MazeViewPolicyOverlay(mazeView.mazeView, ai, textures.arrow);
+      const { policyOverlayAlwaysVisible } = config.panels.editor;
+      const policyOverlay = new MazeViewPolicyOverlay(
+        mazeView.mazeView,
+        ai,
+        textures.arrow,
+        {
+          showArrows: config?.panels?.editor?.policyOverlayShowArrows,
+          showText: config?.panels?.editor?.policyOverlayShowText,
+          showBackgrounds: config?.panels?.editor?.policyOverlayShowBackground,
+        }
+      );
       mazeView.mazeView.addOverlay(policyOverlay.displayObject);
-      policyOverlay.hide();
+      if (policyOverlayAlwaysVisible) {
+        policyOverlay.show();
+      } else {
+        policyOverlay.hide();
+      }
 
       app.ticker.add(time => mazeView.mazeView.animate(time));
 
-      const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView);
+      const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView, {
+        showViewPolicyButton: !policyOverlayAlwaysVisible,
+      });
       $('#training-ui').append(trainingView.$element);
       trainingView.events
         .on('policy-show', () => {

@@ -23,6 +23,7 @@ tileTypes:
     type: exit
     react: always
     reaction: 'static/openmoji/trophy.svg'
+    fixed: false
   4:
     name: Lava
     color: '#ff3333'

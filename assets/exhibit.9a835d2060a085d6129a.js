@@ -5126,6 +5126,9 @@ class MazeEditor {
         if (this.maze.startPosition[0] === x && this.maze.startPosition[1] === y) {
           return;
         }
+        if (this.placedTileIsFixed(x, y)) {
+          return;
+        }
         this.maze.removeItem(x, y);
         this.maze.map.set(x, y, tileType);
         if (this.config.tileTypes[tileType].item !== undefined) {
@@ -5206,6 +5209,11 @@ class MazeEditor {
         this.maze.reset();
       },
     };
+  }
+
+  placedTileIsFixed(x, y) {
+    const tileType = this.maze.map.get(x, y);
+    return this.config.tileTypes[tileType].fixed;
   }
 
   animate(time) {
@@ -8246,4 +8254,4 @@ $(window).on('contextmenu', (event) => {
 
 /******/ })()
 ;
-//# sourceMappingURL=exhibit.711aee75c553e4f2aba5.js.map
+//# sourceMappingURL=exhibit.9a835d2060a085d6129a.js.map

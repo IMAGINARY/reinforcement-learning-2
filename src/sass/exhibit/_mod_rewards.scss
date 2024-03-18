@@ -28,6 +28,7 @@
     .progress {
       display: inline-block;
       width: 300px;
+
       .progress-bar {
         height: 100%;
         transition: width .6s ease, background-color 1s;

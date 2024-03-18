@@ -17,6 +17,7 @@ $icon-size: 40px;
     background-position: center;
     background-image: url("../../static/fa-4/international.svg");
     pointer-events: all;
+
     &:focus {
       outline: none;
     }
@@ -37,7 +38,7 @@ $icon-size: 40px;
     position: absolute;
     right: -100%;
     bottom: 0 !important;
-    padding: 0.1em 0 0.2em 0;
+    padding: 0.1em 0 0.2em;
     margin: 0;
     background-color: white;
     border: 3px solid black;
@@ -46,10 +47,12 @@ $icon-size: 40px;
     &.visible {
       right: 50px !important;
     }
+
     li {
       display: block;
       padding: 0;
       margin: 0;
+
       button {
         display: block;
         width: 100%;

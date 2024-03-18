@@ -1,3 +1,5 @@
+@import "../colors";
+
 $button-spacing: 8px;
 
 .maze-editor-palette {
@@ -12,12 +14,9 @@ $button-spacing: 8px;
       &.active {
         border: 2px solid black;
         outline: 8px solid $c-yellow;
-        margin: 0;
         width: 70px;
         height: 70px;
-        margin-top: -5px;
-        margin-bottom: -5px + $button-spacing;
-        margin-left: -5px;
+        margin: -5px 0 -5px + $button-spacing -5px;
         z-index: 100;
         position: relative;
       }
@@ -25,6 +24,7 @@ $button-spacing: 8px;
 
     .item {
       position: relative;
+
       .label {
         display: block;
         position: absolute;
@@ -44,7 +44,7 @@ $button-spacing: 8px;
   background-color: white;
   background-size: contain;
   background-position: center center;
-  padding: 0.1em 0.1em;
+  padding: 0.1em;
   border-radius: 10px;
   text-align: center;
   margin-top: 1.7em;

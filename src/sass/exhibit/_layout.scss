@@ -1,12 +1,15 @@
 $viewport-width: 1920px;
 $viewport-height: 1080px;
 $viewport-padding: 20px;
-
 $panel-gutter: 40px;
 $panel-gutter-lg: 100px;
-
 $viewport-inner-height: $viewport-height - 2 * $viewport-padding;
 $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
+
+html, body {
+  padding: 0;
+  margin: 0;
+}
 
 .rl2-exhibit {
   width: $viewport-width;
@@ -37,6 +40,9 @@ $viewport-inner-width: $viewport-width - 2 * $viewport-padding;
 
   #lang-switcher-container {
     .lang-switcher {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
       z-index: 200;
     }
   }

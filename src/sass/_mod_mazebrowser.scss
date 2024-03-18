@@ -1,3 +1,5 @@
+@import "colors";
+
 button.maze-browser-item {
   display: block;
   width: 100%;
@@ -26,7 +28,8 @@ button.maze-browser-item-new {
   height: 100%;
   border: none;
   background-color: $c-gray;
-  &:after {
+
+  &::after {
     content: "+";
     display: block;
     font-size: 4em;
@@ -36,6 +39,7 @@ button.maze-browser-item-new {
     font-weight: bold;
     color: white;
   }
+
   &.selected {
     border: 3px solid #000;
   }

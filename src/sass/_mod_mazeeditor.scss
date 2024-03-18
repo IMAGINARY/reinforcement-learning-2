@@ -1,3 +1,5 @@
+@import "colors";
+
 .maze-editor-palette {
   position: absolute;
   top: 5px;
@@ -9,6 +11,7 @@
     padding: 4px;
     margin-right: 5px;
     background-color: white;
+
     .item {
       .label {
         display: none;
@@ -34,10 +37,7 @@
 
     &.active {
       border: 2px solid black;
-      margin-top: -2px;
-      margin-left: -2px;
-      margin-right: -2px;
-      margin-bottom: 2px;
+      margin: -2px -2px 2px;
 
       &:last-child {
         margin-bottom: -2px;

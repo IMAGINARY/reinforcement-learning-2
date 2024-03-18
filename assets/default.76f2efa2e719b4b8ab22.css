@@ -23,9 +23,8 @@ h2 {
 }
 
 /********** Range Input Styles **********/
-/*Range Reset*/
+/* Range Reset */
 input[type=range] {
-  -webkit-appearance: none;
   appearance: none;
   background: transparent;
   cursor: pointer;
@@ -47,11 +46,10 @@ input[type=range]::-webkit-slider-runnable-track {
 }
 
 /* slider thumb */
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
+input[type=range]::-webkit-slider-thumb { /* Override default look */
   appearance: none;
   margin-top: -12px; /* Centers thumb on the track */
-  /*custom styles*/
+  /* custom styles */
   background-color: #3feffb;
   height: 1.75rem;
   width: 1rem;
@@ -73,9 +71,9 @@ input[type=range]::-moz-range-track {
 
 /* slider thumb */
 input[type=range]::-moz-range-thumb {
-  border: none; /*Removes extra border that FF applies*/
-  border-radius: 0; /*Removes default border-radius that FF applies*/
-  /*custom styles*/
+  border: none; /* Removes extra border that FF applies */
+  border-radius: 0; /* Removes default border-radius that FF applies */
+  /* custom styles */
   background-color: #3feffb;
   height: 1.75rem;
   width: 1rem;
@@ -107,8 +105,7 @@ input[type=range]:focus::-moz-range-thumb {
   top: 100px;
   left: 50%;
   width: 600px;
-  margin: auto;
-  margin-bottom: 0.5em;
+  margin: auto auto 0.5em;
   padding-left: 15px;
   padding-right: 15px;
 }
@@ -217,10 +214,7 @@ html.with-fatal-error body {
 }
 .maze-editor-palette .editor-palette-button.active {
   border: 2px solid black;
-  margin-top: -2px;
-  margin-left: -2px;
-  margin-right: -2px;
-  margin-bottom: 2px;
+  margin: -2px -2px 2px;
 }
 .maze-editor-palette .editor-palette-button.active:last-child {
   margin-bottom: -2px;
@@ -272,7 +266,7 @@ button.maze-browser-item-new {
   border: none;
   background-color: #989898;
 }
-button.maze-browser-item-new:after {
+button.maze-browser-item-new::after {
   content: "+";
   display: block;
   font-size: 4em;
@@ -378,10 +372,7 @@ button.maze-browser-item-new.selected {
 
 .reaction-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   z-index: 10000;
@@ -394,4 +385,4 @@ button.maze-browser-item-new.selected {
   margin-bottom: 0.1em;
 }
 
-/*# sourceMappingURL=default.ed8df91b6c8300ad8232.css.map*/
+/*# sourceMappingURL=default.76f2efa2e719b4b8ab22.css.map*/

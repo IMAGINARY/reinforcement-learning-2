@@ -7,18 +7,4 @@
 @import "exhibit/mod_mazeeditor";
 @import "exhibit/mod_explore_exploit";
 @import "exhibit/mod_rewards";
-
-html, body {
-  padding: 0;
-  margin: 0;
-}
-
-.rl2-exhibit {
-  #lang-switcher-container .lang-switcher {
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-  }
-}
-
 @import "exhibit/theme_adaptations";

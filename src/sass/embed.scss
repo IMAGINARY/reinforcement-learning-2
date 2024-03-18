@@ -8,12 +8,6 @@ body {
   margin-left: 180px;
 }
 
-.no-palette {
-  .embed-app {
-    margin-left: 0;
-  }
-}
-
 .embed-palette {
   .maze-editor-palette {
     .maze-editor-palette-bar {
@@ -90,14 +84,9 @@ body {
   }
 }
 
-.no-palette {
-  .embed-training {
-    margin-left: 10px;
-  }
-}
-
 #rewards-bar {
   margin-left: 10px;
+
   .bar-container {
     .label {
       font-size: 1.1em;
@@ -122,13 +111,21 @@ body {
   }
 }
 
+.reaction-lava {
+  opacity: 0.8;
+}
+
 .no-palette {
+  .embed-app {
+    margin-left: 0;
+  }
+
+  .embed-training {
+    margin-left: 10px;
+  }
+
   .reaction {
     margin-left: -10px;
   }
-}
-
-.reaction-lava {
-  opacity: 0.8;
 }
 

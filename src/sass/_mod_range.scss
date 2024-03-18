@@ -1,7 +1,9 @@
+@import "colors";
+
 /********** Range Input Styles **********/
-/*Range Reset*/
+
+/* Range Reset */
 input[type="range"] {
-  -webkit-appearance: none;
   appearance: none;
   background: transparent;
   cursor: pointer;
@@ -15,6 +17,7 @@ input[type="range"]:focus {
 }
 
 /***** Chrome, Safari, Opera and Edge Chromium styles *****/
+
 /* slider track */
 input[type="range"]::-webkit-slider-runnable-track {
   background-color: $c-black;
@@ -23,12 +26,11 @@ input[type="range"]::-webkit-slider-runnable-track {
 }
 
 /* slider thumb */
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none; /* Override default look */
+input[type="range"]::-webkit-slider-thumb { /* Override default look */
   appearance: none;
   margin-top: -12px; /* Centers thumb on the track */
 
-  /*custom styles*/
+  /* custom styles */
   background-color: $c-turquoise;
   height: 1.75rem;
   width: 1rem;
@@ -41,6 +43,7 @@ input[type="range"]:focus::-webkit-slider-thumb {
 }
 
 /******** Firefox styles ********/
+
 /* slider track */
 input[type="range"]::-moz-range-track {
   background-color: $c-black;
@@ -50,10 +53,10 @@ input[type="range"]::-moz-range-track {
 
 /* slider thumb */
 input[type="range"]::-moz-range-thumb {
-  border: none; /*Removes extra border that FF applies*/
-  border-radius: 0; /*Removes default border-radius that FF applies*/
+  border: none; /* Removes extra border that FF applies */
+  border-radius: 0; /* Removes default border-radius that FF applies */
 
-  /*custom styles*/
+  /* custom styles */
   background-color: $c-turquoise;
   height: 1.75rem;
   width: 1rem;

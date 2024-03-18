@@ -40,7 +40,6 @@ class RewardBar {
     });
   }
 
-
   getProgress() {
     return this.progress;
   }

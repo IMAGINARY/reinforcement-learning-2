@@ -1,5 +1,5 @@
 /* globals PIXI */
-const MazeView = require('./maze-view.js');
+const MazeView = require('./maze-view');
 
 const ARROW_TEXTURE_SCALE = 0.25;
 
@@ -125,8 +125,8 @@ class MazeViewPolicyOverlay {
     const { height, width } = this.view.maze.map;
     const options = { fontFamily: 'Arial', fontSize: this.fontSize, align: 'center' };
     const yOffset = this.options.showArrows
-      ? MazeView.TILE_SIZE - 1 * (this.fontSize + this.padding)
-      : 0.5 * (MazeView.TILE_SIZE - 1 * (this.fontSize));
+      ? MazeView.TILE_SIZE - (this.fontSize + this.padding)
+      : 0.5 * (MazeView.TILE_SIZE - this.fontSize);
 
     for (let y = 0; y < height; y += 1) {
       this.texts[y] = new Array(width);
@@ -164,7 +164,7 @@ class MazeViewPolicyOverlay {
     }
     const arrows = this.arrows[y][x];
     // Get all the actions with the highest Q value
-    const maxQ = Math.max(...actions.map((([d, q]) => q)));
+    const maxQ = Math.max(...actions.map((([, q]) => q)));
     const bestActions = actions.filter(([, v]) => v === maxQ);
     const bestActionDirections = bestActions.map(([d]) => d);
     Object.keys(arrows).forEach((d) => {

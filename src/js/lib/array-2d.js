@@ -64,7 +64,7 @@ class Array2D {
   static isValid(a) {
     return Array.isArray(a) && a.length > 0
       && Array.isArray(a[0]) && a[0].length > 0
-      && a.every(row => row.length === a[0].length);
+      && a.every((row) => row.length === a[0].length);
   }
 
   /**
@@ -83,13 +83,13 @@ class Array2D {
    * Clones the 2D Array.
    *
    * Assumes the argument is a valid 2D Array. The items in the 2D
-   * array are not deep copied, only the outer and inner arrays.
+   * array are not deep-copied, only the outer and inner arrays.
    *
    * @param a {any[][]}
    * @return {any[][]}
    */
   static clone(a) {
-    return a.map(row => Array.from(row));
+    return a.map((row) => Array.from(row));
   }
 
   /**

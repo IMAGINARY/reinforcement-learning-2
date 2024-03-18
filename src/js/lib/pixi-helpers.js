@@ -7,6 +7,7 @@
  * @param { number } pixiY
  * @returns {[number, number]}
  */
+// eslint-disable-next-line import/prefer-default-export
 export function screenCoordinates(view, pixiX, pixiY) {
   const rect = view.getBoundingClientRect();
   const x = pixiX * (rect.width / view.width) + rect.left;

@@ -1,4 +1,7 @@
+/* eslint-disable no-console */
 /* globals IMAGINARY, PIXI */
+// noinspection JSUnresolvedReference
+
 require('../sass/default.scss');
 require('../sass/exhibit.scss');
 require('./jquery-plugins/jquery.pointerclick');
@@ -39,16 +42,16 @@ cfgLoader.load([
     console.error('Error loading configuration');
     console.error(err);
   })
-  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+  .then((config) => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
     .then(() => config))
-  .then(config => IMAGINARY.i18n.init({
+  .then((config) => IMAGINARY.i18n.init({
     queryStringVariable: 'lang',
     translationsDirectory: 'tr',
     defaultLanguage: 'en',
   })
     .then(() => {
       const languages = Object.keys(config.languages);
-      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+      return Promise.all(languages.map((code) => IMAGINARY.i18n.loadLang(code)));
     })
     .then(() => {
       const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
@@ -62,12 +65,12 @@ cfgLoader.load([
     }))
   .then((config) => {
     const container = $('[data-component=rl2-exhibit]');
-    // eslint-disable-next-line no-unused-vars
     if (config.showLanguageSwitcher !== false) {
+      // eslint-disable-next-line no-unused-vars
       const langSwitcher = new LangSwitcher(
         container.find('#lang-switcher-container')[0],
         { languages: config.languages },
-        code => I18n.setLanguage(code)
+        (code) => I18n.setLanguage(code)
       );
     }
 
@@ -116,7 +119,8 @@ cfgLoader.load([
 
       $('#pixi-app-container').append(app.view);
       // const mazeView = new MazeView(maze, config, textures);
-      const mazeEditorPalette = new ExhibitMazeEditorPalette($('#panel-4'), config);
+      const $panel4 = $('#panel-4');
+      const mazeEditorPalette = new ExhibitMazeEditorPalette($panel4, config);
       mazeEditorPalette.events.on('action', (type) => {
         if (type === 'reset-map') {
           maze.copy(Maze.fromJSON(maze1));
@@ -126,7 +130,7 @@ cfgLoader.load([
         }
       });
 
-      const mazeView = new MazeEditor($('#panel-4'), maze, mazeEditorPalette, config, textures);
+      const mazeView = new MazeEditor($panel4, maze, mazeEditorPalette, config, textures);
       app.stage.addChild(mazeView.displayObject);
       mazeView.displayObject.width = 720;
       mazeView.displayObject.height = 720;
@@ -159,7 +163,7 @@ cfgLoader.load([
         policyOverlay.hide();
       }
 
-      app.ticker.add(time => mazeView.mazeView.animate(time));
+      app.ticker.add((time) => mazeView.mazeView.animate(time));
 
       const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView, {
         showViewPolicyButton: !policyOverlayAlwaysVisible,
@@ -176,7 +180,11 @@ cfgLoader.load([
       const reactionController = new ReactionController($('body'), config);
       mazeView.mazeView.robotView.events.on('reactEnd', (animation) => {
         const bounds = mazeView.mazeView.robotView.sprite.getBounds();
-        reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);
+        reactionController.launchReaction(
+          animation.reaction,
+          bounds.x,
+          bounds.y - bounds.height / 2
+        );
       });
 
       const exploreExploitInteractive = new ExploreExploitInteractive(config, textures);
@@ -185,7 +193,7 @@ cfgLoader.load([
       exploreExploitInteractive.view.displayObject.height = (480 / 8) * 2;
       exploreExploitInteractive.view.displayObject.x = 20.25;
       exploreExploitInteractive.view.displayObject.y = 820.25;
-      app.ticker.add(time => exploreExploitInteractive.animate(time));
+      app.ticker.add((time) => exploreExploitInteractive.animate(time));
       $('#explore-exploit-ui').append(exploreExploitInteractive.ui.$element);
 
       const rewardsInteractive = new RewardsInteractive(config, textures);
@@ -194,7 +202,7 @@ cfgLoader.load([
       rewardsInteractive.view.displayObject.height = (480 / 8);
       rewardsInteractive.view.displayObject.x = 20.25;
       rewardsInteractive.view.displayObject.y = 500.25;
-      app.ticker.add(time => rewardsInteractive.animate(time));
+      app.ticker.add((time) => rewardsInteractive.animate(time));
       $('#rewards-bar').append(rewardsInteractive.$barContainer);
       $('#rewards-ui').append(rewardsInteractive.ui.$element);
 

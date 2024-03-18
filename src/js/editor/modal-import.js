@@ -1,4 +1,4 @@
-const Modal = require('../modal.js');
+const Modal = require('../modal');
 
 class ModalImport extends Modal {
   constructor() {

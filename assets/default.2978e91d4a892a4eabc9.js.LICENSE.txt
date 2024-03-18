@@ -286,11 +286,11 @@
 
 /*! ../internals/well-known-symbol */
 
-/*! ../maze-view.js */
+/*! ../maze */
 
-/*! ../maze.js */
+/*! ../maze-view */
 
-/*! ../modal.js */
+/*! ../modal */
 
 /*! ../modules/es.array.iterator */
 
@@ -344,7 +344,7 @@
 
 /*! ../type/timestamp */
 
-/*! ./ai-training-view.js */
+/*! ./ai-training-view */
 
 /*! ./cfg-loader/cfg-loader */
 
@@ -354,9 +354,9 @@
 
 /*! ./core */
 
-/*! ./editor/maze-editor-palette */
+/*! ./editor/maze-editor */
 
-/*! ./editor/maze-editor.js */
+/*! ./editor/maze-editor-palette */
 
 /*! ./exception */
 
@@ -364,7 +364,7 @@
 
 /*! ./failsafe */
 
-/*! ./grid.js */
+/*! ./grid */
 
 /*! ./hold-button */
 
@@ -375,8 +375,6 @@
 /*! ./keyboard-controller */
 
 /*! ./lib/array-2d */
-
-/*! ./lib/array-2d.js */
 
 /*! ./lib/dumper */
 
@@ -428,35 +426,33 @@
 
 /*! ./lib/type/timestamp */
 
-/*! ./maze-browser.js */
+/*! ./maze */
+
+/*! ./maze-browser */
+
+/*! ./maze-view */
 
 /*! ./maze-view-policy-overlay */
 
-/*! ./maze-view-qarrow-overlay.js */
+/*! ./maze-view-qvalue-overlay */
 
-/*! ./maze-view-qvalue-overlay.js */
+/*! ./modal-export */
 
-/*! ./maze-view.js */
+/*! ./modal-import */
 
-/*! ./maze.js */
+/*! ./modal-load */
 
-/*! ./modal-export.js */
+/*! ./modal-save */
 
-/*! ./modal-import.js */
+/*! ./object-store */
 
-/*! ./modal-load.js */
-
-/*! ./modal-save.js */
-
-/*! ./object-store.js */
-
-/*! ./qlearning-ai.js */
+/*! ./qlearning-ai */
 
 /*! ./reaction-controller */
 
-/*! ./robot-view */
+/*! ./robot */
 
-/*! ./robot.js */
+/*! ./robot-view */
 
 /*! ./schema/default */
 
@@ -636,10 +632,6 @@
 
 /*!********************************************!*\
   !*** ./src/js/maze-view-policy-overlay.js ***!
-  \********************************************/
-
-/*!********************************************!*\
-  !*** ./src/js/maze-view-qarrow-overlay.js ***!
   \********************************************/
 
 /*!********************************************!*\

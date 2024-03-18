@@ -84,7 +84,7 @@ class Robot {
 
   availableDirections() {
     return Object.keys(Robot.Directions)
-      .filter(dir => this.canMoveTo(
+      .filter((dir) => this.canMoveTo(
         this.x + Robot.Directions[dir][0],
         this.y + Robot.Directions[dir][1]
       ));
@@ -92,7 +92,7 @@ class Robot {
 
   availableDirectionsAt(x, y) {
     return Object.keys(Robot.Directions)
-      .filter(dir => this.canMoveFromTo(
+      .filter((dir) => this.canMoveFromTo(
         x,
         y,
         x + Robot.Directions[dir][0],

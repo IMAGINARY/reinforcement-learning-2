@@ -1,3 +1,7 @@
+/* globals IMAGINARY, PIXI */
+/* eslint-disable no-console */
+// noinspection JSUnresolvedReference
+
 require('../sass/default.scss');
 require('../sass/exhibit.scss');
 require('../sass/embed.scss');
@@ -8,7 +12,6 @@ const CfgReaderFetch = require('./cfg-loader/cfg-reader-fetch');
 const I18n = require('./exhibit/i18n');
 const showFatalError = require('./lib/show-fatal-error');
 const Maze = require('./maze');
-const maze1 = require('../../data/mazes/maze1.json');
 const Robot = require('./robot');
 const QLearningAI = require('./qlearning-ai');
 const setupKeyControls = require('./keyboard-controller');
@@ -17,11 +20,8 @@ const MazeEditor = require('./editor/maze-editor');
 const MazeViewQvalueOverlay = require('./maze-view-qvalue-overlay');
 const MazeViewPolicyOverlay = require('./maze-view-policy-overlay');
 const AITrainingView = require('./ai-training-view');
-const ExploreExploitInteractive = require('./exhibit/interactive-explore-exploit');
-const RewardsInteractive = require('./exhibit/interactive-rewards');
 const ReactionController = require('./reaction-controller');
 const MazeView = require('./maze-view');
-const training = require('../../data/training/explore-exploit.json');
 const RobotView = require('./robot-view');
 const RewardBar = require('./reward-bar');
 
@@ -67,16 +67,16 @@ cfgLoader.load(configFiles)
     console.error('Error loading configuration');
     console.error(err);
   })
-  .then(config => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+  .then((config) => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
     .then(() => config))
-  .then(config => IMAGINARY.i18n.init({
-      queryStringVariable: 'lang',
-      translationsDirectory: 'tr',
-      defaultLanguage: 'en',
-    })
+  .then((config) => IMAGINARY.i18n.init({
+    queryStringVariable: 'lang',
+    translationsDirectory: 'tr',
+    defaultLanguage: 'en',
+  })
     .then(() => {
       const languages = Object.keys(config.languages);
-      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+      return Promise.all(languages.map((code) => IMAGINARY.i18n.loadLang(code)));
     })
     .then(() => {
       const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
@@ -128,7 +128,7 @@ cfgLoader.load(configFiles)
       // The ugliest hack
       IMAGINARY.i18n.strings.de['ai-training-view-slider-exploration-rate-limit-min'] = 'Ausbeuten';
 
-      const maze = Maze.fromJSON({ map: config.map, items: config.mapItems } );
+      const maze = Maze.fromJSON({ map: config.map, items: config.mapItems });
       maze.config = config;
       const robot = new Robot();
       maze.addRobot(robot);
@@ -147,15 +147,14 @@ cfgLoader.load(configFiles)
       const mazeWidth = (mazeViewSize / 8) * maze.map.width;
       const mazeHeight = (mazeViewSize / 8) * maze.map.height;
       const appMargin = 10;
-      app.renderer.resize(mazeWidth + appMargin * 2, mazeHeight + appMargin * 2)
+      app.renderer.resize(mazeWidth + appMargin * 2, mazeHeight + appMargin * 2);
 
       const $rewardBarContainer = $('<div></div>').addClass('embed-reward-bar');
 
       $body
         .append($rewardBarContainer)
         .append($('<div></div>').addClass('embed-app')
-          .append(app.view)
-        );
+          .append(app.view));
 
       let topView;
       let mazeView;
@@ -185,7 +184,10 @@ cfgLoader.load(configFiles)
 
         topView = new MazeEditor(
           $('<div></div>').addClass('embed-maze').appendTo($body),
-          maze, mazeEditorPalette, config, textures
+          maze,
+          mazeEditorPalette,
+          config,
+          textures
         );
         mazeView = topView.mazeView;
       } else {
@@ -214,9 +216,9 @@ cfgLoader.load(configFiles)
         policyOverlay.show();
       }
 
-      app.ticker.add(time => topView.animate(time));
+      app.ticker.add((time) => topView.animate(time));
 
-      trainingView = new AITrainingView(ai, topView.getRobotView());
+      const trainingView = new AITrainingView(ai, topView.getRobotView());
       $('<div></div>')
         .addClass('embed-training')
         .appendTo($body)
@@ -238,7 +240,7 @@ cfgLoader.load(configFiles)
         step: trainingView.$stepButton,
         xr: trainingView.$explorationRateSlider,
         policy: trainingView.$viewPolicyButton,
-        "reset-map": null,
+        'reset-map': null,
         showqv: null,
       };
 
@@ -256,7 +258,11 @@ cfgLoader.load(configFiles)
       const reactionController = new ReactionController($body, config);
       topView.getRobotView().events.on('reactEnd', (animation) => {
         const bounds = topView.getRobotView().sprite.getBounds();
-        reactionController.launchReaction(animation.reaction, bounds.x, bounds.y - bounds.height / 2);
+        reactionController.launchReaction(
+          animation.reaction,
+          bounds.x,
+          bounds.y - bounds.height / 2
+        );
       });
 
       // Refresh language
@@ -274,9 +280,7 @@ cfgLoader.load(configFiles)
 
 // Disable context menu on long touch
 $(window).on('contextmenu', (event) => {
-  if (event.button !== 2 && !(event.clientX === event.clientY === 1)) {
+  if (event.button !== 2 && !(event.clientX === 1 && event.clientY === 1)) {
     event.preventDefault();
   }
 });
-
-

@@ -1,4 +1,5 @@
 /* globals IMAGINARY */
+// noinspection JSUnresolvedReference
 
 function getLanguage() {
   return IMAGINARY.i18n.getLang();
@@ -22,11 +23,9 @@ function init(config, initialLanguage) {
   })
     .then(() => {
       const languages = Object.keys(config.languages);
-      return Promise.all(languages.map(code => IMAGINARY.i18n.loadLang(code)));
+      return Promise.all(languages.map((code) => IMAGINARY.i18n.loadLang(code)));
     })
-    .then(() => {
-      return setLanguage(initialLanguage);
-    });
+    .then(() => setLanguage(initialLanguage));
 }
 
 module.exports = {

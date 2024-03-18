@@ -1,5 +1,5 @@
 /* globals PIXI */
-const MazeView = require('./maze-view.js');
+const MazeView = require('./maze-view');
 
 class MazeViewQarrowOverlay {
   constructor(mazeView, ai) {
@@ -17,7 +17,7 @@ class MazeViewQarrowOverlay {
     this.baseTriangle = new PIXI.Polygon([
       // x, y,
       0, 0,
-      -1 * this.width / 2, this.height,
+      -1 * (this.width / 2), this.height,
       this.width / 2, this.height,
     ]);
 
@@ -65,6 +65,8 @@ class MazeViewQarrowOverlay {
         return 0x0000ff;
       case 'w':
         return 0xff00ff;
+      default:
+        throw new Error('Invalid direction');
     }
   }
 
@@ -78,25 +80,35 @@ class MazeViewQarrowOverlay {
         return Math.PI;
       case 'w':
         return Math.PI * 1.5;
+      default:
+        throw new Error('Invalid direction');
     }
   }
 
   coordinates(direction, x, y) {
     switch (direction) {
       case 'n':
-        return [MazeView.TILE_SIZE * (x + 0.5),
-                MazeView.TILE_SIZE * y + this.padding];
+        return [
+          MazeView.TILE_SIZE * (x + 0.5),
+          MazeView.TILE_SIZE * y + this.padding,
+        ];
       case 's':
-        return [MazeView.TILE_SIZE * (x + 0.5),
-                MazeView.TILE_SIZE * (y + 1) - (this.padding)];
+        return [
+          MazeView.TILE_SIZE * (x + 0.5),
+          MazeView.TILE_SIZE * (y + 1) - (this.padding),
+        ];
       case 'e':
-        return [MazeView.TILE_SIZE * (x + 1) - (this.padding),
-                MazeView.TILE_SIZE * (y + 0.5)];
+        return [
+          MazeView.TILE_SIZE * (x + 1) - (this.padding),
+          MazeView.TILE_SIZE * (y + 0.5),
+        ];
       case 'w':
-        return [MazeView.TILE_SIZE * x + this.padding,
-                MazeView.TILE_SIZE * (y + 0.5)];
+        return [
+          MazeView.TILE_SIZE * x + this.padding,
+          MazeView.TILE_SIZE * (y + 0.5),
+        ];
       default:
-        break;
+        throw new Error('Invalid direction');
     }
   }
 
@@ -126,7 +138,9 @@ class MazeViewQarrowOverlay {
     for (let j = 0; j < height; j += 1) {
       this.arrows[j] = new Array(width);
       for (let i = 0; i < width; i += 1) {
-        this.arrows[j][i] = Object.fromEntries(directions.map(d => [d, this.createArrow(d, i, j)]));
+        this.arrows[j][i] = Object.fromEntries(
+          directions.map((d) => [d, this.createArrow(d, i, j)])
+        );
       }
     }
   }
@@ -135,9 +149,9 @@ class MazeViewQarrowOverlay {
     return this.ai.q[y][x][direction] > 0 ? this.green : this.red;
   }
 
-   arrowOpacity(x, y, direction) {
+  arrowOpacity(x, y, direction) {
     const bound = this.ai.q[y][x][direction] > 0 ? this.qUpperBound : this.qLowerBound;
-    return bound === 0 ? 0 : 1 - Math.pow(1 - this.ai.q[y][x][direction] / bound, 0.3);
+    return bound === 0 ? 0 : 1 - (1 - this.ai.q[y][x][direction] / bound) ** 0.3;
   }
 
   update() {
@@ -153,7 +167,11 @@ class MazeViewQarrowOverlay {
           const arrow = this.arrows[j][i][direction];
           if (maze.isWalkable(i, j) && robot.availableDirectionsAt(i, j).includes(direction)) {
             arrow.visible = true;
-            this.drawArrow(arrow, this.arrowColor(i, j, direction), this.arrowOpacity(i, j, direction));
+            this.drawArrow(
+              arrow,
+              this.arrowColor(i, j, direction),
+              this.arrowOpacity(i, j, direction)
+            );
           } else {
             arrow.visible = false;
           }

@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 class ReactionController {
   constructor(container, config) {
     this.container = container;

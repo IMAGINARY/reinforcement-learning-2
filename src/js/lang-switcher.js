@@ -29,6 +29,7 @@ class LangSwitcher {
       const item = document.createElement(('li'));
       const link = document.createElement('button');
       link.setAttribute('type', 'button');
+      // noinspection JSValidateTypes
       link.innerText = name;
       link.addEventListener('pointerdown', (ev) => {
         this.langChangeCallback(code);
@@ -42,7 +43,7 @@ class LangSwitcher {
 
     this.menu.style.bottom = `${this.menu.clientHeight * -1 - 10}px`;
 
-    window.document.addEventListener('pointerdown', (ev) => {
+    window.document.addEventListener('pointerdown', () => {
       if (this.menuVisible) {
         this.hideMenu();
       }

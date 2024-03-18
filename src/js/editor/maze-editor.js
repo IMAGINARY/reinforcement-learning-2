@@ -1,10 +1,12 @@
-const Maze = require('../maze.js');
-const MazeView = require('../maze-view.js');
-const ModalLoad = require('./modal-load.js');
-const ModalSave = require('./modal-save.js');
-const ModalExport = require('./modal-export.js');
-const ModalImport = require('./modal-import.js');
-const ObjectStore = require('./object-store.js');
+// noinspection JSUnresolvedReference
+
+const Maze = require('../maze');
+const MazeView = require('../maze-view');
+const ModalLoad = require('./modal-load');
+const ModalSave = require('./modal-save');
+const ModalExport = require('./modal-export');
+const ModalImport = require('./modal-import');
+const ObjectStore = require('./object-store');
 
 class MazeEditor {
   constructor($element, maze, palette, config, textures) {
@@ -109,6 +111,7 @@ class MazeEditor {
       },
       export: () => {
         const modal = new ModalExport(JSON.stringify(this.maze));
+        // noinspection JSIgnoredPromiseFromCall
         modal.show();
       },
       reset: () => {

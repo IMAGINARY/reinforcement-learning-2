@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 const EventEmitter = require('events');
 
 class MazeEditorPalette {
@@ -59,8 +61,9 @@ class MazeEditorPalette {
           .attr('data-i18n-text', `editor-palette-button-tile-${id}`)));
   }
 
+  // noinspection JSUnusedGlobalSymbols
   buildToolButtons() {
-    return MazeEditorPalette.Tools.map(tool => $('<button></button>')
+    return MazeEditorPalette.Tools.map((tool) => $('<button></button>')
       .attr({
         type: 'button',
         title: tool.title,
@@ -84,6 +87,7 @@ class MazeEditorPalette {
       }));
   }
 
+  // noinspection JSUnusedGlobalSymbols
   buildItemButtons(config) {
     return Object.entries(config.items)
       .filter(([, props]) => props.inPalette !== false)
@@ -112,7 +116,7 @@ class MazeEditorPalette {
   }
 
   buildActionButtons() {
-    return MazeEditorPalette.Actions.map(action => $('<button></button>')
+    return MazeEditorPalette.Actions.map((action) => $('<button></button>')
       .attr({
         type: 'button',
         title: action.title,

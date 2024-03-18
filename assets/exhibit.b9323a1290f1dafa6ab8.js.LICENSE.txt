@@ -302,11 +302,7 @@
 
 /*! ../maze-view */
 
-/*! ../maze-view.js */
-
-/*! ../maze.js */
-
-/*! ../modal.js */
+/*! ../modal */
 
 /*! ../modules/es.array.iterator */
 
@@ -390,7 +386,7 @@
 
 /*! ./failsafe */
 
-/*! ./grid.js */
+/*! ./grid */
 
 /*! ./hold-button */
 
@@ -403,8 +399,6 @@
 /*! ./lang-switcher */
 
 /*! ./lib/array-2d */
-
-/*! ./lib/array-2d.js */
 
 /*! ./lib/dumper */
 
@@ -456,23 +450,23 @@
 
 /*! ./maze */
 
-/*! ./maze-browser.js */
+/*! ./maze-browser */
+
+/*! ./maze-view */
 
 /*! ./maze-view-policy-overlay */
 
 /*! ./maze-view-qvalue-overlay */
 
-/*! ./maze-view.js */
+/*! ./modal-export */
 
-/*! ./modal-export.js */
+/*! ./modal-import */
 
-/*! ./modal-import.js */
+/*! ./modal-load */
 
-/*! ./modal-load.js */
+/*! ./modal-save */
 
-/*! ./modal-save.js */
-
-/*! ./object-store.js */
+/*! ./object-store */
 
 /*! ./qlearning-ai */
 
@@ -481,8 +475,6 @@
 /*! ./robot */
 
 /*! ./robot-view */
-
-/*! ./robot.js */
 
 /*! ./schema/default */
 

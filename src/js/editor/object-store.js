@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedReference
+
 class ObjectStore {
   constructor(fixedObjectsPath = null) {
     this.fixedObjects = [];
@@ -5,13 +7,14 @@ class ObjectStore {
 
     this.loadUserObjects();
     if (fixedObjectsPath) {
+      // noinspection JSIgnoredPromiseFromCall
       this.loadFixedObjects(fixedObjectsPath);
     }
   }
 
   async loadFixedObjects(path) {
     fetch(path, { cache: 'no-store' })
-      .then(response => response.json())
+      .then((response) => response.json())
       .then((data) => {
         this.fixedObjects = data.mazes;
       });
@@ -23,7 +26,8 @@ class ObjectStore {
       if (userObjects) {
         this.userObjects = userObjects;
       }
-    } catch(err) {
+    } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(`Unable to access local storage ${err}`);
     }
   }
@@ -32,16 +36,17 @@ class ObjectStore {
     try {
       localStorage.setItem('reinforcementLearning2.mazeStore.mazes', JSON.stringify(this.userObjects));
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error(`Unable to access local storage ${err}`);
     }
   }
 
   getAllObjects() {
-    return Object.assign(
-      {},
-      this.getAllUserObjects(),
-      this.getAllFixedObjects(),
-    );
+    return {
+
+      ...this.getAllUserObjects(),
+      ...this.getAllFixedObjects(),
+    };
   }
 
   getAllFixedObjects() {

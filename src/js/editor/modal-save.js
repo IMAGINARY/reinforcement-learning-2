@@ -1,5 +1,5 @@
-const Modal = require('../modal.js');
-const MazeBrowser = require('./maze-browser.js');
+const Modal = require('../modal');
+const MazeBrowser = require('./maze-browser');
 
 class ModalSave extends Modal {
   constructor(config, mazeStore) {

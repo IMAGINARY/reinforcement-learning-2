@@ -43,9 +43,13 @@ class RobotView {
   }
 
   react(reaction, x, y) {
-    this.animationQueue.push({ type: 'react', reaction, x, y });
+    this.animationQueue.push({
+      type: 'react', reaction, x, y,
+    });
     if (reaction === 'pit') {
-      this.animationQueue.push({ type: 'fall', x, y, time: 30 });
+      this.animationQueue.push({
+        type: 'fall', x, y, time: 30,
+      });
     }
   }
 
@@ -57,6 +61,7 @@ class RobotView {
     this.animationQueue.push({ type: 'delay', time: 20 });
   }
 
+  // eslint-disable-next-line class-methods-use-this
   animateReact(time, animation) {
     animation.done = true;
   }

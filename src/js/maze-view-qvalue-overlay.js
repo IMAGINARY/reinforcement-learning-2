@@ -1,5 +1,5 @@
 /* globals PIXI */
-const MazeView = require('./maze-view.js');
+const MazeView = require('./maze-view');
 
 class MazeViewQvalueOverlay {
   constructor(mazeView, ai) {
@@ -48,7 +48,7 @@ class MazeViewQvalueOverlay {
     const options = { fontFamily: 'Arial', fontSize: this.fontSize };
 
     const createText = (align) => {
-      const text = new PIXI.Text('', Object.assign({}, options, { align }));
+      const text = new PIXI.Text('', ({ ...options, align }));
       this.displayObject.addChild(text);
       return text;
     };

@@ -1,4 +1,6 @@
 /* globals PIXI */
+// noinspection JSUnresolvedReference
+
 const EventEmitter = require('events');
 const PencilCursor = require('../../static/fa/pencil-alt-solid.svg');
 const RobotView = require('./robot-view');

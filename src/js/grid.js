@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const Array2D = require('./lib/array-2d.js');
+const Array2D = require('./lib/array-2d');
 
 /**
  * Represents a 2D grid map that stores a single Number per cell
@@ -172,6 +172,7 @@ class Grid {
       .map(([x, y]) => [x, y, this.get(x, y)]);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   stepDistance(x1, y1, x2, y2) {
     return Math.abs(x1 - x2) + Math.abs(y1 - y2);
   }

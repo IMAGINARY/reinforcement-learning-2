@@ -1,5 +1,7 @@
+// noinspection JSCheckFunctionSignatures
+
 const EventEmitter = require('events');
-const Robot = require('./robot.js');
+const Robot = require('./robot');
 const { shuffleArray } = require('./lib/shuffle');
 
 class QLearningAI {
@@ -34,7 +36,7 @@ class QLearningAI {
       table[j] = new Array(width);
       for (let i = 0; i < width; i += 1) {
         table[j][i] = Object.fromEntries(
-          Object.keys(Robot.Directions).map(direction => [direction, 0])
+          Object.keys(Robot.Directions).map((direction) => [direction, 0])
         );
       }
     }

@@ -1,5 +1,7 @@
+// noinspection JSUnresolvedReference
+
 const EventEmitter = require('events');
-const createHoldButton = require('../hold-button')
+const createHoldButton = require('../hold-button');
 
 class ExhibitMazeEditorPalette {
   constructor($container, config) {
@@ -70,7 +72,8 @@ class ExhibitMazeEditorPalette {
             }))
           .append($('<div></div>')
             .addClass('label')
-            .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))]));
+            .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))])
+    );
   }
 }
 

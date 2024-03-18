@@ -1,9 +1,11 @@
+// noinspection JSUnresolvedReference
+
 const EventEmitter = require('events');
-const Grid = require('./grid.js');
-const Array2D = require('./lib/array-2d.js');
+const Grid = require('./grid');
+const Array2D = require('./lib/array-2d');
 
 class Maze {
-  constructor(width, height, cells = null, config) {
+  constructor(width, height, cells, config) {
     this.map = new Grid(width, height, cells);
     this.config = config;
     this.robot = null;
@@ -53,7 +55,7 @@ class Maze {
     robot.y = startY;
   }
 
-  placeItem(type, x, y, erasable=true) {
+  placeItem(type, x, y, erasable = true) {
     this.removeItem(x, y);
     this.lastItemId += 1;
     const newItem = {
@@ -75,15 +77,14 @@ class Maze {
   }
 
   getItem(x, y) {
-    const found = this.items.find(item => item.x === x && item.y === y);
-    return found;
+    return this.items.find((item) => item.x === x && item.y === y);
   }
 
   removeItem(x, y) {
     const item = this.getItem(x, y);
     if (item) {
       this.events.emit('itemRemoved', item);
-      this.items = this.items.filter(any => any.id !== item.id);
+      this.items = this.items.filter((any) => any.id !== item.id);
     }
   }
 

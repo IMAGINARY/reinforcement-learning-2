@@ -1,7 +1,7 @@
 {
   "extends": ["airbnb"],
   "parserOptions": {
-    "ecmaVersion": 2019,
+    "ecmaVersion": 2021,
     "sourceType": "module",
     "ecmaFeatures": {
     }
@@ -14,8 +14,6 @@
   "globals": {
   },
   "rules": {
-    "comma-dangle": ["error", "always-multiline", { "functions": "never" }],
-    "import/extensions": false,
     "no-param-reassign": ["error", { "props": false }]
   }
 }

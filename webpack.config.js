@@ -1,6 +1,7 @@
 const path = require('path');
 const Dotenv = require('dotenv-webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
@@ -16,6 +17,21 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            cacheDirectory: './.babel-cache',
+            presets: [
+              // Note: to debug Babel, the cache has to be disabled or emptied
+              ['@babel/preset-env', { useBuiltIns: 'usage', corejs: 3, debug: false }],
+            ],
+            sourceType: 'unambiguous',
+          },
+        },
+      },
       {
         test: /\.(scss|css)$/,
         exclude: /node_modules/,
@@ -45,6 +61,10 @@ module.exports = {
         type: 'asset/resource',
       },
     ],
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
   },
   plugins: [
     new Dotenv(),

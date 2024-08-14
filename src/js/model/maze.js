@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 const Grid = require('./grid');
-const Array2D = require('./lib/array-2d');
+const Array2D = require('../helpers/array-2d');
 
 class Maze {
   constructor(width, height, cells, config) {

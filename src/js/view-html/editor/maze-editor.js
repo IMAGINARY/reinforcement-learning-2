@@ -1,12 +1,12 @@
 // noinspection JSUnresolvedReference
 
-const Maze = require('../maze');
-const MazeView = require('../maze-view');
+const Maze = require('../../model/maze');
+const MazeView = require('../../view-pixi/maze-view');
 const ModalLoad = require('./modal-load');
 const ModalSave = require('./modal-save');
 const ModalExport = require('./modal-export');
 const ModalImport = require('./modal-import');
-const ObjectStore = require('./object-store');
+const ObjectStore = require('../../helpers-html/object-store');
 
 class MazeEditor {
   constructor($element, maze, palette, config, textures) {

@@ -1,6 +1,6 @@
 // noinspection JSUnresolvedReference
 
-const Maze = require('../maze');
+const Maze = require('../../model/maze');
 
 class MazeBrowser {
   constructor($element, config, mazeStore, saveMode = false) {

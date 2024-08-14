@@ -1,5 +1,5 @@
 const EventEmitter = require('events');
-const RobotView = require('./robot-view');
+const RobotView = require('../view-pixi/robot-view');
 const createHoldButton = require('./hold-button');
 
 class AITrainingView {

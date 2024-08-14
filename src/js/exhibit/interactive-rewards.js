@@ -1,11 +1,11 @@
-const Maze = require('../maze');
+const Maze = require('../model/maze');
 const maze1 = require('../../../data/mazes/rewards.json');
 const training = require('../../../data/training/rewards.json');
-const Robot = require('../robot');
-const QLearningAI = require('../qlearning-ai');
-const MazeView = require('../maze-view');
-const AITrainingView = require('../ai-training-view');
-const RobotView = require('../robot-view');
+const Robot = require('../model/robot');
+const QLearningAI = require('../model/qlearning-ai');
+const MazeView = require('../view-pixi/maze-view');
+const AITrainingView = require('../view-html/ai-training-view');
+const RobotView = require('../view-pixi/robot-view');
 
 class RewardsInteractive {
   constructor(config, textures) {

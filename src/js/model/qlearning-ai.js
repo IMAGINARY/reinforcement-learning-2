@@ -2,7 +2,7 @@
 
 const EventEmitter = require('events');
 const Robot = require('./robot');
-const { shuffleArray } = require('./lib/shuffle');
+const { shuffleArray } = require('../helpers/shuffle');
 
 class QLearningAI {
   constructor(robot) {

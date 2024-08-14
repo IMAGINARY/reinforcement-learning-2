@@ -1,7 +1,7 @@
 // noinspection JSUnresolvedReference
 
 const EventEmitter = require('events');
-const createHoldButton = require('../hold-button');
+const createHoldButton = require('./hold-button');
 
 class ExhibitMazeEditorPalette {
   constructor($container, config) {

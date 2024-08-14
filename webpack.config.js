@@ -4,13 +4,23 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const entryPoints = require('./webpack.entry-points.json');
+
+const entry = Object.fromEntries(Object.entries(entryPoints)
+  .map(([name, def]) => [name, `./src/js/${def.mainJs ? def.mainJs : `main-${name}.js`}`]));
+
+const htmlPlugins = Object.entries(entryPoints).map(([name, def]) => {
+  const htmlFileName = def.html ? def.html : `${name}.html`;
+  return new HtmlWebpackPlugin({
+    template: path.resolve(__dirname, `src/html/${htmlFileName}`),
+    filename: path.resolve(__dirname, htmlFileName),
+    chunks: [name],
+    minify: true,
+  });
+});
 
 module.exports = {
-  entry: {
-    default: './src/js/main.js',
-    exhibit: './src/js/main-exhibit.js',
-    embed: './src/js/main-embed.js',
-  },
+  entry,
   output: {
     filename: '[name].[contenthash].js',
     path: path.resolve(__dirname, 'assets'),
@@ -71,24 +81,7 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/html/index.html'),
-      filename: path.resolve(__dirname, 'index.html'),
-      chunks: ['default'],
-      minify: true,
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/html/exhibit.html'),
-      filename: path.resolve(__dirname, 'exhibit.html'),
-      chunks: ['exhibit'],
-      minify: true,
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'src/html/embed.html'),
-      filename: path.resolve(__dirname, 'embed.html'),
-      chunks: ['embed'],
-      minify: true,
-    }),
+    ...htmlPlugins,
     new CleanWebpackPlugin({
       // todo: temporary measure. Dev builds should be done without hashes in the filename.
       cleanOnceBeforeBuildPatterns: ['**/*'],

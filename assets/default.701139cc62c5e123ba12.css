@@ -91,6 +91,7 @@ input[type=range]:focus::-moz-range-thumb {
   height: 100%;
   top: 0;
   left: 0;
+  z-index: 99999;
   background-color: rgba(92, 6, 6, 0.85);
   background-image: url(790c86d2b123a19c0a4a.svg);
   background-size: 100px 100px;
@@ -385,4 +386,4 @@ button.maze-browser-item-new.selected {
   margin-bottom: 0.1em;
 }
 
-/*# sourceMappingURL=default.76f2efa2e719b4b8ab22.css.map*/
+/*# sourceMappingURL=default.701139cc62c5e123ba12.css.map*/

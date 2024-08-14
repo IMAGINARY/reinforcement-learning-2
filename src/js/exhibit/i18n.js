@@ -28,8 +28,13 @@ function init(config, initialLanguage) {
     .then(() => setLanguage(initialLanguage));
 }
 
+function refresh() {
+  setLanguage(getLanguage());
+}
+
 module.exports = {
   init,
   getLanguage,
   setLanguage,
+  refresh,
 };

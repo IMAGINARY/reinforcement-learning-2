@@ -81,6 +81,8 @@ runExhibit((config, textures) => {
 
   const trainingView = new AITrainingView(ai, mazeView.mazeView.robotView, {
     showViewPolicyButton: !policyOverlayAlwaysVisible,
+    useToggleFFButton: config?.panels?.training?.useToggleFFButton || false,
+    useToggleViewPolicyButton: config?.panels?.training?.useToggleViewPolicyButton || false,
   });
   $('#training-ui').append(trainingView.$element);
   trainingView.events

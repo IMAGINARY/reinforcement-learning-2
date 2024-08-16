@@ -10,3 +10,6 @@ panels:
     # If true, the policy overlay will show a background that partially obscures the tile
     # underneath to make the text more readable.
     policyOverlayShowBackground: true
+  training:
+    useToggleFFButton: false
+    useToggleViewPolicyButton: false

@@ -12,7 +12,7 @@ class AITrainingView {
     this.timer = 0;
     this.robotIdle = true;
     this.robotView.events.on('idle', () => {
-      if (this.running || this.turboDown) {
+      if (this.running || (!this.options.useToggleFFButton && this.turboDown)) {
         this.ai.step();
       } else {
         this.robotIdle = true;
@@ -47,16 +47,17 @@ class AITrainingView {
       id: 'turbo',
       icon: 'static/fa/forward-solid.svg',
       title: 'Hold to speed up',
+      type: this.options.useToggleFFButton ? 'toggle' : 'hold',
     })
-      .on('i.pointerdown', () => {
+      .on('active', () => {
         this.$turboButton.addClass('active');
         this.robotView.speed = RobotView.Speed.TURBO;
         this.turboDown = true;
-        if (this.robotIdle) {
+        if (!this.options.useToggleFFButton && this.robotIdle) {
           this.ai.step();
         }
       })
-      .on('i.pointerup', () => {
+      .on('inactive', () => {
         this.$turboButton.removeClass('active');
         this.robotView.speed = RobotView.Speed.DEFAULT;
         this.turboDown = false;
@@ -81,12 +82,13 @@ class AITrainingView {
         id: 'view-policy',
         icon: 'static/icons/eye-regular.svg',
         title: 'View Policy',
+        type: this.options.useToggleViewPolicyButton ? 'toggle' : 'hold',
       })
-        .on('i.pointerdown', () => {
+        .on('active', () => {
           this.$viewPolicyButton.addClass('active');
           this.events.emit('policy-show');
         })
-        .on('i.pointerup', () => {
+        .on('inactive', () => {
           this.$viewPolicyButton.removeClass('active');
           this.events.emit('policy-hide');
         })
@@ -145,6 +147,23 @@ class AITrainingView {
       });
   }
 
+  /**
+   * Build a button element.
+   *
+   * Props:
+   * - id: button id
+   * - title: Text to show if the button doesn't have an icon, or title attribute otherwise.
+   * - icon: URL of the icon to show in the button.
+   * - type: Either 'hold' or 'toggle'. Default is 'hold'. A hold button is active while held down,
+   *    and a toggle button toggles between active and inactive states on press.
+   *
+   * Events:
+   *  - 'active': emitted when the button becomes active (depends on the button type).
+   *  - 'inactive' emitted when the button becomes inactive (depends on the button type).
+   *
+   * @param {object} props
+   * @return {*|jQuery}
+   */
   // eslint-disable-next-line class-methods-use-this
   buildButton(props) {
     const button = $('<button></button>')
@@ -166,6 +185,27 @@ class AITrainingView {
         backgroundImage: `url(${props.icon})`,
       });
       button.addClass('round');
+    }
+
+    if (props.type === 'toggle') {
+      button.on('i.pointerdown', () => {
+        button.toggleClass('active');
+        if (button.hasClass('active')) {
+          button.trigger('active');
+        } else {
+          button.trigger('inactive');
+        }
+      });
+    } else {
+      // Default type is 'hold'
+      button.on('i.pointerdown', () => {
+        button.addClass('active');
+        button.trigger('active');
+      });
+      button.on('i.pointerup', () => {
+        button.removeClass('active');
+        button.trigger('inactive');
+      });
     }
 
     return button;
@@ -225,6 +265,8 @@ class AITrainingView {
 
 AITrainingView.defaultOptions = {
   showViewPolicyButton: true,
+  useToggleViewPolicyButton: false,
+  useToggleFFButton: false,
 };
 
 module.exports = AITrainingView;

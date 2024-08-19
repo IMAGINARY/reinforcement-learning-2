@@ -137,6 +137,7 @@ class AITrainingView {
       ])
       .on('hold', () => {
         this.ai.clear();
+        this.events.emit('training-clear');
       })
       .appendTo(this.$element);
 

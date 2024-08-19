@@ -55,6 +55,10 @@ class RewardsInteractive {
     });
   }
 
+  getDisplayObject() {
+    return this.view.displayObject;
+  }
+
   animate(time) {
     this.view.animate(time);
   }

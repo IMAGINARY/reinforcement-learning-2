@@ -1,5 +1,7 @@
 /*! ../../../data/mazes/explore-exploit.json */
 
+/*! ../../../data/mazes/maze1.json */
+
 /*! ../../../data/mazes/rewards.json */
 
 /*! ../../../data/training/explore-exploit.json */
@@ -7,8 +9,6 @@
 /*! ../../../data/training/rewards.json */
 
 /*! ../../../static/fa/pencil-alt-solid.svg */
-
-/*! ../../data/mazes/maze1.json */
 
 /*! ../../helpers-html/object-store */
 
@@ -21,6 +21,8 @@
 /*! ../helpers/array-2d */
 
 /*! ../helpers/shuffle */
+
+/*! ../input/keyboard-controller */
 
 /*! ../internals/a-callable */
 
@@ -366,7 +368,17 @@
 
 /*! ../view-html/ai-training-view */
 
+/*! ../view-html/editor/maze-editor */
+
+/*! ../view-html/exhibit-maze-editor-palette */
+
+/*! ../view-html/reaction-controller */
+
 /*! ../view-pixi/maze-view */
+
+/*! ../view-pixi/maze-view-policy-overlay */
+
+/*! ../view-pixi/maze-view-qvalue-overlay */
 
 /*! ../view-pixi/robot-view */
 
@@ -376,13 +388,15 @@
 
 /*! ./common */
 
+/*! ./components/interactive-explore-exploit */
+
+/*! ./components/interactive-map-editor */
+
+/*! ./components/interactive-rewards */
+
 /*! ./core */
 
 /*! ./exception */
-
-/*! ./exhibit/interactive-explore-exploit */
-
-/*! ./exhibit/interactive-rewards */
 
 /*! ./failsafe */
 
@@ -397,8 +411,6 @@
 /*! ./helpers-pixi/loadTextures */
 
 /*! ./hold-button */
-
-/*! ./input/keyboard-controller */
 
 /*! ./jquery-plugins/jquery.pointerclick */
 
@@ -460,12 +472,6 @@
 
 /*! ./modal-save */
 
-/*! ./model/maze */
-
-/*! ./model/qlearning-ai */
-
-/*! ./model/robot */
-
 /*! ./robot */
 
 /*! ./robot-view */
@@ -478,19 +484,9 @@
 
 /*! ./type */
 
-/*! ./view-html/ai-training-view */
-
-/*! ./view-html/editor/maze-editor */
-
-/*! ./view-html/exhibit-maze-editor-palette */
-
 /*! ./view-html/lang-switcher */
 
-/*! ./view-html/reaction-controller */
-
-/*! ./view-pixi/maze-view-policy-overlay */
-
-/*! ./view-pixi/maze-view-qvalue-overlay */
+/*! ./view-pixi/pixi-composite-app */
 
 /*! core-js/modules/es.array.includes.js */
 
@@ -703,10 +699,6 @@
   \***********************************************/
 
 /*!***********************************************!*\
-  !*** ./src/js/exhibit/interactive-rewards.js ***!
-  \***********************************************/
-
-/*!***********************************************!*\
   !*** ./src/js/view-html/editor/modal-load.js ***!
   \***********************************************/
 
@@ -736,6 +728,10 @@
 
 /*!************************************************!*\
   !*** ./src/js/view-html/editor/maze-editor.js ***!
+  \************************************************/
+
+/*!************************************************!*\
+  !*** ./src/js/view-pixi/pixi-composite-app.js ***!
   \************************************************/
 
 /*!*************************************************!*\
@@ -788,6 +784,10 @@
 
 /*!**************************************************!*\
   !*** ./node_modules/core-js/internals/shared.js ***!
+  \**************************************************/
+
+/*!**************************************************!*\
+  !*** ./src/js/components/interactive-rewards.js ***!
   \**************************************************/
 
 /*!***************************************************!*\
@@ -866,6 +866,10 @@
   !*** ./node_modules/js-yaml/lib/schema/failsafe.js ***!
   \*****************************************************/
 
+/*!*****************************************************!*\
+  !*** ./src/js/components/interactive-map-editor.js ***!
+  \*****************************************************/
+
 /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/a-callable.js ***!
   \******************************************************/
@@ -936,10 +940,6 @@
 
 /*!*******************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.sort.js ***!
-  \*******************************************************/
-
-/*!*******************************************************!*\
-  !*** ./src/js/exhibit/interactive-explore-exploit.js ***!
   \*******************************************************/
 
 /*!********************************************************!*\
@@ -1068,6 +1068,10 @@
 
 /*!**********************************************************!*\
   !*** ./node_modules/core-js/modules/es.promise.catch.js ***!
+  \**********************************************************/
+
+/*!**********************************************************!*\
+  !*** ./src/js/components/interactive-explore-exploit.js ***!
   \**********************************************************/
 
 /*!***********************************************************!*\

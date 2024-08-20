@@ -63,6 +63,12 @@ class MapEditorInteractive {
         this.policyOverlay.hide();
       });
 
+    if (config?.panels?.editor?.aiResetButtonResetsMaze) {
+      this.trainingView.events.on('training-clear', () => {
+        this.reset();
+      });
+    }
+
     this.reactionController = new ReactionController($('body'), config);
     this.view.mazeView.robotView.events.on('reactEnd', (animation) => {
       const bounds = this.view.mazeView.robotView.sprite.getBounds();

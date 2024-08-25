@@ -4,6 +4,7 @@ class LangSwitcher {
     this.container = container;
     this.config = config;
     this.langChangeCallback = langChangeCallback;
+    this.menuItems = {};
 
     this.render();
   }
@@ -37,6 +38,7 @@ class LangSwitcher {
       });
       item.appendChild(link);
       this.menu.appendChild(item);
+      this.menuItems[code] = item;
     });
 
     this.container.appendChild(this.element);
@@ -64,6 +66,16 @@ class LangSwitcher {
   hideMenu() {
     this.menuVisible = false;
     this.menu.classList.remove('visible');
+  }
+
+  setActiveLanguage(code) {
+    Object.entries(this.menuItems).forEach(([langCode, item]) => {
+      if (langCode === code) {
+        item.classList.add('active');
+      } else {
+        item.classList.remove('active');
+      }
+    });
   }
 }
 

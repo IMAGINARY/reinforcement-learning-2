@@ -68,8 +68,12 @@ async function runExhibit(initCallback) {
       const langSwitcher = new LangSwitcher(
         container.find('#lang-switcher-container')[0],
         { languages: config.languages },
-        (code) => I18n.setLanguage(code)
+        (code) => {
+          I18n.setLanguage(code);
+          langSwitcher.setActiveLanguage(code);
+        }
       );
+      langSwitcher.setActiveLanguage(I18n.getLanguage());
     }
 
     disableContextMenuOnLongTouch();

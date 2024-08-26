@@ -219,11 +219,21 @@ class MazeView {
   }
 
   renderStartCell(i, j) {
+    const strokeSize = this.config.ui.maze.startCellStrokeSize || 10;
+    const strokeColor = this.config.ui.maze.startCellStrokeColor
+      ? Number(`0x${this.config.ui.maze.startCellStrokeColor.substring(1)}`) : 0x99ff99;
+    const fillColor = this.config.ui.maze.startCellFillColor
+      ? Number(`0x${this.config.ui.maze.startCellFillColor.substring(1)}`) : 0x99ff99;
     this.getFloorTile(i, j)
       .clear()
-      .lineStyle(10, 0x99ff99, 1)
-      .beginFill(0xffffff)
-      .drawRect(5, 5, MazeView.TILE_SIZE - 10, MazeView.TILE_SIZE - 10)
+      .lineStyle(strokeSize, strokeColor, 1)
+      .beginFill(fillColor)
+      .drawRect(
+        strokeSize / 2,
+        strokeSize / 2,
+        MazeView.TILE_SIZE - strokeSize,
+        MazeView.TILE_SIZE - strokeSize
+      )
       .endFill();
   }
 
@@ -233,7 +243,7 @@ class MazeView {
     this.getFloorTile(i, j)
       .clear()
       .lineStyle(2, 0x0, 1)
-      .beginFill(tileType ? Number(`0x${tileType.color.substr(1)}`) : 0, 1)
+      .beginFill(tileType ? Number(`0x${tileType.color.substring(1)}`) : 0, 1)
       .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
       .endFill();
 

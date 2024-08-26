@@ -1,0 +1,5 @@
+ui:
+  maze:
+    startCellStrokeSize: 10
+    startCellStrokeColor: '#99ff99'
+    startCellFillColor: '#ffffff'

@@ -46,6 +46,7 @@ const configFiles = [
   'config/tiles.yml',
   'config/robot.yml',
   'config/items.yml',
+  'config/ui.yml',
   'config/i18n.yml',
   'config/default-settings.yml',
 ];

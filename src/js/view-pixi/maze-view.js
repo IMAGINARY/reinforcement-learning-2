@@ -55,7 +55,7 @@ class MazeView {
       floorTexture.y = y * MazeView.TILE_SIZE;
       floorTexture.width = MazeView.TILE_SIZE;
       floorTexture.height = MazeView.TILE_SIZE;
-      floorTexture.roundPixels = true;
+      floorTexture.roundPixels = false;
       this.floorTextures[y][x] = floorTexture;
 
       this.renderCell(x, y);
@@ -158,7 +158,7 @@ class MazeView {
     sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
     sprite.width = MazeView.TILE_SIZE * textureScale;
     sprite.height = MazeView.TILE_SIZE * textureScale;
-    sprite.roundPixels = true;
+    sprite.roundPixels = false;
     sprite.texture = this.textures[`item-${item.type}`];
 
     this.itemSprites[item.id] = sprite;

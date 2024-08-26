@@ -10,7 +10,8 @@ runExhibit((config, textures) => {
   const app = new PixiCompositeApp(
     1920,
     1080,
-    0xffffff
+    0xffffff,
+    config.pixiOptions || {}
   );
   $('#pixi-app-container').append(app.getView());
 

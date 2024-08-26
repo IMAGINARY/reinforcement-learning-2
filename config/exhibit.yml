@@ -1,3 +1,5 @@
+pixiOptions:
+  antialias: false
 panels:
   editor:
     # If true, the policy overlay will be visible all the time. This also hides the "View policy"

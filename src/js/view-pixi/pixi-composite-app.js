@@ -1,11 +1,12 @@
 /* globals PIXI */
 
 class PixiCompositeApp {
-  constructor(width, height, backgroundColor = 0xffffff) {
+  constructor(width, height, backgroundColor = 0xffffff, pixiOptions = {}) {
     this.app = new PIXI.Application({
       width,
       height,
       backgroundColor,
+      ...pixiOptions,
     });
   }
 

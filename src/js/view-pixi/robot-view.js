@@ -24,7 +24,7 @@ class RobotView {
     const sprite = new PIXI.Sprite();
     sprite.width = tileSize;
     sprite.height = tileSize;
-    sprite.roundPixels = true;
+    sprite.roundPixels = false;
     sprite.texture = texture;
 
     return sprite;

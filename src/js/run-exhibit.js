@@ -64,7 +64,8 @@ async function runExhibit(initCallback) {
     I18n.refresh();
 
     const container = $('[data-component=rl2-exhibit]');
-    if (container && config.showLanguageSwitcher !== false) {
+    const langSwitcherContainer = container?.find('#lang-switcher-container');
+    if (langSwitcherContainer.length && config.showLanguageSwitcher !== false) {
       // eslint-disable-next-line no-unused-vars
       const langSwitcher = new LangSwitcher(
         container.find('#lang-switcher-container')[0],

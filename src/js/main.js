@@ -53,7 +53,7 @@ cfgLoader.load([
       return Promise.all(languages.map((code) => IMAGINARY.i18n.loadLang(code)));
     })
     .then(() => {
-      const defaultLanguage = qs.get('lang') || config.defaultLanguage || 'en';
+      const defaultLanguage = qs.get('lang') || config.sideBySideTranslation || config.defaultLanguage || 'en';
       return IMAGINARY.i18n.setLang(defaultLanguage);
     })
     .then(() => config)

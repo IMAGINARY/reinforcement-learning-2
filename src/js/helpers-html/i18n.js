@@ -1,21 +1,29 @@
 /* globals IMAGINARY */
 // noinspection JSUnresolvedReference
 
+let lang = null;
+
 function getLanguage() {
-  return IMAGINARY.i18n.getLang();
+  return lang;
 }
 
 function setLanguage(code) {
-  return IMAGINARY.i18n.setLang(code).then(() => {
-    $('[data-i18n-text]').each((i, element) => {
-      $(element).html(
-        IMAGINARY.i18n.t($(element).data('i18n-text'))
-      );
-    });
+  lang = code;
+  $('[data-i18n-text]').each((i, element) => {
+    $(element).empty().append(
+      [lang].flat(1).map((l, j) => (
+        $('<span></span>')
+          .addClass(['i18n-text', `i18n-text-${j === 0 ? 'primary' : 'secondary'}`, `i18n-text-${l}`])
+          .html(
+            IMAGINARY.i18n.t($(element).data('i18n-text'), l)
+          )
+      ))
+    );
   });
 }
 
 function init(config, initialLanguage) {
+  lang = initialLanguage || 'en';
   return IMAGINARY.i18n.init({
     queryStringVariable: 'lang',
     translationsDirectory: 'tr',

@@ -31,7 +31,8 @@ async function runExhibit(initCallback) {
       throw new Error(`Error loading configuration: ${err.message}`);
     });
 
-    await I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
+    const language = qs.get('lang') || config.sideBySideTranslation || config.defaultLanguage || 'en';
+    await I18n.init(config, language)
       .catch((err) => {
         throw new Error(`Error initializing i18n: ${err.message}`);
       });

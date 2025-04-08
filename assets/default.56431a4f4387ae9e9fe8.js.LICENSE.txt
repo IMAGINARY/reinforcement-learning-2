@@ -1,14 +1,6 @@
-/*! ../../../data/mazes/explore-exploit.json */
-
-/*! ../../../data/mazes/maze1.json */
-
-/*! ../../../data/mazes/rewards.json */
-
-/*! ../../../data/training/explore-exploit.json */
-
-/*! ../../../data/training/rewards.json */
-
 /*! ../../../static/fa/pencil-alt-solid.svg */
+
+/*! ../../data/mazes/maze1.json */
 
 /*! ../../helpers-html/object-store */
 
@@ -21,8 +13,6 @@
 /*! ../helpers/array-2d */
 
 /*! ../helpers/shuffle */
-
-/*! ../input/keyboard-controller */
 
 /*! ../internals/a-callable */
 
@@ -45,6 +35,10 @@
 /*! ../internals/array-slice */
 
 /*! ../internals/array-sort */
+
+/*! ../internals/array-species-constructor */
+
+/*! ../internals/array-species-create */
 
 /*! ../internals/check-correctness-of-iteration */
 
@@ -77,6 +71,8 @@
 /*! ../internals/descriptors */
 
 /*! ../internals/document-create-element */
+
+/*! ../internals/does-not-exceed-safe-integer */
 
 /*! ../internals/dom-iterables */
 
@@ -111,6 +107,8 @@
 /*! ../internals/fails */
 
 /*! ../internals/fix-regexp-well-known-symbol-logic */
+
+/*! ../internals/flatten-into-array */
 
 /*! ../internals/function-apply */
 
@@ -308,12 +306,6 @@
 
 /*! ../modal */
 
-/*! ../model/maze */
-
-/*! ../model/qlearning-ai */
-
-/*! ../model/robot */
-
 /*! ../modules/es.array.iterator */
 
 /*! ../modules/es.promise.all */
@@ -334,7 +326,7 @@
 
 /*! ../sass/default.scss */
 
-/*! ../sass/exhibit.scss */
+/*! ../sass/desktop.scss */
 
 /*! ../schema */
 
@@ -366,20 +358,6 @@
 
 /*! ../type/timestamp */
 
-/*! ../view-html/ai-training-view */
-
-/*! ../view-html/editor/maze-editor */
-
-/*! ../view-html/exhibit-maze-editor-palette */
-
-/*! ../view-html/reaction-controller */
-
-/*! ../view-pixi/maze-view */
-
-/*! ../view-pixi/maze-view-policy-overlay */
-
-/*! ../view-pixi/maze-view-qvalue-overlay */
-
 /*! ../view-pixi/robot-view */
 
 /*! ./cfg-loader/cfg-loader */
@@ -387,12 +365,6 @@
 /*! ./cfg-loader/cfg-reader-fetch */
 
 /*! ./common */
-
-/*! ./components/interactive-explore-exploit */
-
-/*! ./components/interactive-map-editor */
-
-/*! ./components/interactive-rewards */
 
 /*! ./core */
 
@@ -402,15 +374,15 @@
 
 /*! ./grid */
 
-/*! ./helpers-html/disable-context-menu-touch */
-
 /*! ./helpers-html/i18n */
 
 /*! ./helpers-html/show-fatal-error */
 
-/*! ./helpers-pixi/loadTextures */
+/*! ./helpers-pixi/pixi-helpers */
 
 /*! ./hold-button */
+
+/*! ./input/keyboard-controller */
 
 /*! ./jquery-plugins/jquery.pointerclick */
 
@@ -472,11 +444,15 @@
 
 /*! ./modal-save */
 
+/*! ./model/maze */
+
+/*! ./model/qlearning-ai */
+
+/*! ./model/robot */
+
 /*! ./robot */
 
 /*! ./robot-view */
-
-/*! ./run-exhibit */
 
 /*! ./schema/default */
 
@@ -484,9 +460,19 @@
 
 /*! ./type */
 
-/*! ./view-html/lang-switcher */
+/*! ./view-html/ai-training-view */
 
-/*! ./view-pixi/pixi-composite-app */
+/*! ./view-html/editor/maze-editor */
+
+/*! ./view-html/editor/maze-editor-palette */
+
+/*! ./view-html/reaction-controller */
+
+/*! ./view-pixi/maze-view-policy-overlay */
+
+/*! ./view-pixi/maze-view-qvalue-overlay */
+
+/*! core-js/modules/es.array.flat.js */
 
 /*! core-js/modules/es.array.includes.js */
 
@@ -495,6 +481,8 @@
 /*! core-js/modules/es.array.reverse.js */
 
 /*! core-js/modules/es.array.sort.js */
+
+/*! core-js/modules/es.array.unscopables.flat.js */
 
 /*! core-js/modules/es.object.from-entries.js */
 
@@ -514,6 +502,10 @@
 
 /*! js-yaml */
 
+/*!************************!*\
+  !*** ./src/js/main.js ***!
+  \************************/
+
 /*!******************************!*\
   !*** ./src/js/model/grid.js ***!
   \******************************/
@@ -531,24 +523,12 @@
   \*******************************/
 
 /*!*******************************!*\
-  !*** ./src/js/run-exhibit.js ***!
-  \*******************************/
-
-/*!*******************************!*\
   !*** ./src/sass/default.scss ***!
   \*******************************/
 
 /*!*******************************!*\
-  !*** ./src/sass/exhibit.scss ***!
+  !*** ./src/sass/desktop.scss ***!
   \*******************************/
-
-/*!********************************!*\
-  !*** ./src/js/main-exhibit.js ***!
-  \********************************/
-
-/*!*********************************!*\
-  !*** ./data/mazes/rewards.json ***!
-  \*********************************/
 
 /*!***********************************!*\
   !*** ./src/js/helpers/shuffle.js ***!
@@ -557,10 +537,6 @@
 /*!***********************************!*\
   !*** ./src/js/view-html/modal.js ***!
   \***********************************/
-
-/*!************************************!*\
-  !*** ./data/training/rewards.json ***!
-  \************************************/
 
 /*!************************************!*\
   !*** ./src/js/helpers/array-2d.js ***!
@@ -595,10 +571,6 @@
   \****************************************/
 
 /*!*****************************************!*\
-  !*** ./data/mazes/explore-exploit.json ***!
-  \*****************************************/
-
-/*!*****************************************!*\
   !*** ./src/js/cfg-loader/cfg-loader.js ***!
   \*****************************************/
 
@@ -609,14 +581,6 @@
 /*!******************************************!*\
   !*** ./node_modules/js-yaml/lib/type.js ***!
   \******************************************/
-
-/*!*******************************************!*\
-  !*** ./src/js/view-html/lang-switcher.js ***!
-  \*******************************************/
-
-/*!********************************************!*\
-  !*** ./data/training/explore-exploit.json ***!
-  \********************************************/
 
 /*!********************************************!*\
   !*** ./node_modules/js-yaml/lib/common.js ***!
@@ -643,7 +607,7 @@
   \*********************************************/
 
 /*!*********************************************!*\
-  !*** ./src/js/helpers-pixi/loadTextures.js ***!
+  !*** ./src/js/helpers-pixi/pixi-helpers.js ***!
   \*********************************************/
 
 /*!*********************************************!*\
@@ -730,10 +694,6 @@
   !*** ./src/js/view-html/editor/maze-editor.js ***!
   \************************************************/
 
-/*!************************************************!*\
-  !*** ./src/js/view-pixi/pixi-composite-app.js ***!
-  \************************************************/
-
 /*!*************************************************!*\
   !*** ./node_modules/core-js/internals/fails.js ***!
   \*************************************************/
@@ -784,10 +744,6 @@
 
 /*!**************************************************!*\
   !*** ./node_modules/core-js/internals/shared.js ***!
-  \**************************************************/
-
-/*!**************************************************!*\
-  !*** ./src/js/components/interactive-rewards.js ***!
   \**************************************************/
 
 /*!***************************************************!*\
@@ -866,10 +822,6 @@
   !*** ./node_modules/js-yaml/lib/schema/failsafe.js ***!
   \*****************************************************/
 
-/*!*****************************************************!*\
-  !*** ./src/js/components/interactive-map-editor.js ***!
-  \*****************************************************/
-
 /*!******************************************************!*\
   !*** ./node_modules/core-js/internals/a-callable.js ***!
   \******************************************************/
@@ -939,6 +891,10 @@
   \*******************************************************/
 
 /*!*******************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.flat.js ***!
+  \*******************************************************/
+
+/*!*******************************************************!*\
   !*** ./node_modules/core-js/modules/es.array.sort.js ***!
   \*******************************************************/
 
@@ -968,6 +924,10 @@
 
 /*!********************************************************!*\
   !*** ./node_modules/core-js/modules/es.regexp.exec.js ***!
+  \********************************************************/
+
+/*!********************************************************!*\
+  !*** ./src/js/view-html/editor/maze-editor-palette.js ***!
   \********************************************************/
 
 /*!*********************************************************!*\
@@ -1012,10 +972,6 @@
 
 /*!*********************************************************!*\
   !*** ./node_modules/core-js/modules/web.url.to-json.js ***!
-  \*********************************************************/
-
-/*!*********************************************************!*\
-  !*** ./src/js/view-html/exhibit-maze-editor-palette.js ***!
   \*********************************************************/
 
 /*!**********************************************************!*\
@@ -1070,10 +1026,6 @@
   !*** ./node_modules/core-js/modules/es.promise.catch.js ***!
   \**********************************************************/
 
-/*!**********************************************************!*\
-  !*** ./src/js/components/interactive-explore-exploit.js ***!
-  \**********************************************************/
-
 /*!***********************************************************!*\
   !*** ./node_modules/core-js/internals/create-property.js ***!
   \***********************************************************/
@@ -1108,10 +1060,6 @@
 
 /*!***********************************************************!*\
   !*** ./node_modules/core-js/modules/es.string.replace.js ***!
-  \***********************************************************/
-
-/*!***********************************************************!*\
-  !*** ./src/js/helpers-html/disable-context-menu-touch.js ***!
   \***********************************************************/
 
 /*!************************************************************!*\
@@ -1179,6 +1127,10 @@
   \**************************************************************/
 
 /*!**************************************************************!*\
+  !*** ./node_modules/core-js/internals/flatten-into-array.js ***!
+  \**************************************************************/
+
+/*!**************************************************************!*\
   !*** ./node_modules/core-js/internals/host-report-errors.js ***!
   \**************************************************************/
 
@@ -1200,6 +1152,10 @@
 
 /*!****************************************************************!*\
   !*** ./node_modules/core-js/internals/advance-string-index.js ***!
+  \****************************************************************/
+
+/*!****************************************************************!*\
+  !*** ./node_modules/core-js/internals/array-species-create.js ***!
   \****************************************************************/
 
 /*!****************************************************************!*\
@@ -1314,6 +1270,10 @@
   !*** ./node_modules/core-js/internals/v8-prototype-define-bug.js ***!
   \*******************************************************************/
 
+/*!*******************************************************************!*\
+  !*** ./node_modules/core-js/modules/es.array.unscopables.flat.js ***!
+  \*******************************************************************/
+
 /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/correct-prototype-getter.js ***!
   \********************************************************************/
@@ -1345,6 +1305,10 @@
 /*!********************************************************************!*\
   !*** ./node_modules/core-js/internals/weak-map-basic-detection.js ***!
   \********************************************************************/
+
+/*!*********************************************************************!*\
+  !*** ./node_modules/core-js/internals/array-species-constructor.js ***!
+  \*********************************************************************/
 
 /*!*********************************************************************!*\
   !*** ./node_modules/core-js/internals/create-iter-result-object.js ***!
@@ -1381,6 +1345,10 @@
 /*!***********************************************************************!*\
   !*** ./node_modules/core-js/internals/iterator-create-constructor.js ***!
   \***********************************************************************/
+
+/*!************************************************************************!*\
+  !*** ./node_modules/core-js/internals/does-not-exceed-safe-integer.js ***!
+  \************************************************************************/
 
 /*!************************************************************************!*\
   !*** ./node_modules/core-js/internals/function-uncurry-this-clause.js ***!

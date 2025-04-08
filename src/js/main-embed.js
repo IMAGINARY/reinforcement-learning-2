@@ -68,6 +68,7 @@ cfgLoader.load(configFiles)
     console.error('Error loading configuration');
     console.error(err);
   })
+  // TODO: I18n.init and IMAGINARY.i18n.init shouldn't be both called (redundant)
   .then((config) => I18n.init(config, qs.get('lang') || config.defaultLanguage || 'en')
     .then(() => config))
   .then((config) => IMAGINARY.i18n.init({

@@ -1,5 +1,11 @@
 # The default language to use.
 defaultLanguage: en
+# Side-by-side translation mode: Show the same text in two languages at the same time.
+# Make sure to disable the language switcher if using this option. CSS adjustments
+# are needed to make it look good.
+#sideBySideTranslation:
+#  - de
+#  - en
 # Whether to show the language switcher in the exhibit.
 showLanguageSwitcher: true
 # Languages that will be offered to the user in <iso code>: <language name> format.

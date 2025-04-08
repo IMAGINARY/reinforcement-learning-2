@@ -1,3 +1,4 @@
 .babel-cache
 node_modules
 /work
+settings-exhibit.yml

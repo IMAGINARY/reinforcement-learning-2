@@ -262,6 +262,10 @@ class AITrainingView {
 
     return $element;
   }
+
+  setExplorationRate(rate) {
+    this.$explorationRateSlider.find('input').val(rate).trigger('change');
+  }
 }
 
 AITrainingView.defaultOptions = {

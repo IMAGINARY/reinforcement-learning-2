@@ -21,3 +21,6 @@ panels:
     # If true, the "View policy" button will be a "toggle" type button that switches between two
     # states on each press. Otherwise, it will be a "hold" button that only activates while pressed.
     useToggleViewPolicyButton: false
+    # If true, the reset button in the AI control panel will also reset the Exploration/Exploitation
+    # slider.
+    aiResetButtonResetsExplorationRate: false

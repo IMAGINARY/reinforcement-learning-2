@@ -10,6 +10,8 @@ const MazeViewPolicyOverlay = require('../view-pixi/maze-view-policy-overlay');
 const AITrainingView = require('../view-html/ai-training-view');
 const ReactionController = require('../view-html/reaction-controller');
 
+const INITIAL_EXPLORE_RATE = 0.2;
+
 class MapEditorInteractive {
   constructor(config, textures) {
     this.maze = Maze.fromJSON(maze1);
@@ -17,6 +19,7 @@ class MapEditorInteractive {
     this.robot = new Robot();
     this.maze.addRobot(this.robot);
     this.ai = new QLearningAI(this.maze.robot);
+    this.ai.exploreRate = INITIAL_EXPLORE_RATE;
 
     this.$element = $('<div></div>');
     const mazeEditorPalette = new ExhibitMazeEditorPalette(this.$element, config);
@@ -66,6 +69,11 @@ class MapEditorInteractive {
     if (config?.panels?.editor?.aiResetButtonResetsMaze) {
       this.trainingView.events.on('training-clear', () => {
         this.reset();
+      });
+    }
+    if (config?.panels?.training?.aiResetButtonResetsExplorationRate) {
+      this.trainingView.events.on('training-clear', () => {
+        this.trainingView.setExplorationRate(INITIAL_EXPLORE_RATE);
       });
     }
 

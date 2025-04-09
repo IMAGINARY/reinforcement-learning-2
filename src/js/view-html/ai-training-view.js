@@ -77,24 +77,6 @@ class AITrainingView {
       })
       .appendTo(this.$element);
 
-    if (this.options.showViewPolicyButton) {
-      this.$viewPolicyButton = this.buildButton({
-        id: 'view-policy',
-        icon: 'static/icons/eye-regular.svg',
-        title: 'View Policy',
-        type: this.options.useToggleViewPolicyButton ? 'toggle' : 'hold',
-      })
-        .on('active', () => {
-          this.$viewPolicyButton.addClass('active');
-          this.events.emit('policy-show');
-        })
-        .on('inactive', () => {
-          this.$viewPolicyButton.removeClass('active');
-          this.events.emit('policy-hide');
-        })
-        .appendTo(this.$element);
-    }
-
     this.$explorationRateSlider = this.buildSlider({
       id: 'exploration-rate',
       title: 'Exploration rate',
@@ -125,6 +107,24 @@ class AITrainingView {
         this.ai.discountFactor = value;
       },
     }).appendTo(this.$element);
+
+    if (this.options.showViewPolicyButton) {
+      this.$viewPolicyButton = this.buildButton({
+        id: 'view-policy',
+        icon: 'static/icons/eye-regular.svg',
+        title: 'View Policy',
+        type: this.options.useToggleViewPolicyButton ? 'toggle' : 'hold',
+      })
+        .on('active', () => {
+          this.$viewPolicyButton.addClass('active');
+          this.events.emit('policy-show');
+        })
+        .on('inactive', () => {
+          this.$viewPolicyButton.removeClass('active');
+          this.events.emit('policy-hide');
+        })
+        .appendTo(this.$element);
+    }
 
     this.$clearButton = createHoldButton({
       id: 'clear',

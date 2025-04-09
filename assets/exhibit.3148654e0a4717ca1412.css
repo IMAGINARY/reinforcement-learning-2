@@ -286,7 +286,7 @@ button.maze-browser-item-new.selected {
   padding: 0.7em 1.4em;
   border: 2px solid #000000;
   min-width: 3em;
-  margin-right: 0.5em;
+  margin-right: 1em;
   margin-bottom: 0.5em;
   background-repeat: no-repeat;
   background-position: center center;
@@ -320,6 +320,7 @@ button.maze-browser-item-new.selected {
   width: 50px;
   height: 50px;
   background-position: calc(50% + 0.1em) center;
+  margin-right: 0;
 }
 .ai-training-view-button-turbo.active {
   border-color: #483b10;
@@ -760,105 +761,5 @@ html, body {
 #rewards-bar .bar-container.decrease .progress-bar {
   background-color: #f86137;
 }
-body {
-  background-color: white;
-}
 
-.embed-app {
-  margin-left: 180px;
-}
-
-.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
-  width: 40px;
-  height: 40px;
-  margin-bottom: 8px;
-}
-.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button.active {
-  width: 46px;
-  height: 46px;
-  outline-width: 4px;
-  margin-top: -3px;
-  margin-left: -3px;
-  margin-bottom: 5px;
-}
-.embed-palette .maze-editor-palette .maze-editor-palette-bar .item .label {
-  width: 7.8em;
-  left: 55px;
-  top: 12px;
-}
-.embed-palette .maze-editor-palette .editor-palette-button-action-reset-map {
-  width: 160px;
-  margin-top: 0.4em;
-}
-
-.embed-training {
-  margin-left: 190px;
-  margin-top: -1em;
-}
-.embed-training .ai-training-view-button {
-  margin-right: 0.5em;
-  margin-top: 1em;
-}
-.embed-training .ai-training-view-button-clear {
-  width: 160px;
-}
-.embed-training .ai-training-view-button-run {
-  width: 50px;
-  height: 50px;
-}
-.embed-training .ai-training-view-button-turbo {
-  width: 50px;
-  height: 50px;
-}
-.embed-training .ai-training-view-button-step {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-}
-.embed-training .ai-training-view-button-view-policy {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  float: none;
-}
-.embed-training .ai-training-view-slider-exploration-rate {
-  margin: 1em;
-  width: 12em;
-}
-
-#rewards-bar {
-  margin-left: 10px;
-}
-#rewards-bar .bar-container .label {
-  font-size: 1.1em;
-}
-#rewards-bar .bar-container .progress {
-  width: 400px;
-}
-
-.reaction {
-  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out, transform 0.8s ease-in-out;
-  transform-origin: center center;
-  margin: 25px 0 0 170px;
-}
-.reaction.fading {
-  opacity: 0 !important;
-  margin-top: 25px;
-  transform: scale(1.5);
-}
-
-.reaction-lava {
-  opacity: 0.8;
-}
-
-.no-palette .embed-app {
-  margin-left: 0;
-}
-.no-palette .embed-training {
-  margin-left: 10px;
-}
-.no-palette .reaction {
-  margin-left: -10px;
-}
-
-/*# sourceMappingURL=embed.47b4f3a0acc1bf87924f.css.map*/
+/*# sourceMappingURL=exhibit.3148654e0a4717ca1412.css.map*/

@@ -286,7 +286,7 @@ button.maze-browser-item-new.selected {
   padding: 0.7em 1.4em;
   border: 2px solid #000000;
   min-width: 3em;
-  margin-right: 0.5em;
+  margin-right: 1em;
   margin-bottom: 0.5em;
   background-repeat: no-repeat;
   background-position: center center;
@@ -320,6 +320,7 @@ button.maze-browser-item-new.selected {
   width: 50px;
   height: 50px;
   background-position: calc(50% + 0.1em) center;
+  margin-right: 0;
 }
 .ai-training-view-button-turbo.active {
   border-color: #483b10;
@@ -386,4 +387,4 @@ button.maze-browser-item-new.selected {
   margin-bottom: 0.1em;
 }
 
-/*# sourceMappingURL=default.701139cc62c5e123ba12.css.map*/
+/*# sourceMappingURL=default.32853f59a6b586eaa7f2.css.map*/

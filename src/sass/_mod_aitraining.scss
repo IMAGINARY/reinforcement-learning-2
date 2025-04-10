@@ -35,8 +35,11 @@
   background-position: calc(50% + 0.2em) center;
 
   &.active {
-    background-position: center center;
     background-color: transparent;
+  }
+
+  &.with-pause-icon {
+    background-position: center center;
   }
 }
 

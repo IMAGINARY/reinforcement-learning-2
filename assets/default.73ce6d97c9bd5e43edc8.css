@@ -312,8 +312,10 @@ button.maze-browser-item-new.selected {
   background-position: calc(50% + 0.2em) center;
 }
 .ai-training-view-button-run.active {
-  background-position: center center;
   background-color: transparent;
+}
+.ai-training-view-button-run.with-pause-icon {
+  background-position: center center;
 }
 
 .ai-training-view-button-turbo {
@@ -387,4 +389,4 @@ button.maze-browser-item-new.selected {
   margin-bottom: 0.1em;
 }
 
-/*# sourceMappingURL=default.32853f59a6b586eaa7f2.css.map*/
+/*# sourceMappingURL=default.73ce6d97c9bd5e43edc8.css.map*/

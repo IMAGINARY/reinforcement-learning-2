@@ -31,10 +31,12 @@ class AITrainingView {
       .on('i.pointerclick', () => {
         if (this.running) {
           this.$runButton.css({ backgroundImage: 'url("static/fa/play-solid.svg")' });
+          this.$runButton.removeClass('with-pause-icon');
           this.$runButton.removeClass('active');
           this.running = false;
         } else if (this.robotIdle) {
           this.$runButton.css({ backgroundImage: 'url("static/fa/pause-solid.svg")' });
+          this.$runButton.addClass('with-pause-icon');
           this.$runButton.addClass('active');
           this.running = true;
           this.robotIdle = false;

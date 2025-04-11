@@ -1,5 +1,4 @@
 /* globals PIXI */
-const MazeView = require('./maze-view');
 
 class MazeViewQvalueOverlay {
   constructor(mazeView, ai) {
@@ -9,14 +8,14 @@ class MazeViewQvalueOverlay {
     this.displayObject = new PIXI.Container();
     this.displayObject.visible = this.visible;
 
-    this.fontSize = 18;
-    this.padding = 2;
+    this.fontSize = 18 * this.view.resolutionScale;;
+    this.padding = 2 * this.view.resolutionScale;;
 
     this.texts = [];
     this.createTexts();
     this.update();
 
-    this.ai.events.on('update', (x, y, direction) => {
+    this.ai.events.on('update', () => {
       this.update();
     });
 
@@ -69,20 +68,20 @@ class MazeViewQvalueOverlay {
   positionText(text, x, y, direction) {
     switch (direction) {
       case 'n':
-        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
-        text.y = MazeView.TILE_SIZE * y + this.padding;
+        text.x = this.view.tileSize * (x + 0.5) - text.width / 2;
+        text.y = this.view.tileSize * y + this.padding;
         break;
       case 's':
-        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
-        text.y = MazeView.TILE_SIZE * (y + 1) - (this.fontSize + this.padding);
+        text.x = this.view.tileSize * (x + 0.5) - text.width / 2;
+        text.y = this.view.tileSize * (y + 1) - (this.fontSize + this.padding);
         break;
       case 'e':
-        text.x = MazeView.TILE_SIZE * (x + 1) - (text.width + this.padding);
-        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        text.x = this.view.tileSize * (x + 1) - (text.width + this.padding);
+        text.y = this.view.tileSize * (y + 0.5) - (this.fontSize * 0.5);
         break;
       case 'w':
-        text.x = MazeView.TILE_SIZE * x + this.padding;
-        text.y = MazeView.TILE_SIZE * (y + 0.5) - (this.fontSize * 0.5);
+        text.x = this.view.tileSize * x + this.padding;
+        text.y = this.view.tileSize * (y + 0.5) - (this.fontSize * 0.5);
         break;
       default:
         break;

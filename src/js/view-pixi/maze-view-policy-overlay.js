@@ -9,8 +9,8 @@ class MazeViewPolicyOverlay {
     this.ai = ai;
     this.options = { ...MazeViewPolicyOverlay.defaultOptions, ...options };
     this.arrowTexture = arrowTexture;
-    this.fontSize = 22;
-    this.padding = 18;
+    this.fontSize = 22 * this.view.resolutionScale;
+    this.padding = 18 * this.view.resolutionScale;
 
     this.visible = false;
     this.displayObject = new PIXI.Container();
@@ -66,11 +66,11 @@ class MazeViewPolicyOverlay {
     background
       .clear()
       .beginFill(0xffffff, 0.75)
-      .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
+      .drawRect(0, 0, this.view.tileSize, this.view.tileSize)
       .endFill();
 
-    background.x = MazeView.TILE_SIZE * x;
-    background.y = MazeView.TILE_SIZE * y;
+    background.x = this.view.tileSize * x;
+    background.y = this.view.tileSize * y;
 
     this.displayObject.addChild(background);
     return background;
@@ -91,13 +91,13 @@ class MazeViewPolicyOverlay {
     const sprite = new PIXI.Sprite();
     sprite.texture = this.arrowTexture;
     sprite.roundPixels = true;
-    sprite.width = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
-    sprite.height = MazeView.TILE_SIZE * ARROW_TEXTURE_SCALE;
+    sprite.width = this.view.tileSize * ARROW_TEXTURE_SCALE;
+    sprite.height = this.view.tileSize * ARROW_TEXTURE_SCALE;
     sprite.anchor.set(0.5, 1);
     const yOffset = this.options.showText ? 0.35 : 0.5;
 
-    sprite.x = Math.round(MazeView.TILE_SIZE * (x + 0.5));
-    sprite.y = Math.round(MazeView.TILE_SIZE * (y + yOffset));
+    sprite.x = Math.round(this.view.tileSize * (x + 0.5));
+    sprite.y = Math.round(this.view.tileSize * (y + yOffset));
     sprite.rotation = rotation;
 
     this.displayObject.addChild(sprite);
@@ -125,15 +125,15 @@ class MazeViewPolicyOverlay {
     const { height, width } = this.view.maze.map;
     const options = { fontFamily: 'Arial', fontSize: this.fontSize, align: 'center' };
     const yOffset = this.options.showArrows
-      ? MazeView.TILE_SIZE - (this.fontSize + this.padding)
-      : 0.5 * (MazeView.TILE_SIZE - this.fontSize);
+      ? this.view.tileSize - (this.fontSize + this.padding)
+      : 0.5 * (this.view.tileSize - this.fontSize);
 
     for (let y = 0; y < height; y += 1) {
       this.texts[y] = new Array(width);
       for (let x = 0; x < width; x += 1) {
         const text = new PIXI.Text('', options);
-        text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
-        text.y = MazeView.TILE_SIZE * y + yOffset;
+        text.x = this.view.tileSize * (x + 0.5) - text.width / 2;
+        text.y = this.view.tileSize * y + yOffset;
         this.texts[y][x] = text;
         this.displayObject.addChild(text);
       }
@@ -146,7 +146,7 @@ class MazeViewPolicyOverlay {
     }
     const text = this.texts[y][x];
     text.text = aString;
-    text.x = MazeView.TILE_SIZE * (x + 0.5) - text.width / 2;
+    text.x = this.view.tileSize * (x + 0.5) - text.width / 2;
     text.visible = true;
   }
 

@@ -7,7 +7,7 @@ class RobotView {
     this.tileSize = tileSize;
     this.events = new EventEmitter();
 
-    this.speed = RobotView.Speed.DEFAULT;
+    this.setSpeed(RobotView.Speed.DEFAULT);
 
     this.sprite = RobotView.createSprite(tileSize, texture);
     this.sprite.x = this.robot.x * this.tileSize;
@@ -24,10 +24,18 @@ class RobotView {
     const sprite = new PIXI.Sprite();
     sprite.width = tileSize;
     sprite.height = tileSize;
-    sprite.roundPixels = false;
+    // sprite.roundPixels = true;
     sprite.texture = texture;
 
     return sprite;
+  }
+
+  setSpeed(speed) {
+    this.speed = speed * (this.tileSize / 120);
+  }
+
+  getSpeed() {
+    return this.speed * (120 / this.tileSize);
   }
 
   teleport(x, y) {
@@ -90,7 +98,7 @@ class RobotView {
     if (animation.elapsed === undefined) {
       animation.elapsed = 0;
     }
-    animation.elapsed += (time) * (this.speed / RobotView.Speed.DEFAULT);
+    animation.elapsed += (time) * (this.getSpeed() / RobotView.Speed.DEFAULT);
     const progress = Math.min(animation.elapsed, animation.time) / animation.time;
     this.sprite.scale.x = 0.8 * (1 - progress) + 0.2;
     this.sprite.scale.y = 0.8 * (1 - progress) + 0.2;
@@ -106,7 +114,7 @@ class RobotView {
     if (animation.elapsed === undefined) {
       animation.elapsed = 0;
     }
-    animation.elapsed += (time) * (this.speed / RobotView.Speed.DEFAULT);
+    animation.elapsed += (time) * (this.getSpeed() / RobotView.Speed.DEFAULT);
     if (animation.elapsed >= animation.time) {
       animation.done = true;
     }

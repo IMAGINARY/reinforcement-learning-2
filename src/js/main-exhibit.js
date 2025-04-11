@@ -7,9 +7,10 @@ const MapEditorInteractive = require('./components/interactive-map-editor');
 const runExhibit = require('./run-exhibit');
 
 runExhibit((config, textures) => {
+  const resScale = config?.render?.resolutionScale || 1;
   const app = new PixiCompositeApp(
-    1920,
-    1080,
+    1920 * resScale,
+    1080 * resScale,
     0xffffff,
     config.pixiOptions || {}
   );
@@ -25,7 +26,7 @@ runExhibit((config, textures) => {
   $('#rewards-ui').append(rewardsInteractive.ui.$element);
 
   const mapEditorInteractive = new MapEditorInteractive(config, textures);
-  app.addComponent(mapEditorInteractive, 1080 + 0.25, (1080 - 800) / 2 + 0.25, 720, 720);
+  app.addComponent(mapEditorInteractive, 1080 + 0.25, (1080 - 800) / 2 + 0.25, 720 * resScale, 720 * resScale);
   mapEditorInteractive.setupKeyControls();
   $('#panel-4').append(mapEditorInteractive.$element);
 });

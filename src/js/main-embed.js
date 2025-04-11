@@ -276,7 +276,7 @@ cfgLoader.load(configFiles)
         ai.step();
       }
 
-      topView.getRobotView().speed = RobotView.Speed.SLOW;
+      topView.getRobotView().setSpeed(RobotView.Speed.SLOW);
     });
   });
 

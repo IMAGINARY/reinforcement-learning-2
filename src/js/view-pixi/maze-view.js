@@ -25,6 +25,9 @@ class MazeView {
     this.textures = textures;
     this.events = new EventEmitter();
 
+    this.resolutionScale = this.config.render.resolutionScale || 1;
+    this.tileSize = (this.config?.render?.tileSize || MazeView.DEFAULT_TILE_SIZE)
+      * this.resolutionScale;
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);
     this.floorTextures = Array2D.create(maze.map.width, maze.map.height, null);
     this.visited = Array2D.create(maze.map.width, maze.map.height, false);
@@ -35,8 +38,8 @@ class MazeView {
 
     this.maze.map.allCells().forEach(([x, y]) => {
       const floorTile = new PIXI.Graphics();
-      floorTile.x = x * MazeView.TILE_SIZE;
-      floorTile.y = y * MazeView.TILE_SIZE;
+      floorTile.x = x * this.tileSize;
+      floorTile.y = y * this.tileSize;
 
       if (interactive) {
         floorTile.interactive = true;
@@ -51,10 +54,10 @@ class MazeView {
       this.floorTiles[y][x] = floorTile;
 
       const floorTexture = new PIXI.Sprite();
-      floorTexture.x = x * MazeView.TILE_SIZE;
-      floorTexture.y = y * MazeView.TILE_SIZE;
-      floorTexture.width = MazeView.TILE_SIZE;
-      floorTexture.height = MazeView.TILE_SIZE;
+      floorTexture.x = x * this.tileSize;
+      floorTexture.y = y * this.tileSize;
+      floorTexture.width = this.tileSize;
+      floorTexture.height = this.tileSize;
       floorTexture.roundPixels = false;
       this.floorTextures[y][x] = floorTexture;
 
@@ -93,7 +96,7 @@ class MazeView {
     this.handleMazeUpdate(this.maze.map.allCells());
 
     const { robot } = this.maze;
-    this.robotView = new RobotView(robot, MazeView.TILE_SIZE, this.textures.robot);
+    this.robotView = new RobotView(robot, this.tileSize, this.textures.robot);
 
     robot.events.on('move', (direction, x1, y1, x2, y2, reward, tileType) => {
       if (direction) {
@@ -154,10 +157,10 @@ class MazeView {
   createItemSprite(item) {
     const textureScale = 0.5;
     const sprite = new PIXI.Sprite();
-    sprite.x = item.x * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
-    sprite.y = item.y * MazeView.TILE_SIZE + MazeView.TILE_SIZE * 0.25;
-    sprite.width = MazeView.TILE_SIZE * textureScale;
-    sprite.height = MazeView.TILE_SIZE * textureScale;
+    sprite.x = item.x * this.tileSize + this.tileSize * 0.25;
+    sprite.y = item.y * this.tileSize + this.tileSize * 0.25;
+    sprite.width = this.tileSize * textureScale;
+    sprite.height = this.tileSize * textureScale;
     sprite.roundPixels = false;
     sprite.texture = this.textures[`item-${item.type}`];
 
@@ -202,9 +205,9 @@ class MazeView {
     this.origin = this.displayObject.getGlobalPosition(this.origin, false);
 
     const x = Math.floor((globalPoint.x - this.origin.x)
-      / this.displayObject.scale.x / MazeView.TILE_SIZE);
+      / this.displayObject.scale.x / this.tileSize);
     const y = Math.floor((globalPoint.y - this.origin.y)
-      / this.displayObject.scale.y / MazeView.TILE_SIZE);
+      / this.displayObject.scale.y / this.tileSize);
 
     return (x >= 0 && x < this.maze.map.width && y >= 0 && y < this.maze.map.height)
       ? { x, y } : null;
@@ -219,7 +222,8 @@ class MazeView {
   }
 
   renderStartCell(i, j) {
-    const strokeSize = this.config.ui.maze.startCellStrokeSize || 10;
+    const strokeSize = (this.config.ui.maze.startCellStrokeSize || 10)
+      * (this.resolutionScale || 1);
     const strokeColor = this.config.ui.maze.startCellStrokeColor
       ? Number(`0x${this.config.ui.maze.startCellStrokeColor.substring(1)}`) : 0x99ff99;
     const fillColor = this.config.ui.maze.startCellFillColor
@@ -231,8 +235,8 @@ class MazeView {
       .drawRect(
         strokeSize / 2,
         strokeSize / 2,
-        MazeView.TILE_SIZE - strokeSize,
-        MazeView.TILE_SIZE - strokeSize
+        this.tileSize - strokeSize,
+        this.tileSize - strokeSize
       )
       .endFill();
   }
@@ -242,9 +246,9 @@ class MazeView {
     const tileType = this.config.tileTypes[tileTypeId] || null;
     this.getFloorTile(i, j)
       .clear()
-      .lineStyle(2, 0x0, 1)
+      .lineStyle(3 * this.resolutionScale, 0x0, 1)
       .beginFill(tileType ? Number(`0x${tileType.color.substring(1)}`) : 0, 1)
-      .drawRect(0, 0, MazeView.TILE_SIZE, MazeView.TILE_SIZE)
+      .drawRect(0, 0, this.tileSize, this.tileSize)
       .endFill();
 
     if (tileType.texture !== undefined) {
@@ -277,6 +281,6 @@ class MazeView {
   }
 }
 
-MazeView.TILE_SIZE = 120;
+MazeView.DEFAULT_TILE_SIZE = 120;
 
 module.exports = MazeView;

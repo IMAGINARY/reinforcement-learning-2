@@ -20,7 +20,7 @@ class RewardsInteractive {
 
     this.view = new MazeView(maze, config, textures);
     this.ui = new AITrainingView(this.ai, this.view.robotView);
-    this.view.robotView.speed = RobotView.Speed.SLOW;
+    this.view.robotView.setSpeed(RobotView.Speed.SLOW);
 
     this.progress = 0;
     this.$bar = $('<div></div>')

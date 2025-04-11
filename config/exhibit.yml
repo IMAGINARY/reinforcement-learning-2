@@ -1,5 +1,11 @@
+render:
+  # Use 1 for FullHD resolution and 2 for 4k
+  resolutionScale: 1
+  # The size of tiles in pixels. These are multiplied by the resolution scale to get the actual size.
+  tileSize: 120
+# These options are passed directly to PIXI.Application when initializing
 pixiOptions:
-  antialias: false
+  antialias: true
 panels:
   editor:
     # If true, the policy overlay will be visible all the time. This also hides the "View policy"

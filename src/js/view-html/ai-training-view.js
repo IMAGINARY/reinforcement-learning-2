@@ -53,7 +53,7 @@ class AITrainingView {
     })
       .on('active', () => {
         this.$turboButton.addClass('active');
-        this.robotView.speed = RobotView.Speed.TURBO;
+        this.robotView.setSpeed(RobotView.Speed.TURBO);
         this.turboDown = true;
         if (!this.options.useToggleFFButton && this.robotIdle) {
           this.ai.step();
@@ -61,7 +61,7 @@ class AITrainingView {
       })
       .on('inactive', () => {
         this.$turboButton.removeClass('active');
-        this.robotView.speed = RobotView.Speed.DEFAULT;
+        this.robotView.setSpeed(RobotView.Speed.DEFAULT);
         this.turboDown = false;
       })
       .appendTo(this.$element);

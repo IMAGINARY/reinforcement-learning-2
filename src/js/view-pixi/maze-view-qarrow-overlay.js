@@ -11,9 +11,9 @@ class MazeViewQarrowOverlay {
     this.green = 0x78df65;
     this.red = 0xfc6159;
 
-    this.height = 20;
-    this.padding = 5;
-    this.width = 40;
+    this.height = 20 * this.view.resolutionScale;;
+    this.padding = 5 * this.view.resolutionScale;;
+    this.width = 40 * this.view.resolutionScale;;
     this.baseTriangle = new PIXI.Polygon([
       // x, y,
       0, 0,

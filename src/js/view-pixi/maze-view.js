@@ -25,7 +25,7 @@ class MazeView {
     this.textures = textures;
     this.events = new EventEmitter();
 
-    this.resolutionScale = this.config.render.resolutionScale || 1;
+    this.resolutionScale = this.config?.render?.resolutionScale || 1;
     this.tileSize = (this.config?.render?.tileSize || MazeView.DEFAULT_TILE_SIZE)
       * this.resolutionScale;
     this.floorTiles = Array2D.create(maze.map.width, maze.map.height, null);

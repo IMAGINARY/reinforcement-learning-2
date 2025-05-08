@@ -1,2 +1,3 @@
 robot:
   texture: 'static/icons/robot.png'
+  showReactions: true

@@ -77,15 +77,17 @@ class MapEditorInteractive {
       });
     }
 
-    this.reactionController = new ReactionController($('body'), config);
-    this.view.mazeView.robotView.events.on('reactEnd', (animation) => {
-      const bounds = this.view.mazeView.robotView.sprite.getBounds();
-      this.reactionController.launchReaction(
-        animation.reaction,
-        bounds.x,
-        bounds.y - bounds.height / 2
-      );
-    });
+    if (config?.robot?.showReactions) {
+      this.reactionController = new ReactionController($('body'), config);
+      this.view.mazeView.robotView.events.on('reactEnd', (animation) => {
+        const bounds = this.view.mazeView.robotView.sprite.getBounds();
+        this.reactionController.launchReaction(
+          animation.reaction,
+          bounds.x,
+          bounds.y - bounds.height / 2
+        );
+      });
+    }
   }
 
   getDisplayObject() {

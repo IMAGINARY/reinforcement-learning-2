@@ -1,4 +1,11 @@
 tileTypes:
+  0:
+    name: Start
+    color: '#ff00ff'
+    walkable: true
+    reward: -1
+    type: start
+    inPalette: false
   1:
     name: Floor
     color: '#ffffff'

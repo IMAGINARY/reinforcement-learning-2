@@ -213,8 +213,13 @@ class MazeView {
       ? { x, y } : null;
   }
 
+  isStartCell(i, j) {
+    return this.maze.startPosition[0] === i && this.maze.startPosition[1] === j;
+  }
+
   renderCell(i, j) {
-    if (this.maze.startPosition[0] === i && this.maze.startPosition[1] === j) {
+    const renderStartViaTileConfig = this.config?.ui?.maze?.startCellStyleViaTileConfig ?? false;
+    if (this.isStartCell(i, j) && !renderStartViaTileConfig) {
       this.renderStartCell(i, j);
     } else {
       this.renderFloor(i, j);
@@ -242,7 +247,7 @@ class MazeView {
   }
 
   renderFloor(i, j) {
-    const tileTypeId = this.maze.map.get(i, j);
+    const tileTypeId = this.isStartCell(i, j) ? 0 : this.maze.map.get(i, j);
     const tileType = this.config.tileTypes[tileTypeId] || null;
     this.getFloorTile(i, j)
       .clear()

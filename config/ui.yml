@@ -3,3 +3,7 @@ ui:
     startCellStrokeSize: 10
     startCellStrokeColor: '#99ff99'
     startCellFillColor: '#ffffff'
+    # This setting allows configuring how the start cell will be rendered through the
+    # definition of a tile type with id 0 in the tiles.yml file.
+    # If set to false, the start tile will be rendered with the stroke defined above
+    startCellStyleViaTileConfig: false

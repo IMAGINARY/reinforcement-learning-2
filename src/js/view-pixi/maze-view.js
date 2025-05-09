@@ -9,11 +9,13 @@ const Array2D = require('../helpers/array-2d');
 class MazeView {
   constructor(maze, config, textures = { }, interactive = false) {
     this.displayObject = new PIXI.Container();
+    this.borderLayer = new PIXI.Container();
     this.tileLayer = new PIXI.Container();
     this.textureLayer = new PIXI.Container();
     this.itemLayer = new PIXI.Container();
     this.overlayLayer = new PIXI.Container();
     this.robotLayer = new PIXI.Container();
+    this.displayObject.addChild(this.borderLayer);
     this.displayObject.addChild(this.tileLayer);
     this.displayObject.addChild(this.textureLayer);
     this.displayObject.addChild(this.itemLayer);
@@ -35,6 +37,22 @@ class MazeView {
     this.robotView = null;
 
     const pointers = {};
+
+    if (this.config?.ui?.maze?.borderStrokeSize) {
+      const borderStrokeSize = this.config.ui.maze.borderStrokeSize
+        * (this.resolutionScale || 1);
+      const borderStrokeColor = this.config?.ui?.maze?.borderStrokeColor
+        ? Number(`0x${this.config.ui.maze.borderStrokeColor.substring(1)}`) : 0x000000;
+      const border = new PIXI.Graphics();
+      this.borderLayer.addChild(border);
+      border.lineStyle(borderStrokeSize, borderStrokeColor, 1, 1)
+        .drawRect(
+          0,
+          0,
+          maze.map.width * this.tileSize * this.resolutionScale,
+          maze.map.height * this.tileSize * this.resolutionScale
+        );
+    }
 
     this.maze.map.allCells().forEach(([x, y]) => {
       const floorTile = new PIXI.Graphics();
@@ -249,9 +267,15 @@ class MazeView {
   renderFloor(i, j) {
     const tileTypeId = this.isStartCell(i, j) ? 0 : this.maze.map.get(i, j);
     const tileType = this.config.tileTypes[tileTypeId] || null;
+    const strokeSize = this.config?.ui?.maze?.cellStrokeSize || 3;
+    const strokeColor = this.config?.ui?.maze?.cellStrokeColor || '#000000';
     this.getFloorTile(i, j)
       .clear()
-      .lineStyle(3 * this.resolutionScale, 0x0, 1)
+      .lineStyle(
+        strokeSize * this.resolutionScale,
+        Number(`0x${strokeColor.substring(1)}`),
+        1
+      )
       .beginFill(tileType ? Number(`0x${tileType.color.substring(1)}`) : 0, 1)
       .drawRect(0, 0, this.tileSize, this.tileSize)
       .endFill();

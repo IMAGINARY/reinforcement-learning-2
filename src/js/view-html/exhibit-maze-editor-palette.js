@@ -16,8 +16,9 @@ class ExhibitMazeEditorPalette {
     this.$bar1 = $('<div class="maze-editor-palette-bar"></div>')
       .appendTo(this.$element);
 
-    this.tileButtons = this.buildTileButtons(config);
-    this.$bar1.append(Object.values(this.tileButtons));
+    const orderedTileButtons = this.buildTileButtons(config);
+    this.tileButtons = Object.fromEntries(orderedTileButtons);
+    this.$bar1.append(orderedTileButtons.map(([, button]) => button));
 
     this.resetMapButton = createHoldButton({
       holdTime: 2000,
@@ -40,40 +41,46 @@ class ExhibitMazeEditorPalette {
   }
 
   buildTileButtons(config) {
-    return Object.fromEntries(
-      Object.entries(config.tileTypes)
-        .filter(([, tileType]) => tileType.inPalette !== false)
-        .map(([id, typeCfg]) => [id, $('<div></div>')
-          .addClass(['item'])
-          .attr('data-tile-id', id)
-          .append($('<button></button>')
-            .attr({
-              type: 'button',
-              title: typeCfg.name,
-            })
-            .addClass([
-              'editor-palette-button',
-              'editor-palette-button-tile',
-              `editor-palette-button-tile-${id}`,
-            ])
-            .css({
-              backgroundColor: typeCfg.color,
-              backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
-            })
-            .pointerclick()
-            .on('i.pointerclick', (ev) => {
-              if (this.activeButton) {
-                this.activeButton.removeClass('active');
-              }
-              this.activeButton = $(ev.target);
-              this.activeButton.addClass('active');
-              this.tileId = Number(id);
-              this.events.emit('change', 'tile', Number(id));
-            }))
-          .append($('<div></div>')
-            .addClass('label')
-            .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))])
-    );
+    return Object.entries(config.tileTypes)
+      .filter(([, tileType]) => tileType.inPalette !== false)
+      .sort(([idA, typeCfgA], [idB, typeCfgB]) => {
+        const weightA = typeCfgA.paletteWeight || 0;
+        const weightB = typeCfgB.paletteWeight || 0;
+        if (weightA !== weightB) {
+          return weightA - weightB;
+        }
+        return idA - idB;
+      })
+      .map(([id, typeCfg]) => [id, $('<div></div>')
+        .addClass(['item'])
+        .attr('data-tile-id', id)
+        .append($('<button></button>')
+          .attr({
+            type: 'button',
+            title: typeCfg.name,
+          })
+          .addClass([
+            'editor-palette-button',
+            'editor-palette-button-tile',
+            `editor-palette-button-tile-${id}`,
+          ])
+          .css({
+            backgroundColor: typeCfg.color,
+            backgroundImage: typeCfg.editorIcon ? `url(${typeCfg.editorIcon})` : 'none',
+          })
+          .pointerclick()
+          .on('i.pointerclick', (ev) => {
+            if (this.activeButton) {
+              this.activeButton.removeClass('active');
+            }
+            this.activeButton = $(ev.target);
+            this.activeButton.addClass('active');
+            this.tileId = Number(id);
+            this.events.emit('change', 'tile', Number(id));
+          }))
+        .append($('<div></div>')
+          .addClass('label')
+          .attr('data-i18n-text', `editor-palette-button-tile-${typeCfg.type}`))]);
   }
 }
 

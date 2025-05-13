@@ -12,6 +12,7 @@ tileTypes:
     walkable: true
     reward: -1
     type: floor
+    paletteWeight: 1
   2:
     name: Wall
     color: '#666666'
@@ -19,6 +20,7 @@ tileTypes:
     texture: 'static/icons/wall.svg'
     editorIcon: 'static/icons/wall.svg'
     type: wall
+    paletteWeight: 2
   3:
     name: Exit
     color: '#99ff99'
@@ -31,6 +33,7 @@ tileTypes:
     react: always
     reaction: 'static/openmoji/trophy.svg'
     fixed: false
+    paletteWeight: 3
   4:
     name: Lava
     color: '#ff3333'
@@ -39,6 +42,7 @@ tileTypes:
     type: lava
     react: always
     reaction: 'static/openmoji/fire.svg'
+    paletteWeight: 6
   5:
     name: Candy
     color: '#fff799'
@@ -50,6 +54,7 @@ tileTypes:
     type: candy
     react: once
     reaction: 'static/openmoji/red-heart.svg'
+    paletteWeight: 4
   6:
     name: Pit
     color: '#000000'
@@ -58,6 +63,7 @@ tileTypes:
     reward: -50
     type: pit
     react: always
+    paletteWeight: 7
   7:
     name: Cone
     color: '#ffffff'
@@ -70,3 +76,4 @@ tileTypes:
     type: cone
     react: once
     reaction: 'static/openmoji/downcast-face-with-sweat.svg'
+    paletteWeight: 5

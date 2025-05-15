@@ -8,6 +8,7 @@ const yaml = require('js-yaml');
 const CfgLoader = require('./cfg-loader/cfg-loader');
 const CfgReaderFetch = require('./cfg-loader/cfg-reader-fetch');
 const I18n = require('./helpers-html/i18n');
+const initSentry = require('./helpers/sentry');
 const showFatalError = require('./helpers-html/show-fatal-error');
 const LangSwitcher = require('./view-html/lang-switcher');
 const { disableContextMenuOnLongTouch } = require('./helpers-html/disable-context-menu-touch');
@@ -16,6 +17,12 @@ const loadTextures = require('./helpers-pixi/loadTextures');
 async function runExhibit(initCallback) {
   try {
     const qs = new URLSearchParams(window.location.search);
+
+    const sentryDSN = qs.get('sentry-dsn');
+    let sentryInitialized = false;
+    if (sentryDSN) {
+      sentryInitialized = !!initSentry(sentryDSN);
+    }
 
     const cfgLoader = new CfgLoader(CfgReaderFetch, yaml.load);
     const config = await cfgLoader.load([
@@ -30,6 +37,10 @@ async function runExhibit(initCallback) {
     ]).catch((err) => {
       throw new Error(`Error loading configuration: ${err.message}`);
     });
+
+    if (!sentryInitialized && config?.sentry?.dsn) {
+      sentryInitialized = !!initSentry(config.sentry.dsn);
+    }
 
     const language = qs.get('lang') || config.sideBySideTranslation || config.defaultLanguage || 'en';
     await I18n.init(config, language)

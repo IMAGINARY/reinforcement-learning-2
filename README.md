@@ -52,6 +52,14 @@ You can customize the functionality of the embeded app through query strings arg
 - **showrewardbar** (default: `false`): If true, the reward bar is shown over the map (currently very specific to a particular
   experiment, so probably not practical).
 
+## Sentry
+
+The app supports Sentry.
+
+The `index.html` page can take the DSN from the `sentry-dsn` query string parameter.
+
+It can also get the DSN from the `sentry.dsn` configuration key in the  `settings-exhibit.yml` file.
+
 ## Credits
 
 Developed by Eric Londaits for IMAGINARY gGmbH adapted from the original

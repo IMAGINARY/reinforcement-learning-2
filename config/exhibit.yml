@@ -30,3 +30,8 @@ panels:
     # If true, the reset button in the AI control panel will also reset the Exploration/Exploitation
     # slider.
     aiResetButtonResetsExplorationRate: false
+sentry:
+  # Sentry DSN for error tracking
+  # Override this value through settings-exhibit.yml, not here.
+  # see README.md for alternatives.
+  # dsn: "xxx"

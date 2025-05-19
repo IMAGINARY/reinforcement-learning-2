@@ -77,7 +77,7 @@ class MapEditorInteractive {
       });
     }
 
-    if (config?.robot?.showReactions) {
+    if (config?.robot?.showReactions !== false) {
       this.reactionController = new ReactionController($('body'), config);
       this.view.mazeView.robotView.events.on('reactEnd', (animation) => {
         const bounds = this.view.mazeView.robotView.sprite.getBounds();

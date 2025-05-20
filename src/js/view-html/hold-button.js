@@ -3,17 +3,14 @@
  *  - holdTime: time in ms to hold the button
  */
 function createHoldButton(props) {
+  const $progressBar = $('<span class="progress"></span>')
+    .css('transition-duration', `${props.holdTime}ms`);
   const $button = $('<button></button>')
     .attr({
       type: 'button',
     })
     .addClass('hold-button')
-    .append(
-      $('<span class="progress"></span>')
-        .css({
-          animationDuration: `${props.holdTime}ms`,
-        })
-    )
+    .append($progressBar)
     .append(
       $('<span class="text"></span>')
     );
@@ -27,12 +24,19 @@ function createHoldButton(props) {
       holdTimeout = null;
     }
 
-    $button.addClass('held');
+    $progressBar.css('transition-duration', `${props.holdTime}ms`);
+    $button.removeClass('held');
+    $button.addClass('reset');
+    setTimeout(() => {
+      $button.removeClass('reset');
+      $button.addClass('held');
+    }, 0);
     holdTimeout = setTimeout(() => {
       holdTimeout = null;
       trackedPointerId = null;
       $button.trigger('hold');
       $button.removeClass('held');
+      $progressBar.css('transition-duration', '0ms');
     }, props.holdTime);
   }
 
@@ -41,6 +45,7 @@ function createHoldButton(props) {
       clearTimeout(holdTimeout);
       holdTimeout = null;
     }
+    $progressBar.css('transition-duration', '200ms');
     $button.removeClass('held');
     trackedPointerId = null;
   }

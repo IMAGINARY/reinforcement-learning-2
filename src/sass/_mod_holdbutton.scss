@@ -1,15 +1,5 @@
 @import "colors";
 
-@keyframes fill-progress {
-  0% {
-    width: 0;
-  }
-
-  100% {
-    width: 100%;
-  }
-}
-
 .hold-button {
   position: relative;
   overflow: hidden;
@@ -26,6 +16,8 @@
     width: 0;
     height: 100%;
     background-color: $c-yellow;
+    transition: width 0.2s linear 0.2s;
+    transition-duration: 0.2s;
   }
 
   .text {
@@ -41,10 +33,17 @@
     text-align: center;
   }
 
+  &.reset {
+    .progress {
+      width: 0;
+      transition: none;
+    }
+  }
+
   &.held {
     .progress {
-      animation-name: fill-progress;
-      animation-play-state: running;
+      width: 100%;
+      transition: width 0.3s cubic-bezier(0, 0.25, 0.5, 1) 0s;
     }
   }
 }

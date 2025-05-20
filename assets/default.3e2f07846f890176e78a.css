@@ -130,14 +130,6 @@ html.with-fatal-error body {
   overflow: hidden;
 }
 
-@keyframes fill-progress {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
-}
 .hold-button {
   position: relative;
   overflow: hidden;
@@ -154,6 +146,8 @@ html.with-fatal-error body {
   width: 0;
   height: 100%;
   background-color: #ffec02;
+  transition: width 0.2s linear 0.2s;
+  transition-duration: 0.2s;
 }
 .hold-button .text {
   position: absolute;
@@ -167,9 +161,13 @@ html.with-fatal-error body {
   justify-content: center;
   text-align: center;
 }
+.hold-button.reset .progress {
+  width: 0;
+  transition: none;
+}
 .hold-button.held .progress {
-  animation-name: fill-progress;
-  animation-play-state: running;
+  width: 100%;
+  transition: width 0.3s cubic-bezier(0, 0.25, 0.5, 1) 0s;
 }
 
 [data-component=app-container] canvas {
@@ -389,4 +387,4 @@ button.maze-browser-item-new.selected {
   margin-bottom: 0.1em;
 }
 
-/*# sourceMappingURL=default.73ce6d97c9bd5e43edc8.css.map*/
+/*# sourceMappingURL=default.3e2f07846f890176e78a.css.map*/

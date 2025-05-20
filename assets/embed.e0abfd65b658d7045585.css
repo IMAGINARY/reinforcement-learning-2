@@ -130,14 +130,6 @@ html.with-fatal-error body {
   overflow: hidden;
 }
 
-@keyframes fill-progress {
-  0% {
-    width: 0;
-  }
-  100% {
-    width: 100%;
-  }
-}
 .hold-button {
   position: relative;
   overflow: hidden;
@@ -154,6 +146,8 @@ html.with-fatal-error body {
   width: 0;
   height: 100%;
   background-color: #ffec02;
+  transition: width 0.2s linear 0.2s;
+  transition-duration: 0.2s;
 }
 .hold-button .text {
   position: absolute;
@@ -167,9 +161,13 @@ html.with-fatal-error body {
   justify-content: center;
   text-align: center;
 }
+.hold-button.reset .progress {
+  width: 0;
+  transition: none;
+}
 .hold-button.held .progress {
-  animation-name: fill-progress;
-  animation-play-state: running;
+  width: 100%;
+  transition: width 0.3s cubic-bezier(0, 0.25, 0.5, 1) 0s;
 }
 
 [data-component=app-container] canvas {
@@ -762,5 +760,105 @@ html, body {
 #rewards-bar .bar-container.decrease .progress-bar {
   background-color: #f86137;
 }
+body {
+  background-color: white;
+}
 
-/*# sourceMappingURL=exhibit.7fc6b57f69ff21a361c8.css.map*/
+.embed-app {
+  margin-left: 180px;
+}
+
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+}
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .editor-palette-button.active {
+  width: 46px;
+  height: 46px;
+  outline-width: 4px;
+  margin-top: -3px;
+  margin-left: -3px;
+  margin-bottom: 5px;
+}
+.embed-palette .maze-editor-palette .maze-editor-palette-bar .item .label {
+  width: 7.8em;
+  left: 55px;
+  top: 12px;
+}
+.embed-palette .maze-editor-palette .editor-palette-button-action-reset-map {
+  width: 160px;
+  margin-top: 0.4em;
+}
+
+.embed-training {
+  margin-left: 190px;
+  margin-top: -1em;
+}
+.embed-training .ai-training-view-button {
+  margin-right: 0.5em;
+  margin-top: 1em;
+}
+.embed-training .ai-training-view-button-clear {
+  width: 160px;
+}
+.embed-training .ai-training-view-button-run {
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-turbo {
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-step {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+}
+.embed-training .ai-training-view-button-view-policy {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  float: none;
+}
+.embed-training .ai-training-view-slider-exploration-rate {
+  margin: 1em;
+  width: 12em;
+}
+
+#rewards-bar {
+  margin-left: 10px;
+}
+#rewards-bar .bar-container .label {
+  font-size: 1.1em;
+}
+#rewards-bar .bar-container .progress {
+  width: 400px;
+}
+
+.reaction {
+  transition: opacity 0.8s ease-in-out, margin-top 0.8s ease-in-out, transform 0.8s ease-in-out;
+  transform-origin: center center;
+  margin: 25px 0 0 170px;
+}
+.reaction.fading {
+  opacity: 0 !important;
+  margin-top: 25px;
+  transform: scale(1.5);
+}
+
+.reaction-lava {
+  opacity: 0.8;
+}
+
+.no-palette .embed-app {
+  margin-left: 0;
+}
+.no-palette .embed-training {
+  margin-left: 10px;
+}
+.no-palette .reaction {
+  margin-left: -10px;
+}
+
+/*# sourceMappingURL=embed.e0abfd65b658d7045585.css.map*/

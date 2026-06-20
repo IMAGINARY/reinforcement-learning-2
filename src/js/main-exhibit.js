@@ -5,8 +5,12 @@ const ExploreExploitInteractive = require('./components/interactive-explore-expl
 const RewardsInteractive = require('./components/interactive-rewards');
 const MapEditorInteractive = require('./components/interactive-map-editor');
 const runExhibit = require('./run-exhibit');
+const AppScaler = require('./helpers-html/app-scaler').default;
 
 runExhibit((config, textures) => {
+  // eslint-disable-next-line no-unused-vars
+  const scaler = new AppScaler($('.app-scaler')[0], 1920, 1080);
+
   const resScale = config?.render?.resolutionScale || 1;
   const app = new PixiCompositeApp(
     1920 * resScale,
@@ -26,7 +30,13 @@ runExhibit((config, textures) => {
   $('#rewards-ui').append(rewardsInteractive.ui.$element);
 
   const mapEditorInteractive = new MapEditorInteractive(config, textures);
-  app.addComponent(mapEditorInteractive, 1080 + 0.25, (1080 - 800) / 2 + 0.25, 720 * resScale, 720 * resScale);
+  app.addComponent(
+    mapEditorInteractive,
+    1080 + 0.25,
+    (1080 - 800) / 2 + 0.25,
+    720 * resScale,
+    720 * resScale
+  );
   mapEditorInteractive.setupKeyControls();
   $('#panel-4').append(mapEditorInteractive.$element);
 });

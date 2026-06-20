@@ -446,6 +446,13 @@ html, body {
   margin: 0;
 }
 
+.rls-exhibit-body {
+  background-color: #f0f0f0;
+}
+.rls-exhibit-body .rl2-exhibit {
+  background-color: #fff;
+}
+
 .rl2-exhibit {
   width: 1920px;
   height: 1080px;
@@ -761,4 +768,4 @@ html, body {
   background-color: #f86137;
 }
 
-/*# sourceMappingURL=exhibit.687eddbb21b2ab4942d1.css.map*/
+/*# sourceMappingURL=exhibit.799b102fe6a78a8a6c9a.css.map*/

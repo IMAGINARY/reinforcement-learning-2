@@ -632,6 +632,8 @@
 
 /*! ./handlers.js */
 
+/*! ./helpers-html/app-scaler */
+
 /*! ./helpers-html/disable-context-menu-touch */
 
 /*! ./helpers-html/i18n */
@@ -1233,6 +1235,10 @@
 /*!******************************************!*\
   !*** ./node_modules/js-yaml/lib/type.js ***!
   \******************************************/
+
+/*!*******************************************!*\
+  !*** ./src/js/helpers-html/app-scaler.js ***!
+  \*******************************************/
 
 /*!*******************************************!*\
   !*** ./src/js/view-html/lang-switcher.js ***!

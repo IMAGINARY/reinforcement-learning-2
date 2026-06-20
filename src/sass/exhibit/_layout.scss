@@ -11,6 +11,14 @@ html, body {
   margin: 0;
 }
 
+.rls-exhibit-body {
+  background-color: #f0f0f0;
+
+  .rl2-exhibit {
+    background-color: #fff;
+  }
+}
+
 .rl2-exhibit {
   width: $viewport-width;
   height: $viewport-height;

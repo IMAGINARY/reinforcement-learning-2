@@ -9,6 +9,7 @@ const MazeViewQvalueOverlay = require('../view-pixi/maze-view-qvalue-overlay');
 const MazeViewPolicyOverlay = require('../view-pixi/maze-view-policy-overlay');
 const AITrainingView = require('../view-html/ai-training-view');
 const ReactionController = require('../view-html/reaction-controller');
+const { screenCoordinates, screenScale } = require('../helpers-pixi/pixi-helpers');
 
 const INITIAL_EXPLORE_RATE = 0.2;
 
@@ -81,17 +82,26 @@ class MapEditorInteractive {
       this.reactionController = new ReactionController($('body'), config);
       this.view.mazeView.robotView.events.on('reactEnd', (animation) => {
         const bounds = this.view.mazeView.robotView.sprite.getBounds();
-        this.reactionController.launchReaction(
-          animation.reaction,
-          bounds.x,
-          bounds.y - bounds.height / 2
-        );
+        let { x } = bounds;
+        let y = bounds.y - bounds.height / 2;
+        let scale = 1;
+        // When the canvas is known, map the robot's PIXI bounds to on-screen coordinates
+        // (accounting for the AppScaler's CSS transform) and match the component's scale.
+        if (this.canvas) {
+          [x, y] = screenCoordinates(this.canvas, x, y);
+          scale = screenScale(this.canvas);
+        }
+        this.reactionController.launchReaction(animation.reaction, x, y, scale);
       });
     }
   }
 
   getDisplayObject() {
     return this.view.mazeView.displayObject;
+  }
+
+  setCanvas(view) {
+    this.canvas = view;
   }
 
   setupKeyControls() {

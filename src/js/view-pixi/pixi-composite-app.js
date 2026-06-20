@@ -32,6 +32,12 @@ class PixiCompositeApp {
     if (component.animate && typeof component.animate === 'function') {
       this.app.ticker.add((time) => component.animate(time));
     }
+
+    // Let components that need the rendered canvas (e.g. for mapping PIXI coordinates to
+    // screen space) obtain it without coupling to the host's DOM structure.
+    if (typeof component.setCanvas === 'function') {
+      component.setCanvas(this.getView());
+    }
   }
 }
 

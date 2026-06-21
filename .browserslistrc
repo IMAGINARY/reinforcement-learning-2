@@ -1,11 +1,16 @@
 # https://github.com/browserslist/browserslist#readme
-
->= 0.5%
-last 2 major versions
-not dead
-Chrome >= 60
-Firefox >= 60
-Firefox ESR
-iOS >= 12
-Safari >= 12
-not Explorer <= 11
+#
+# Minimum baseline: ES2020 (optional chaining `?.` / nullish coalescing `??`).
+# The floor is kept at/above ES2020 so bundled npm deps that ship ES2020 syntax
+# untranspiled (e.g. @sentry/browser 9.x) still parse natively — Babel does not
+# transpile node_modules. Enforced at build time by `npm run check:syntax`.
+#
+# Explicit version floors only: share-based / `last N` queries are intentionally
+# omitted because they can silently re-admit a sub-ES2020 browser and reintroduce
+# syntax-error breakage. Android Chrome / Firefox are evergreen and covered.
+Chrome >= 80
+Edge >= 80
+Firefox >= 74
+Safari >= 13.1
+iOS >= 13.4
+Samsung >= 13

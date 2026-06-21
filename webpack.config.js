@@ -43,7 +43,7 @@ module.exports = {
             cacheDirectory: './.babel-cache',
             presets: [
               // Note: to debug Babel, the cache has to be disabled or emptied
-              ['@babel/preset-env', { useBuiltIns: 'usage', corejs: 3, debug: false }],
+              ['@babel/preset-env', { useBuiltIns: 'usage', corejs: '3.36', debug: false }],
             ],
             sourceType: 'unambiguous',
           },

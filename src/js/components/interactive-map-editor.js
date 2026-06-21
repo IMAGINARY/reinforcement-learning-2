@@ -15,6 +15,8 @@ const INITIAL_EXPLORE_RATE = 0.2;
 
 class MapEditorInteractive {
   constructor(config, textures) {
+    this.resolutionScale = config?.render?.resolutionScale || 1;
+    this.resolution = 1;
     this.maze = Maze.fromJSON(maze1);
     this.maze.config = config;
     this.robot = new Robot();
@@ -88,8 +90,8 @@ class MapEditorInteractive {
         // When the canvas is known, map the robot's PIXI bounds to on-screen coordinates
         // (accounting for the AppScaler's CSS transform) and match the component's scale.
         if (this.canvas) {
-          [x, y] = screenCoordinates(this.canvas, x, y);
-          scale = screenScale(this.canvas);
+          [x, y] = screenCoordinates(this.canvas, x, y, this.resolution);
+          scale = screenScale(this.canvas, this.resolution, this.resolutionScale);
         }
         this.reactionController.launchReaction(animation.reaction, x, y, scale);
       });
@@ -100,8 +102,9 @@ class MapEditorInteractive {
     return this.view.mazeView.displayObject;
   }
 
-  setCanvas(view) {
+  setCanvas(view, resolution = 1) {
     this.canvas = view;
+    this.resolution = resolution;
   }
 
   setupKeyControls() {

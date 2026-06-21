@@ -36,7 +36,7 @@ class PixiCompositeApp {
     // Let components that need the rendered canvas (e.g. for mapping PIXI coordinates to
     // screen space) obtain it without coupling to the host's DOM structure.
     if (typeof component.setCanvas === 'function') {
-      component.setCanvas(this.getView());
+      component.setCanvas(this.getView(), this.app.renderer.resolution);
     }
   }
 }

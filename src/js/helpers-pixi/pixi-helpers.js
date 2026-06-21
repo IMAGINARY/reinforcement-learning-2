@@ -25,23 +25,24 @@ export function screenCoordinates(view, pixiX, pixiY, resolution = 1) {
 }
 
 /**
- * Returns the scale factor that maps *design* pixels (the CSS units the DOM/reaction assets
- * are authored in) to on-screen pixels. This combines two effects beyond any ancestor CSS
- * transform (e.g. AppScaler's `scale()`): PIXI's `resolution` enlarges the backing store, and
- * the app's `resolutionScale` enlarges the drawn geometry. The design width is therefore
- * `view.width / (resolution * resolutionScale)`, and `getBoundingClientRect().width` already
- * folds in every CSS transform on the canvas.
+ * Returns the scale factor that maps the canvas's *logical* (design) coordinate space to
+ * on-screen pixels — i.e. how much the whole app is scaled on screen. The reaction icons are
+ * DOM elements authored in those logical units, so this is the scale to apply to them.
+ *
+ * The logical width is `view.width / resolution`: PIXI's `resolution` option enlarges the
+ * backing store (`view.width`) by `resolution`, and hosts undo that with a CSS down-scale on
+ * the canvas so it still occupies its logical size on screen. `getBoundingClientRect().width`
+ * already folds in every CSS transform (that down-scale plus any ancestor `scale()`), so
+ * dividing it by the logical width yields the net app scale.
  *
  * @param { HTMLCanvasElement } view
  *  The canvas element.
  * @param { number } resolution
  *  PIXI renderer resolution (`pixiOptions.resolution`). Defaults to 1.
- * @param { number } resolutionScale
- *  App geometry scale (`config.render.resolutionScale`). Defaults to 1.
  * @returns { number }
  */
-export function screenScale(view, resolution = 1, resolutionScale = 1) {
+export function screenScale(view, resolution = 1) {
   const rect = view.getBoundingClientRect();
-  const designWidth = view.width / (resolution * resolutionScale);
-  return rect.width / designWidth;
+  const logicalWidth = view.width / resolution;
+  return rect.width / logicalWidth;
 }

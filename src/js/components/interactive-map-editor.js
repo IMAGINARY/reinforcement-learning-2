@@ -15,7 +15,6 @@ const INITIAL_EXPLORE_RATE = 0.2;
 
 class MapEditorInteractive {
   constructor(config, textures) {
-    this.resolutionScale = config?.render?.resolutionScale || 1;
     this.resolution = 1;
     this.maze = Maze.fromJSON(maze1);
     this.maze.config = config;
@@ -91,7 +90,7 @@ class MapEditorInteractive {
         // (accounting for the AppScaler's CSS transform) and match the component's scale.
         if (this.canvas) {
           [x, y] = screenCoordinates(this.canvas, x, y, this.resolution);
-          scale = screenScale(this.canvas, this.resolution, this.resolutionScale);
+          scale = screenScale(this.canvas, this.resolution);
         }
         this.reactionController.launchReaction(animation.reaction, x, y, scale);
       });
